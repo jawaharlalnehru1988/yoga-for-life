@@ -1,0 +1,7 @@
+{
+  "name": "yoga-for-life",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
