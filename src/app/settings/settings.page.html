@@ -1,13 +1,209 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>settings</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">settings</ion-title>
+      <ion-title size="large">Settings</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <div class="settings-container">
+    <!-- Theme Selection Section -->
+    <ion-card class="yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="color-palette-outline" slot="start"></ion-icon>
+          App Themes
+        </ion-card-title>
+        <ion-card-subtitle>Choose your preferred color theme</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="theme-grid">
+          <div 
+            *ngFor="let theme of themes" 
+            class="theme-option"
+            (click)="selectTheme(theme.name)"
+          >
+            <div 
+              class="theme-preview"
+              [class.selected]="currentTheme === theme.name"
+              [ngClass]="theme.name"
+            >
+              <div class="theme-colors">
+                <div class="color-block primary"></div>
+                <div class="color-block secondary"></div>
+                <div class="color-block accent"></div>
+              </div>
+            </div>
+            <div class="theme-info">
+              <h3>{{ theme.displayName }}</h3>
+              <p>{{ theme.description }}</p>
+            </div>
+            <ion-checkbox 
+              [checked]="currentTheme === theme.name"
+              (ionChange)="selectTheme(theme.name)"
+            ></ion-checkbox>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- General Settings Section -->
+    <ion-card class="yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="settings-outline" slot="start"></ion-icon>
+          General Settings
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-icon name="moon-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Dark Mode</h2>
+              <p>Toggle dark mode for better viewing in low light</p>
+            </ion-label>
+            <ion-toggle 
+              [checked]="isDarkMode" 
+              (ionChange)="toggleDarkMode()"
+              slot="end"
+            ></ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="notifications-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Daily Reminders</h2>
+              <p>Get reminded to practice yoga daily</p>
+            </ion-label>
+            <ion-toggle 
+              [checked]="notificationsEnabled" 
+              (ionChange)="toggleNotifications()"
+              slot="end"
+            ></ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="language-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Language</h2>
+              <p>Choose your preferred language</p>
+            </ion-label>
+            <ion-select 
+              [(ngModel)]="selectedLanguage" 
+              placeholder="Select Language"
+              (ionChange)="changeLanguage($event)"
+            >
+              <ion-select-option value="en">English</ion-select-option>
+              <ion-select-option value="hi">हिंदी (Hindi)</ion-select-option>
+              <ion-select-option value="ta">தமிழ் (Tamil)</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Practice Settings Section -->
+    <ion-card class="yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="fitness-outline" slot="start"></ion-icon>
+          Practice Settings
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-icon name="timer-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Default Session Duration</h2>
+              <p>Preferred practice session length</p>
+            </ion-label>
+            <ion-select 
+              [(ngModel)]="defaultDuration" 
+              placeholder="Select Duration"
+            >
+              <ion-select-option value="5">5 minutes</ion-select-option>
+              <ion-select-option value="15">15 minutes</ion-select-option>
+              <ion-select-option value="30">30 minutes</ion-select-option>
+              <ion-select-option value="60">1 hour</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="speedometer-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Practice Level</h2>
+              <p>Your current yoga experience level</p>
+            </ion-label>
+            <ion-select 
+              [(ngModel)]="practiceLevel" 
+              placeholder="Select Level"
+            >
+              <ion-select-option value="beginner">Beginner</ion-select-option>
+              <ion-select-option value="intermediate">Intermediate</ion-select-option>
+              <ion-select-option value="advanced">Advanced</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- About Section -->
+    <ion-card class="yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+          About
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-list>
+          <ion-item button>
+            <ion-icon name="help-circle-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Help & Support</h2>
+              <p>Get help with using the app</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item button>
+            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Privacy Policy</h2>
+              <p>Learn about our privacy practices</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item button>
+            <ion-icon name="star-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Rate the App</h2>
+              <p>Share your feedback on the app store</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="code-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>Version</h2>
+              <p>Yoga for Life v1.0.0</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

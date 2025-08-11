@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { homeOutline, homeSharp, libraryOutline, librarySharp, listOutline, listSharp, leafOutline, leafSharp, airplaneOutline, airplaneSharp, ribbonOutline, ribbonSharp, statsChartOutline, statsChartSharp, heartOutline, heartSharp, bulbOutline, bulbSharp, settingsOutline, settingsSharp } from 'ionicons/icons';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,11 @@ export class AppComponent {
     { title: 'Settings', url: '/settings', icon: 'settings' },
   ];
   public labels = ['Beginner', 'Intermediate', 'Advanced', 'Flexibility', 'Strength', 'Relaxation'];
-  constructor() {
+  
+  constructor(private themeService: ThemeService) {
     addIcons({ homeOutline, homeSharp, libraryOutline, librarySharp, listOutline, listSharp, leafOutline, leafSharp, airplaneOutline, airplaneSharp, ribbonOutline, ribbonSharp, statsChartOutline, statsChartSharp, heartOutline, heartSharp, bulbOutline, bulbSharp, settingsOutline, settingsSharp });
+    
+    // Initialize theme service - this will apply the saved theme
+    // The theme service constructor automatically loads and applies the saved theme
   }
 }

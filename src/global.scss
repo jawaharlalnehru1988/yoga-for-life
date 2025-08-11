@@ -35,3 +35,327 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/**
+ * Yoga App Custom Themes
+ * -----------------------------------------------------
+ * Custom theme definitions for the Yoga for Life app
+ */
+
+/* Base theme variables */
+:root {
+  --yoga-gradient-primary: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  --yoga-gradient-accent: linear-gradient(135deg, var(--ion-color-secondary) 0%, var(--ion-color-tertiary) 100%);
+  --yoga-shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --yoga-shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --yoga-border-radius: 16px;
+  --yoga-border-radius-small: 8px;
+}
+
+/* Zen Garden Theme - Peaceful greens and earth tones */
+body.zen-garden {
+  --ion-color-primary: #4a7c59;
+  --ion-color-primary-rgb: 74, 124, 89;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #41694e;
+  --ion-color-primary-tint: #5c896a;
+
+  --ion-color-secondary: #a4c3a2;
+  --ion-color-secondary-rgb: 164, 195, 162;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #90ab8f;
+  --ion-color-secondary-tint: #adcaab;
+
+  --ion-color-tertiary: #f7f3e9;
+  --ion-color-tertiary-rgb: 247, 243, 233;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #d9d6cd;
+  --ion-color-tertiary-tint: #f8f4eb;
+
+  --ion-color-success: #6ab04c;
+  --ion-color-warning: #f39c12;
+  --ion-color-danger: #e74c3c;
+
+  --ion-background-color: #f8faf8;
+  --ion-background-color-rgb: 248, 250, 248;
+  --ion-text-color: #2c3e2c;
+  --ion-text-color-rgb: 44, 62, 44;
+  --ion-color-step-50: #f2f5f2;
+  --ion-color-step-100: #e8ede8;
+  --ion-color-step-150: #dde4dd;
+  --ion-color-step-200: #d3dcd3;
+  --ion-color-step-250: #c8d3c8;
+  --ion-color-step-300: #becabe;
+  --ion-color-step-350: #b3c2b3;
+  --ion-color-step-400: #a9b9a9;
+  --ion-color-step-450: #9eb19e;
+  --ion-color-step-500: #94a894;
+  --ion-color-step-550: #89a089;
+  --ion-color-step-600: #7f977f;
+  --ion-color-step-650: #748f74;
+  --ion-color-step-700: #6a866a;
+  --ion-color-step-750: #5f7e5f;
+  --ion-color-step-800: #557555;
+  --ion-color-step-850: #4a6d4a;
+  --ion-color-step-900: #406440;
+  --ion-color-step-950: #355c35;
+}
+
+/* Sunset Bliss Theme - Warm oranges and pinks */
+body.sunset-bliss {
+  --ion-color-primary: #e67e22;
+  --ion-color-primary-rgb: 230, 126, 34;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #ca6f1e;
+  --ion-color-primary-tint: #e9903e;
+
+  --ion-color-secondary: #f39c12;
+  --ion-color-secondary-rgb: 243, 156, 18;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #d68910;
+  --ion-color-secondary-tint: #f4a62a;
+
+  --ion-color-tertiary: #fdf2e9;
+  --ion-color-tertiary-rgb: 253, 242, 233;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #ded5cd;
+  --ion-color-tertiary-tint: #fdf3eb;
+
+  --ion-color-success: #27ae60;
+  --ion-color-warning: #f1c40f;
+  --ion-color-danger: #e74c3c;
+
+  --ion-background-color: #fff9f5;
+  --ion-background-color-rgb: 255, 249, 245;
+  --ion-text-color: #3e2723;
+  --ion-text-color-rgb: 62, 39, 35;
+  --ion-color-step-50: #fef7f2;
+  --ion-color-step-100: #fdeee5;
+  --ion-color-step-150: #fce5d8;
+  --ion-color-step-200: #fbddcb;
+  --ion-color-step-250: #fad4be;
+  --ion-color-step-300: #f9cbb1;
+  --ion-color-step-350: #f8c3a4;
+  --ion-color-step-400: #f7ba97;
+  --ion-color-step-450: #f6b18a;
+  --ion-color-step-500: #f5a97d;
+  --ion-color-step-550: #f4a070;
+  --ion-color-step-600: #f39763;
+  --ion-color-step-650: #f28f56;
+  --ion-color-step-700: #f18649;
+  --ion-color-step-750: #f07d3c;
+  --ion-color-step-800: #ef752f;
+  --ion-color-step-850: #ee6c22;
+  --ion-color-step-900: #ed6315;
+  --ion-color-step-950: #ec5b08;
+}
+
+/* Ocean Waves Theme - Calming blues and teals */
+body.ocean-waves {
+  --ion-color-primary: #2980b9;
+  --ion-color-primary-rgb: 41, 128, 185;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #2471a3;
+  --ion-color-primary-tint: #3f8dc0;
+
+  --ion-color-secondary: #3498db;
+  --ion-color-secondary-rgb: 52, 152, 219;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #2e86c1;
+  --ion-color-secondary-tint: #48a2df;
+
+  --ion-color-tertiary: #ebf3fd;
+  --ion-color-tertiary-rgb: 235, 243, 253;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #cfd6de;
+  --ion-color-tertiary-tint: #edf4fd;
+
+  --ion-color-success: #1abc9c;
+  --ion-color-warning: #f39c12;
+  --ion-color-danger: #e74c3c;
+
+  --ion-background-color: #f8fbff;
+  --ion-background-color-rgb: 248, 251, 255;
+  --ion-text-color: #1a2332;
+  --ion-text-color-rgb: 26, 35, 50;
+  --ion-color-step-50: #f4f8fc;
+  --ion-color-step-100: #e9f1f9;
+  --ion-color-step-150: #deeaf6;
+  --ion-color-step-200: #d3e3f3;
+  --ion-color-step-250: #c8dcf0;
+  --ion-color-step-300: #bdd5ed;
+  --ion-color-step-350: #b2ceea;
+  --ion-color-step-400: #a7c7e7;
+  --ion-color-step-450: #9cc0e4;
+  --ion-color-step-500: #91b9e1;
+  --ion-color-step-550: #86b2de;
+  --ion-color-step-600: #7babdb;
+  --ion-color-step-650: #70a4d8;
+  --ion-color-step-700: #659dd5;
+  --ion-color-step-750: #5a96d2;
+  --ion-color-step-800: #4f8fcf;
+  --ion-color-step-850: #4488cc;
+  --ion-color-step-900: #3981c9;
+  --ion-color-step-950: #2e7ac6;
+}
+
+/* Lotus Bloom Theme - Soft purples and lavenders */
+body.lotus-bloom {
+  --ion-color-primary: #8e44ad;
+  --ion-color-primary-rgb: 142, 68, 173;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #7d3c98;
+  --ion-color-primary-tint: #9a57b5;
+
+  --ion-color-secondary: #c39bd3;
+  --ion-color-secondary-rgb: 195, 155, 211;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #ab88ba;
+  --ion-color-secondary-tint: #c9a5d7;
+
+  --ion-color-tertiary: #f4f1f8;
+  --ion-color-tertiary-rgb: 244, 241, 248;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #d7d4da;
+  --ion-color-tertiary-tint: #f5f2f9;
+
+  --ion-color-success: #9b59b6;
+  --ion-color-warning: #f39c12;
+  --ion-color-danger: #e74c3c;
+
+  --ion-background-color: #faf9fc;
+  --ion-background-color-rgb: 250, 249, 252;
+  --ion-text-color: #2d1b3d;
+  --ion-text-color-rgb: 45, 27, 61;
+  --ion-color-step-50: #f7f5fa;
+  --ion-color-step-100: #f0ecf5;
+  --ion-color-step-150: #e8e2f0;
+  --ion-color-step-200: #e1d9eb;
+  --ion-color-step-250: #d9cfe6;
+  --ion-color-step-300: #d2c6e1;
+  --ion-color-step-350: #cabcdc;
+  --ion-color-step-400: #c3b3d7;
+  --ion-color-step-450: #bba9d2;
+  --ion-color-step-500: #b4a0cd;
+  --ion-color-step-550: #ac96c8;
+  --ion-color-step-600: #a58dc3;
+  --ion-color-step-650: #9d83be;
+  --ion-color-step-700: #967ab9;
+  --ion-color-step-750: #8e70b4;
+  --ion-color-step-800: #8767af;
+  --ion-color-step-850: #7f5daa;
+  --ion-color-step-900: #7854a5;
+  --ion-color-step-950: #704aa0;
+}
+
+/* Custom yoga-specific styles */
+.yoga-card {
+  background: var(--ion-color-tertiary);
+  border-radius: var(--yoga-border-radius);
+  box-shadow: var(--yoga-shadow-soft);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--yoga-shadow-medium);
+  }
+}
+
+.yoga-gradient-bg {
+  background: var(--yoga-gradient-primary);
+}
+
+.yoga-gradient-accent {
+  background: var(--yoga-gradient-accent);
+}
+
+.yoga-button {
+  --border-radius: var(--yoga-border-radius-small);
+  --box-shadow: var(--yoga-shadow-soft);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    --box-shadow: var(--yoga-shadow-medium);
+  }
+}
+
+.theme-preview {
+  border-radius: var(--yoga-border-radius-small);
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  
+  &.selected {
+    border-color: var(--ion-color-primary);
+    box-shadow: var(--yoga-shadow-medium);
+  }
+  
+  .theme-colors {
+    display: flex;
+    height: 100%;
+    
+    .color-block {
+      flex: 1;
+      
+      &.primary { background: var(--preview-primary, #4a7c59); }
+      &.secondary { background: var(--preview-secondary, #a4c3a2); }
+      &.accent { background: var(--preview-accent, #f7f3e9); }
+    }
+  }
+  
+  &.zen-garden {
+    --preview-primary: #4a7c59;
+    --preview-secondary: #a4c3a2;
+    --preview-accent: #f7f3e9;
+  }
+  
+  &.sunset-bliss {
+    --preview-primary: #e67e22;
+    --preview-secondary: #f39c12;
+    --preview-accent: #fdf2e9;
+  }
+  
+  &.ocean-waves {
+    --preview-primary: #2980b9;
+    --preview-secondary: #3498db;
+    --preview-accent: #ebf3fd;
+  }
+  
+  &.lotus-bloom {
+    --preview-primary: #8e44ad;
+    --preview-secondary: #c39bd3;
+    --preview-accent: #f4f1f8;
+  }
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+ion-content,
+ion-header,
+ion-toolbar,
+ion-title,
+ion-button,
+ion-card,
+ion-item,
+ion-list,
+ion-menu {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

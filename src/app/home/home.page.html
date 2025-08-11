@@ -1,13 +1,236 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>home</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Yoga for Life</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="openProfile()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="home-container">
+    
+    <!-- Welcome Banner -->
+    <div class="welcome-banner yoga-gradient-bg">
+      <div class="banner-content">
+        <h1>Welcome back, {{ userName }}!</h1>
+        <p>{{ currentGreeting }}</p>
+        <div class="streak-info">
+          <ion-icon name="flame"></ion-icon>
+          <span>{{ currentStreak }} day streak</span>
+        </div>
+      </div>
+      <div class="banner-image">
+        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&h=200&fit=crop&crop=center" alt="Yoga pose" />
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card yoga-card">
+        <ion-icon name="calendar-outline" class="stat-icon"></ion-icon>
+        <div class="stat-info">
+          <h3>{{ totalSessions }}</h3>
+          <p>Sessions</p>
+        </div>
+      </div>
+      <div class="stat-card yoga-card">
+        <ion-icon name="time-outline" class="stat-icon"></ion-icon>
+        <div class="stat-info">
+          <h3>{{ totalMinutes }}m</h3>
+          <p>Practice Time</p>
+        </div>
+      </div>
+      <div class="stat-card yoga-card">
+        <ion-icon name="trophy-outline" class="stat-icon"></ion-icon>
+        <div class="stat-info">
+          <h3>{{ achievementsCount }}</h3>
+          <p>Achievements</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Suggestion -->
+    <ion-card class="suggestion-card yoga-card">
+      <div class="card-header">
+        <h2>
+          <ion-icon name="bulb-outline"></ion-icon>
+          Today's Suggested Practice
+        </h2>
+        <ion-button fill="clear" size="small" (click)="refreshSuggestion()">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+      </div>
+      
+      <div class="suggestion-content">
+        <div class="suggestion-image">
+          <img [src]="todaysSuggestion.image" [alt]="todaysSuggestion.name" />
+        </div>
+        <div class="suggestion-details">
+          <h3>{{ todaysSuggestion.name }}</h3>
+          <p>{{ todaysSuggestion.description }}</p>
+          <div class="suggestion-meta">
+            <span class="duration">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ todaysSuggestion.duration }} min
+            </span>
+            <span class="difficulty" [ngClass]="todaysSuggestion.difficulty">
+              {{ todaysSuggestion.difficulty | titlecase }}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="suggestion-actions">
+        <ion-button expand="block" class="yoga-button" (click)="startSuggestedPractice()">
+          <ion-icon name="play-outline" slot="start"></ion-icon>
+          Start Practice
+        </ion-button>
+      </div>
+    </ion-card>
+
+    <!-- Quick Access Actions -->
+    <ion-card class="quick-access-card yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="flash-outline"></ion-icon>
+          Quick Start
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="quick-actions-grid">
+          <div class="quick-action" (click)="navigateTo('/breathing')">
+            <div class="action-icon breathing">
+              <ion-icon name="leaf-outline"></ion-icon>
+            </div>
+            <h4>Breathing</h4>
+            <p>5-15 min</p>
+          </div>
+          
+          <div class="quick-action" (click)="navigateTo('/meditation')">
+            <div class="action-icon meditation">
+              <ion-icon name="planet-outline"></ion-icon>
+            </div>
+            <h4>Meditation</h4>
+            <p>10-30 min</p>
+          </div>
+          
+          <div class="quick-action" (click)="navigateTo('/sequences-routines')">
+            <div class="action-icon routine">
+              <ion-icon name="list-outline"></ion-icon>
+            </div>
+            <h4>Quick Routine</h4>
+            <p>15-45 min</p>
+          </div>
+          
+          <div class="quick-action" (click)="navigateTo('/yogasana-library')">
+            <div class="action-icon poses">
+              <ion-icon name="library-outline"></ion-icon>
+            </div>
+            <h4>Browse Poses</h4>
+            <p>Explore</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Current Challenge -->
+    <ion-card class="challenge-card yoga-card" *ngIf="currentChallenge">
+      <div class="challenge-header">
+        <div>
+          <h3>
+            <ion-icon name="ribbon-outline"></ion-icon>
+            Current Challenge
+          </h3>
+          <h4>{{ currentChallenge.name }}</h4>
+        </div>
+        <div class="challenge-progress">
+          <div class="progress-circle">
+            <span>{{ currentChallenge.progress }}%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="challenge-details">
+        <p>{{ currentChallenge.description }}</p>
+        <div class="challenge-meta">
+          <span>Day {{ currentChallenge.currentDay }} of {{ currentChallenge.totalDays }}</span>
+          <span class="days-left">{{ currentChallenge.daysLeft }} days left</span>
+        </div>
+      </div>
+      
+      <ion-button fill="outline" expand="block" (click)="viewChallenge()">
+        View Challenge
+      </ion-button>
+    </ion-card>
+
+    <!-- Daily Wellness Tip -->
+    <ion-card class="tip-card yoga-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="star-outline"></ion-icon>
+          Daily Wellness Tip
+        </ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="tip-content">
+          <blockquote>
+            "{{ dailyTip.quote }}"
+          </blockquote>
+          <cite>— {{ dailyTip.author }}</cite>
+        </div>
+        <div class="tip-category">
+          <ion-chip color="primary">{{ dailyTip.category }}</ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Recent Sessions -->
+    <ion-card class="recent-sessions-card yoga-card" *ngIf="recentSessions.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="time-outline"></ion-icon>
+          Recent Sessions
+        </ion-card-title>
+        <ion-button fill="clear" size="small" (click)="navigateTo('/my-progress')">
+          View All
+        </ion-button>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="sessions-list">
+          <div class="session-item" *ngFor="let session of recentSessions; let i = index" [class.last]="i === recentSessions.length - 1">
+            <div class="session-icon">
+              <ion-icon [name]="getSessionIcon(session.type)"></ion-icon>
+            </div>
+            <div class="session-details">
+              <h4>{{ session.name }}</h4>
+              <p>{{ session.date | date:'MMM d' }} • {{ session.duration }} min</p>
+            </div>
+            <div class="session-rating">
+              <ion-icon name="star" [class.filled]="session.rating >= 1"></ion-icon>
+              <ion-icon name="star" [class.filled]="session.rating >= 2"></ion-icon>
+              <ion-icon name="star" [class.filled]="session.rating >= 3"></ion-icon>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Motivational Quote -->
+    <div class="motivation-banner">
+      <div class="motivation-content">
+        <h3>{{ motivationalQuote.text }}</h3>
+        <p>— {{ motivationalQuote.author }}</p>
+      </div>
+    </div>
+
+  </div>
 </ion-content>
