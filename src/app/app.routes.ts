@@ -50,4 +50,28 @@ export const routes: Routes = [
     path: 'pose-detail/:id',
     loadComponent: () => import('./pose-detail/pose-detail.page').then( m => m.PoseDetailPage)
   },
+  {
+    path: 'meditation-detail',
+    loadComponent: () => import('./meditation-detail/meditation-detail.page').then( m => m.MeditationDetailPage)
+  },
+  {
+    path: 'custom-timer',
+    loadComponent: () => import('./custom-timer/custom-timer.page').then( m => m.CustomTimerPage)
+  },
+  {
+    path: 'active-timer',
+    loadComponent: () => import('./active-timer/active-timer.page').then( m => m.ActiveTimerPage)
+  },
+  {
+    path: 'sequence-detail',
+    loadComponent: () => import('./sequence-detail/sequence-detail.page').then( m => m.SequenceDetailPage)
+  },
+  {
+    path: 'practice-session',
+    loadComponent: () => import('./practice-session/practice-session.page').then( m => m.PracticeSessionPage)
+  },
+  {
+    path: 'sequence-builder',
+    loadComponent: () => import('./sequence-builder/sequence-builder.page').then( m => m.SequenceBuilderPage)
+  },
 ];

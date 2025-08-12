@@ -1,0 +1,769 @@
+// Streak Banner
+.streak-banner {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+  margin: 16px;
+  border-radius: 16px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  .streak-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .streak-main {
+      text-align: center;
+      
+      .streak-number {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 4px;
+        color: var(--ion-color-warning);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      
+      .streak-label {
+        font-size: 14px;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .streak-stats {
+      display: flex;
+      gap: 20px;
+      
+      .stat-item {
+        text-align: center;
+        
+        .stat-number {
+          display: block;
+          font-size: 18px;
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+        
+        .stat-label {
+          font-size: 11px;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  .streak-motivational {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    opacity: 0.9;
+    
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+// Featured Section
+.featured-section {
+  margin: 20px 16px;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 16px;
+  }
+  
+  .featured-carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    
+    .featured-card {
+      position: relative;
+      min-width: 320px;
+      border-radius: 20px;
+      padding: 24px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .featured-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .featured-text {
+          flex: 1;
+          
+          h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--ion-color-dark);
+            margin-bottom: 8px;
+            line-height: 1.3;
+          }
+          
+          p {
+            font-size: 14px;
+            color: var(--ion-color-medium);
+            margin-bottom: 12px;
+            line-height: 1.4;
+          }
+          
+          .featured-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            
+            .rating {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              font-size: 13px;
+              color: var(--ion-color-dark);
+              
+              ion-icon {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+        
+        .featured-image {
+          position: relative;
+          width: 80px;
+          height: 80px;
+          border-radius: 16px;
+          overflow: hidden;
+          margin-left: 16px;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          
+          .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            --background: rgba(255, 255, 255, 0.9);
+            --border-radius: 50%;
+            --padding-start: 12px;
+            --padding-end: 12px;
+            width: 40px;
+            height: 40px;
+            backdrop-filter: blur(10px);
+            
+            ion-icon {
+              font-size: 18px;
+              margin-left: 2px; // Visual center adjustment for play icon
+            }
+          }
+        }
+      }
+      
+      .premium-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        font-size: 10px;
+        
+        ion-icon {
+          font-size: 10px;
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+}
+
+// Quick Timer Section
+.quick-timer-section {
+  margin: 20px 16px;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 16px;
+  }
+  
+  .timer-options {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    
+    .timer-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 70px;
+      height: 70px;
+      background: var(--ion-color-light);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      
+      &:hover {
+        background: var(--ion-color-primary-tint);
+        border-color: var(--ion-color-primary);
+      }
+      
+      &.custom {
+        background: var(--ion-color-primary);
+        color: white;
+        
+        ion-icon {
+          font-size: 24px;
+          margin-bottom: 4px;
+        }
+      }
+      
+      .timer-duration {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        margin-bottom: 2px;
+      }
+      
+      .timer-label {
+        font-size: 11px;
+        color: var(--ion-color-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+}
+
+// Search and Filter Section
+.search-filter-section {
+  margin: 20px 16px;
+  
+  ion-searchbar {
+    --background: var(--ion-color-light);
+    --border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .category-filters {
+    margin-bottom: 16px;
+    
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 12px;
+    }
+    
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 12px;
+      
+      .category-filter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 8px;
+        background: var(--ion-color-light);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        
+        &:hover, &.active {
+          background: var(--ion-color-primary-tint);
+          border-color: var(--ion-color-primary);
+        }
+        
+        ion-icon {
+          font-size: 20px;
+          margin-bottom: 4px;
+        }
+        
+        span {
+          font-size: 11px;
+          text-align: center;
+          line-height: 1.2;
+        }
+      }
+    }
+  }
+  
+  .duration-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    
+    ion-chip {
+      --background: var(--ion-color-light);
+      --color: var(--ion-color-dark);
+      border: 1px solid var(--ion-color-medium-tint);
+      transition: all 0.2s ease;
+      
+      &[color="primary"] {
+        --background: var(--ion-color-primary);
+        --color: white;
+        border-color: var(--ion-color-primary);
+      }
+    }
+  }
+}
+
+// Sessions Section
+.sessions-section {
+  margin: 20px 16px;
+  
+  .section-header {
+    margin-bottom: 16px;
+    
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 4px;
+    }
+    
+    p {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      margin: 0;
+    }
+  }
+  
+  .sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .session-card {
+      margin: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .session-image-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover img {
+          transform: scale(1.05);
+        }
+        
+        .session-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            45deg,
+            transparent 50%,
+            rgba(0, 0, 0, 0.3)
+          );
+          
+          .favorite-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            --background: rgba(255, 255, 255, 0.9);
+            --border-radius: 50%;
+            --padding-start: 8px;
+            --padding-end: 8px;
+            width: 36px;
+            height: 36px;
+            backdrop-filter: blur(10px);
+            
+            ion-icon {
+              font-size: 18px;
+            }
+          }
+          
+          .session-badges {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            
+            ion-badge {
+              font-size: 10px;
+              font-weight: 600;
+              backdrop-filter: blur(10px);
+              
+              &[color="warning"] {
+                background: rgba(255, 193, 7, 0.9);
+              }
+              
+              &[color="success"] {
+                background: rgba(40, 167, 69, 0.9);
+              }
+              
+              ion-icon {
+                font-size: 10px;
+                margin-right: 2px;
+              }
+            }
+          }
+        }
+      }
+      
+      .session-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        
+        .session-titles {
+          flex: 1;
+          
+          ion-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ion-color-dark);
+            margin-bottom: 4px;
+            line-height: 1.3;
+          }
+          
+          ion-card-subtitle {
+            font-size: 13px;
+            color: var(--ion-color-primary);
+            font-weight: 500;
+          }
+        }
+        
+        .session-duration {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: var(--ion-color-medium);
+          font-size: 13px;
+          font-weight: 500;
+          
+          ion-icon {
+            font-size: 16px;
+          }
+        }
+      }
+      
+      ion-card-content {
+        padding-top: 0;
+        
+        .session-description {
+          font-size: 14px;
+          line-height: 1.4;
+          color: var(--ion-color-medium);
+          margin-bottom: 16px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .session-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          
+          .session-technique {
+            ion-chip {
+              --background: var(--ion-color-light);
+              --color: var(--ion-color-medium);
+              font-size: 11px;
+              height: 24px;
+              
+              ion-icon {
+                font-size: 12px;
+                margin-right: 2px;
+              }
+            }
+          }
+          
+          .session-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--ion-color-dark);
+            
+            ion-icon {
+              font-size: 14px;
+            }
+            
+            .rating-count {
+              color: var(--ion-color-medium);
+              font-size: 11px;
+            }
+          }
+        }
+        
+        .session-benefits {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          align-items: center;
+          
+          .benefit-tag {
+            background: var(--ion-color-primary-tint);
+            color: var(--ion-color-primary);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 500;
+          }
+          
+          .more-benefits {
+            font-size: 10px;
+            color: var(--ion-color-medium);
+          }
+        }
+      }
+      
+      .session-actions {
+        padding: 16px;
+        background: var(--ion-color-light);
+        border-top: 1px solid var(--ion-color-medium-tint);
+        
+        ion-button {
+          font-size: 14px;
+          font-weight: 500;
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
+// Challenges Section
+.challenges-section {
+  margin: 20px 16px;
+  
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 16px;
+  }
+  
+  .challenges-scroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    
+    .challenge-card {
+      min-width: 280px;
+      margin: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.02);
+      }
+      
+      img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+      }
+      
+      .challenge-content {
+        padding: 16px;
+        
+        h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin-bottom: 8px;
+        }
+        
+        p {
+          font-size: 13px;
+          color: var(--ion-color-medium);
+          margin-bottom: 12px;
+          line-height: 1.4;
+        }
+        
+        .challenge-meta {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          
+          ion-badge {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 64px 32px;
+  
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+    line-height: 1.4;
+  }
+}
+
+// Loading State
+.loading-state {
+  text-align: center;
+  padding: 64px 32px;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .streak-banner {
+    margin: 12px;
+    padding: 16px;
+    
+    .streak-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 16px;
+      
+      .streak-main .streak-number {
+        font-size: 28px;
+      }
+      
+      .streak-stats {
+        gap: 16px;
+      }
+    }
+  }
+  
+  .featured-section {
+    margin: 16px 12px;
+    
+    .featured-carousel {
+      .featured-card {
+        min-width: 280px;
+        padding: 20px;
+        
+        .featured-content {
+          .featured-image {
+            width: 60px;
+            height: 60px;
+            
+            .play-button {
+              width: 32px;
+              height: 32px;
+              
+              ion-icon {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .quick-timer-section {
+    margin: 16px 12px;
+    
+    .timer-options {
+      .timer-option {
+        min-width: 60px;
+        height: 60px;
+      }
+    }
+  }
+  
+  .search-filter-section {
+    margin: 16px 12px;
+    
+    .category-filters {
+      .filter-grid {
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+        gap: 8px;
+        
+        .category-filter {
+          padding: 8px 4px;
+        }
+      }
+    }
+  }
+  
+  .sessions-section {
+    margin: 16px 12px;
+    
+    .sessions-grid {
+      gap: 12px;
+    }
+  }
+  
+  .challenges-section {
+    margin: 16px 12px;
+    
+    .challenges-scroll {
+      .challenge-card {
+        min-width: 240px;
+      }
+    }
+  }
+}

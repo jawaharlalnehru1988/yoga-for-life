@@ -1,0 +1,276 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ sequence?.name || 'Sequence Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="toggleFavorite()" *ngIf="sequence">
+        <ion-icon 
+          [name]="isFavorite ? 'heart' : 'heart-outline'"
+          [color]="isFavorite ? 'danger' : 'light'">
+        </ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="shareSequence()" *ngIf="sequence">
+        <ion-icon name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="sequence-detail-content">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading sequence details...</p>
+  </div>
+
+  <!-- Sequence Content -->
+  <div *ngIf="!isLoading && sequence" class="sequence-content">
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-image-container">
+        <img [src]="sequence.imageUrl" [alt]="sequence.name" />
+        <div class="hero-overlay">
+          <div class="hero-badges">
+            <ion-badge *ngIf="sequence.isPremium" color="warning">
+              <ion-icon name="diamond-outline"></ion-icon>
+              Premium
+            </ion-badge>
+            <ion-badge [color]="getDifficultyColor(sequence.difficulty)">
+              {{ sequence.difficulty }}
+            </ion-badge>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hero-content">
+        <h1>{{ sequence.name }}</h1>
+        <p class="sequence-goal">{{ sequence.goal }}</p>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ sequence.totalTime }} min</span>
+          </div>
+          <div class="stat-item">
+            <ion-icon name="fitness-outline"></ion-icon>
+            <span>{{ sequence.poses.length }} poses</span>
+          </div>
+          <div class="stat-item" *ngIf="completedCount > 0">
+            <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+            <span>{{ completedCount }} completed</span>
+          </div>
+        </div>
+        
+        <div class="hero-tags">
+          <ion-chip *ngFor="let tag of sequence.tags" size="small" color="light">
+            <ion-label>{{ tag }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description Section -->
+    <ion-card class="info-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="information-circle-outline"></ion-icon>
+          About This Sequence
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="sequence-description">{{ sequence.description }}</p>
+        
+        <div class="instructions" *ngIf="sequence.instructions">
+          <h4>
+            <ion-icon name="bulb-outline"></ion-icon>
+            Instructions
+          </h4>
+          <p>{{ sequence.instructions }}</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Benefits Section -->
+    <ion-card class="info-card" *ngIf="sequence.benefits && sequence.benefits.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="leaf-outline"></ion-icon>
+          Benefits
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="benefits-grid">
+          <div *ngFor="let benefit of sequence.benefits" class="benefit-item">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <span>{{ benefit }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Practice Options -->
+    <ion-card class="practice-options-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="settings-outline"></ion-icon>
+          Practice Options
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Speed Selection -->
+        <ion-item>
+          <ion-label>Practice Speed</ion-label>
+          <ion-select 
+            [(ngModel)]="practiceSpeed" 
+            interface="popover"
+            (ionChange)="onSpeedChange($event)">
+            <ion-select-option value="slow">Slow & Mindful</ion-select-option>
+            <ion-select-option value="normal">Normal Pace</ion-select-option>
+            <ion-select-option value="fast">Quick Flow</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Additional Options -->
+        <ion-item>
+          <ion-label>
+            <h3>Voice Instructions</h3>
+            <p>Include guided voice instructions</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="includeInstructions" 
+            color="primary">
+          </ion-toggle>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>
+            <h3>Background Music</h3>
+            <p>Play calming background music</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="includeMusic" 
+            color="primary">
+          </ion-toggle>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Poses List -->
+    <ion-card class="poses-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list-outline"></ion-icon>
+          Poses in This Sequence
+        </ion-card-title>
+        <ion-card-subtitle>{{ sequence.poses.length }} poses • {{ sequence.totalTime }} minutes total</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="poses-list">
+          <div 
+            *ngFor="let sequencePose of sequence.poses; let i = index" 
+            class="pose-item"
+            (click)="openPoseDetail(getSequencePoseDetails(sequencePose).pose!)"
+            [class.clickable]="getSequencePoseDetails(sequencePose).pose">
+            
+            <div class="pose-number">{{ i + 1 }}</div>
+            
+            <div class="pose-image" *ngIf="getSequencePoseDetails(sequencePose).pose as pose">
+              <img [src]="pose.imageUrl" [alt]="pose.name" />
+            </div>
+            
+            <div class="pose-info">
+              <h4 *ngIf="getSequencePoseDetails(sequencePose).pose as pose">
+                {{ pose.name }}
+              </h4>
+              <p *ngIf="!getSequencePoseDetails(sequencePose).pose" class="pose-loading">
+                Loading pose details...
+              </p>
+              <div class="pose-duration">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ formatDuration(sequencePose.duration) }}</span>
+              </div>
+            </div>
+            
+            <div class="pose-actions" *ngIf="getSequencePoseDetails(sequencePose).pose">
+              <ion-icon name="chevron-forward" color="medium"></ion-icon>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Related Sequences -->
+    <ion-card class="related-card" *ngIf="relatedSequences.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="library-outline"></ion-icon>
+          Related Sequences
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="related-scroll">
+          <div 
+            *ngFor="let relatedSequence of relatedSequences" 
+            class="related-item"
+            (click)="openRelatedSequence(relatedSequence)">
+            <img [src]="relatedSequence.imageUrl" [alt]="relatedSequence.name" />
+            <div class="related-info">
+              <h4>{{ relatedSequence.name }}</h4>
+              <p>{{ relatedSequence.totalTime }} min • {{ relatedSequence.difficulty }}</p>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        size="large"
+        color="primary"
+        (click)="startPractice()"
+        class="start-button">
+        <ion-icon name="play" slot="start"></ion-icon>
+        Start Practice
+      </ion-button>
+      
+      <!-- Edit/Delete for custom sequences -->
+      <div class="sequence-management" *ngIf="canEdit">
+        <ion-button 
+          expand="block" 
+          fill="outline"
+          color="primary"
+          (click)="editSequence()">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Edit Sequence
+        </ion-button>
+        
+        <ion-button 
+          expand="block" 
+          fill="clear"
+          color="danger"
+          (click)="deleteSequence()">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Delete Sequence
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="!isLoading && !sequence">
+    <ion-icon name="alert-circle-outline" color="medium"></ion-icon>
+    <h3>Sequence not found</h3>
+    <p>The sequence you're looking for doesn't exist or has been removed.</p>
+    <ion-button fill="outline" (click)="goBack()">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+      Back to Sequences
+    </ion-button>
+  </div>
+</ion-content>

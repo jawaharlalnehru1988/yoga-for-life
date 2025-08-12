@@ -1,0 +1,534 @@
+.sequence-detail-content {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 100px; // Space for action buttons
+}
+
+// Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  gap: 16px;
+  
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    transform: scale(1.5);
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    font-size: 1rem;
+  }
+}
+
+// Hero Section
+.hero-section {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.hero-image-container {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 8px;
+  align-self: flex-end;
+  
+  ion-badge {
+    font-weight: 600;
+    
+    ion-icon {
+      margin-right: 4px;
+      font-size: 14px;
+    }
+  }
+}
+
+.hero-content {
+  color: white;
+  
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+  
+  .sequence-goal {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+  }
+}
+
+.hero-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    ion-icon {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+    
+    span {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  
+  ion-chip {
+    --background: rgba(255, 255, 255, 0.2);
+    --color: white;
+    backdrop-filter: blur(10px);
+    font-weight: 500;
+  }
+}
+
+// Cards
+.info-card, 
+.practice-options-card, 
+.poses-card, 
+.related-card {
+  margin: 16px;
+  --border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  ion-card-header {
+    ion-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ion-color-primary);
+      font-size: 1.2rem;
+      
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+    
+    ion-card-subtitle {
+      color: var(--ion-color-medium);
+      margin-top: 4px;
+    }
+  }
+}
+
+// Description
+.sequence-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ion-color-dark);
+  margin-bottom: 16px;
+}
+
+.instructions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ion-color-light);
+  
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-primary);
+    font-size: 1rem;
+    margin-bottom: 8px;
+    
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// Benefits
+.benefits-grid {
+  display: grid;
+  gap: 12px;
+  
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    ion-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    
+    span {
+      color: var(--ion-color-dark);
+      line-height: 1.4;
+    }
+  }
+}
+
+// Practice Options
+.practice-options-card {
+  ion-item {
+    --background: transparent;
+    --border-color: var(--ion-color-light);
+    --inner-padding-end: 0;
+    
+    &:last-child {
+      --border-width: 0;
+    }
+    
+    ion-label {
+      h3 {
+        color: var(--ion-color-dark);
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+      
+      p {
+        color: var(--ion-color-medium);
+        font-size: 0.9rem;
+        margin: 0;
+      }
+    }
+  }
+  
+  ion-select {
+    --placeholder-color: var(--ion-color-dark);
+  }
+  
+  ion-toggle {
+    --background: var(--ion-color-light);
+    --background-checked: var(--ion-color-primary);
+  }
+}
+
+// Poses List
+.poses-list {
+  .pose-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--ion-color-light);
+    transition: background-color 0.2s ease;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &.clickable {
+      cursor: pointer;
+      
+      &:hover {
+        background-color: var(--ion-color-light-tint);
+      }
+    }
+  }
+  
+  .pose-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ion-color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  
+  .pose-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  .pose-info {
+    flex: 1;
+    
+    h4 {
+      margin: 0 0 4px 0;
+      color: var(--ion-color-dark);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .pose-loading {
+      color: var(--ion-color-medium);
+      font-style: italic;
+      margin: 0;
+    }
+    
+    .pose-duration {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      
+      ion-icon {
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .pose-actions {
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+// Related Sequences
+.related-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--ion-color-light);
+    border-radius: 2px;
+  }
+}
+
+.related-item {
+  flex-shrink: 0;
+  width: 200px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .related-info {
+    h4 {
+      margin: 0 0 4px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      line-height: 1.3;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+// Action Buttons
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: var(--ion-background-color);
+  border-top: 1px solid var(--ion-color-light);
+  z-index: 10;
+  
+  .start-button {
+    --border-radius: 25px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+  
+  .sequence-management {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    
+    ion-button {
+      --border-radius: 20px;
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      font-weight: 500;
+    }
+  }
+}
+
+// Error State
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  padding: 32px;
+  text-align: center;
+  
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  
+  ion-button {
+    --border-radius: 20px;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero-stats {
+    flex-direction: column;
+    gap: 12px;
+    
+    .stat-item {
+      justify-content: flex-start;
+    }
+  }
+  
+  .related-item {
+    width: 160px;
+    
+    img {
+      height: 100px;
+    }
+  }
+  
+  .poses-list .pose-item {
+    gap: 12px;
+    
+    .pose-image {
+      width: 50px;
+      height: 50px;
+    }
+    
+    .pose-number {
+      width: 28px;
+      height: 28px;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .info-card, 
+  .practice-options-card, 
+  .poses-card, 
+  .related-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .pose-item,
+  .related-item,
+  .start-button {
+    transition: none;
+  }
+}
+
+// Focus states for accessibility
+.pose-item.clickable:focus,
+.related-item:focus,
+ion-button:focus {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}

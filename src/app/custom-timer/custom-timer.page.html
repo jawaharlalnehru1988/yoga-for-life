@@ -1,0 +1,246 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Custom Timer</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="custom-timer-content">
+  <!-- Quick Preset Buttons -->
+  <div class="presets-section">
+    <h2>Quick Presets</h2>
+    <div class="presets-grid">
+      <ion-button 
+        fill="outline" 
+        class="preset-button"
+        (click)="selectPreset('quick')">
+        <div class="preset-content">
+          <ion-icon name="flash-outline"></ion-icon>
+          <span>Quick</span>
+          <small>5 min</small>
+        </div>
+      </ion-button>
+      
+      <ion-button 
+        fill="outline" 
+        class="preset-button"
+        (click)="selectPreset('standard')">
+        <div class="preset-content">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Standard</span>
+          <small>15 min</small>
+        </div>
+      </ion-button>
+      
+      <ion-button 
+        fill="outline" 
+        class="preset-button"
+        (click)="selectPreset('deep')">
+        <div class="preset-content">
+          <ion-icon name="leaf-outline"></ion-icon>
+          <span>Deep</span>
+          <small>30 min</small>
+        </div>
+      </ion-button>
+      
+      <ion-button 
+        fill="outline" 
+        class="preset-button"
+        (click)="selectPreset('extended')">
+        <div class="preset-content">
+          <ion-icon name="infinite-outline"></ion-icon>
+          <span>Extended</span>
+          <small>1 hour</small>
+        </div>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Custom Configuration -->
+  <div class="config-section">
+    <h2>Custom Configuration</h2>
+    
+    <!-- Duration Selection -->
+    <ion-card class="config-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="timer-outline"></ion-icon>
+          Duration
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-range
+          [(ngModel)]="selectedDuration"
+          [min]="1"
+          [max]="60"
+          [step]="1"
+          [snaps]="true"
+          [ticks]="true"
+          color="primary">
+          <ion-label slot="start">1m</ion-label>
+          <ion-label slot="end">60m</ion-label>
+        </ion-range>
+        <div class="duration-display">
+          {{ getDurationText(selectedDuration) }}
+        </div>
+        
+        <!-- Quick duration buttons -->
+        <div class="duration-buttons">
+          <ion-button 
+            *ngFor="let duration of durations" 
+            [fill]="selectedDuration === duration ? 'solid' : 'outline'"
+            size="small"
+            (click)="selectedDuration = duration">
+            {{ getDurationText(duration) }}
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Background Sound Selection -->
+    <ion-card class="config-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="musical-notes-outline"></ion-icon>
+          Background Sound
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item button (click)="selectBackgroundSound()" class="sound-selector">
+          <ion-icon 
+            [name]="selectedBackgroundSound?.icon || 'volume-mute-outline'" 
+            slot="start">
+          </ion-icon>
+          <ion-label>
+            <h3>{{ selectedBackgroundSound?.name || 'Silent' }}</h3>
+            <p>{{ selectedBackgroundSound?.description || 'No background sound' }}</p>
+          </ion-label>
+          <ion-icon name="chevron-forward" slot="end"></ion-icon>
+        </ion-item>
+        
+        <!-- Preview button if sound is selected -->
+        <ion-button 
+          *ngIf="selectedBackgroundSound"
+          fill="clear" 
+          size="small"
+          (click)="previewSound(selectedBackgroundSound)"
+          class="preview-button">
+          <ion-icon name="play-outline" slot="start"></ion-icon>
+          Preview
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Interval Bells Configuration -->
+    <ion-card class="config-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="notifications-outline"></ion-icon>
+          Interval Bells
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>
+            <h3>Enable Interval Bells</h3>
+            <p>Ring bells at regular intervals during meditation</p>
+          </ion-label>
+          <ion-toggle 
+            [(ngModel)]="intervalBells"
+            color="primary">
+          </ion-toggle>
+        </ion-item>
+        
+        <div *ngIf="intervalBells" class="bell-interval-config">
+          <ion-item>
+            <ion-label position="stacked">Bell Interval (minutes)</ion-label>
+            <ion-select 
+              [(ngModel)]="bellInterval"
+              interface="popover"
+              placeholder="Select interval">
+              <ion-select-option 
+                *ngFor="let interval of bellIntervals" 
+                [value]="interval">
+                Every {{ interval }} minute{{ interval === 1 ? '' : 's' }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Preparation Time -->
+    <ion-card class="config-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="hourglass-outline"></ion-icon>
+          Preparation Time
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Preparation Time</ion-label>
+          <ion-select 
+            [(ngModel)]="preparationTime"
+            interface="popover"
+            placeholder="Select preparation time">
+            <ion-select-option 
+              *ngFor="let time of preparationTimes" 
+              [value]="time">
+              {{ getPreparationText(time) }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <p class="preparation-description">
+          Time to settle in before the meditation begins
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Session Summary -->
+  <div class="summary-section">
+    <ion-card class="summary-card">
+      <ion-card-header>
+        <ion-card-title>Session Summary</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="summary-item">
+          <ion-icon name="timer-outline"></ion-icon>
+          <span>Duration: {{ getDurationText(selectedDuration) }}</span>
+        </div>
+        <div class="summary-item">
+          <ion-icon [name]="selectedBackgroundSound?.icon || 'volume-mute-outline'"></ion-icon>
+          <span>Sound: {{ selectedBackgroundSound?.name || 'Silent' }}</span>
+        </div>
+        <div class="summary-item" *ngIf="intervalBells">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span>Bells: Every {{ bellInterval }} minute{{ bellInterval === 1 ? '' : 's' }}</span>
+        </div>
+        <div class="summary-item" *ngIf="preparationTime > 0">
+          <ion-icon name="hourglass-outline"></ion-icon>
+          <span>Preparation: {{ getPreparationText(preparationTime) }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Start Button -->
+  <div class="start-section">
+    <ion-button 
+      expand="block" 
+      size="large"
+      color="primary"
+      (click)="startCustomTimer()"
+      [disabled]="isLoading"
+      class="start-button">
+      <ion-icon name="play" slot="start" *ngIf="!isLoading"></ion-icon>
+      <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+      {{ isLoading ? 'Starting...' : 'Start Meditation' }}
+    </ion-button>
+  </div>
+</ion-content>

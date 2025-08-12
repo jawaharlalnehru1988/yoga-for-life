@@ -1,0 +1,181 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="endSession()" *ngIf="!isCompleted">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ statusText }}</ion-title>
+    <ion-buttons slot="end" *ngIf="currentBackgroundSound && isActive">
+      <ion-button id="volume-trigger">
+        <ion-icon name="volume-medium-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="active-timer-content">
+  <!-- Preparation Phase -->
+  <div class="timer-container" *ngIf="isPreparation">
+    <div class="preparation-section">
+      <div class="preparation-icon">
+        <ion-icon name="hourglass-outline"></ion-icon>
+      </div>
+      <h2>Get Ready</h2>
+      <p>Find a comfortable position and prepare for your meditation</p>
+      
+      <div class="preparation-timer">
+        <div class="preparation-circle">
+          <span class="preparation-time">{{ preparationSecondsLeft }}</span>
+        </div>
+      </div>
+      
+      <ion-text color="medium">
+        <p>Meditation will begin in {{ preparationSecondsLeft }} second{{ preparationSecondsLeft === 1 ? '' : 's' }}</p>
+      </ion-text>
+    </div>
+  </div>
+
+  <!-- Active Meditation Timer -->
+  <div class="timer-container" *ngIf="isActive || isCompleted">
+    <!-- Progress Circle -->
+    <div class="progress-container">
+      <svg class="progress-ring" width="280" height="280">
+        <circle
+          class="progress-ring-background"
+          stroke="var(--ion-color-light)"
+          stroke-width="8"
+          fill="transparent"
+          r="130"
+          cx="140"
+          cy="140"/>
+        <circle
+          class="progress-ring-progress"
+          stroke="var(--ion-color-primary)"
+          stroke-width="8"
+          fill="transparent"
+          r="130"
+          cx="140"
+          cy="140"
+          [style.stroke-dasharray]="816.8"
+          [style.stroke-dashoffset]="816.8 - (816.8 * progressPercentage / 100)"
+          stroke-linecap="round"/>
+      </svg>
+      
+      <div class="timer-center">
+        <div class="time-display">{{ timeDisplay }}</div>
+        <div class="timer-status">
+          <ion-text [color]="isCompleted ? 'success' : (isPaused ? 'warning' : 'primary')">
+            {{ statusText }}
+          </ion-text>
+        </div>
+        
+        <!-- Progress percentage -->
+        <div class="progress-text" *ngIf="!isCompleted">
+          {{ getRoundedProgress() }}% Complete
+        </div>
+        
+        <!-- Completion celebration -->
+        <div class="completion-celebration" *ngIf="isCompleted">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <p>Well done!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background Sound Info -->
+    <div class="sound-info" *ngIf="currentBackgroundSound">
+      <ion-chip>
+        <ion-icon [name]="currentBackgroundSound.icon"></ion-icon>
+        <ion-label>{{ currentBackgroundSound.name }}</ion-label>
+      </ion-chip>
+    </div>
+
+    <!-- Bell Info -->
+    <div class="bell-info" *ngIf="config.intervalBells && !isCompleted">
+      <ion-chip outline>
+        <ion-icon name="notifications-outline"></ion-icon>
+        <ion-label>Bell every {{ config.bellInterval }} min</ion-label>
+      </ion-chip>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="controls" *ngIf="!isCompleted">
+      <ion-button 
+        [fill]="isPaused ? 'solid' : 'outline'"
+        size="large"
+        (click)="togglePause()"
+        class="control-button">
+        <ion-icon [name]="isPaused ? 'play' : 'pause'"></ion-icon>
+        {{ isPaused ? 'Resume' : 'Pause' }}
+      </ion-button>
+    </div>
+
+    <!-- Completion Actions -->
+    <div class="completion-actions" *ngIf="isCompleted">
+      <ion-button 
+        expand="block" 
+        fill="solid"
+        color="primary"
+        (click)="backToMeditation()"
+        class="action-button">
+        <ion-icon name="home" slot="start"></ion-icon>
+        Back to Meditation
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        fill="outline"
+        color="primary"
+        (click)="restartSession()"
+        class="action-button">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Restart Session
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Volume Control Popover -->
+  <ion-popover trigger="volume-trigger" *ngIf="currentBackgroundSound">
+    <ng-template>
+      <ion-content class="volume-popover">
+        <div class="volume-control">
+          <ion-item>
+            <ion-icon name="volume-low" slot="start"></ion-icon>
+            <ion-range
+              [(ngModel)]="currentVolume"
+              (ionInput)="adjustVolume($event)"
+              min="0"
+              max="100"
+              pin="true"
+              color="primary">
+            </ion-range>
+            <ion-icon name="volume-high" slot="end"></ion-icon>
+          </ion-item>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+
+  <!-- Session Info -->
+  <div class="session-info">
+    <ion-card>
+      <ion-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <ion-icon name="timer-outline"></ion-icon>
+            <span>{{ config.duration }} minutes</span>
+          </div>
+          <div class="info-item" *ngIf="currentBackgroundSound">
+            <ion-icon [name]="currentBackgroundSound.icon"></ion-icon>
+            <span>{{ currentBackgroundSound.name }}</span>
+          </div>
+          <div class="info-item" *ngIf="config.intervalBells">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span>Interval bells</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

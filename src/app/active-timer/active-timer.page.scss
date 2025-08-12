@@ -1,0 +1,381 @@
+.active-timer-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// Timer Container
+.timer-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+// Preparation Phase
+.preparation-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  
+  .preparation-icon {
+    ion-icon {
+      font-size: 4rem;
+      color: var(--ion-color-warning);
+      opacity: 0.8;
+    }
+  }
+  
+  h2 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0;
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin: 0;
+    max-width: 300px;
+    line-height: 1.5;
+  }
+}
+
+.preparation-timer {
+  margin: 40px 0;
+  
+  .preparation-circle {
+    width: 120px;
+    height: 120px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+    
+    .preparation-time {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+// Progress Circle
+.progress-container {
+  position: relative;
+  margin: 40px 0;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+  
+  .progress-ring-background {
+    opacity: 0.3;
+  }
+  
+  .progress-ring-progress {
+    transition: stroke-dashoffset 0.3s ease;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+  }
+}
+
+.timer-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-display {
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: white;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+
+.timer-status {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.completion-celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: celebrate 0.6s ease-in-out;
+  
+  ion-icon {
+    font-size: 3rem;
+    animation: bounce 1s infinite;
+  }
+  
+  p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ion-color-success);
+    margin: 0;
+  }
+}
+
+@keyframes celebrate {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+// Sound and Bell Info
+.sound-info, .bell-info {
+  margin: 16px 0 8px 0;
+  
+  ion-chip {
+    --background: rgba(255, 255, 255, 0.2);
+    --color: white;
+    font-weight: 500;
+    
+    ion-icon {
+      color: white;
+    }
+  }
+}
+
+// Controls
+.controls {
+  margin-top: 40px;
+  
+  .control-button {
+    --border-radius: 25px;
+    --padding-start: 24px;
+    --padding-end: 24px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    font-weight: 600;
+    min-width: 140px;
+    
+    &[fill="outline"] {
+      --border-color: rgba(255, 255, 255, 0.5);
+      --color: white;
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    &[fill="solid"] {
+      --background: rgba(255, 255, 255, 0.9);
+      --color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Completion Actions
+.completion-actions {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 300px;
+  
+  .action-button {
+    --border-radius: 25px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    
+    &[fill="solid"] {
+      --background: white;
+      --color: var(--ion-color-primary);
+    }
+    
+    &[fill="outline"] {
+      --border-color: rgba(255, 255, 255, 0.7);
+      --color: white;
+    }
+  }
+}
+
+// Volume Control
+.volume-popover {
+  --width: 280px;
+  --height: 80px;
+}
+
+.volume-control {
+  padding: 16px;
+  
+  ion-item {
+    --background: transparent;
+    --color: var(--ion-color-dark);
+  }
+  
+  ion-range {
+    --bar-background: var(--ion-color-light);
+    --bar-background-active: var(--ion-color-primary);
+    --knob-background: var(--ion-color-primary);
+  }
+}
+
+// Session Info
+.session-info {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 10;
+  
+  ion-card {
+    --background: rgba(255, 255, 255, 0.15);
+    --color: white;
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    margin: 0;
+    
+    ion-card-content {
+      padding: 16px;
+    }
+  }
+}
+
+.info-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 80px;
+  
+  ion-icon {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  span {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-weight: 500;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .time-display {
+    font-size: 2.8rem;
+  }
+  
+  .progress-ring {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .progress-ring circle {
+    r: 110px;
+    cx: 120px;
+    cy: 120px;
+  }
+  
+  .info-grid {
+    flex-direction: column;
+    gap: 12px;
+    
+    .info-item {
+      flex-direction: row;
+      justify-content: center;
+      min-width: auto;
+      
+      span {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .time-display {
+    font-size: 2.4rem;
+  }
+  
+  .progress-ring {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .progress-ring circle {
+    r: 90px;
+    cx: 100px;
+    cy: 100px;
+  }
+  
+  .timer-container {
+    padding: 16px;
+  }
+  
+  .session-info {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .active-timer-content {
+    --background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .progress-ring-progress,
+  .preparation-circle,
+  .completion-celebration {
+    animation: none;
+    transition: none;
+  }
+}
+
+// Focus states for accessibility
+.control-button:focus,
+.action-button:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}

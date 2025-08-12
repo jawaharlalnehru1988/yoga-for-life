@@ -1,0 +1,399 @@
+// Meditation Detail Page Styles
+.meditation-detail {
+  padding-bottom: 2rem;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-spinner {
+    margin-bottom: 1rem;
+    --color: var(--ion-color-primary);
+  }
+}
+
+// Error State
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  padding: 2rem;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin-bottom: 0.5rem;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    margin-bottom: 2rem;
+  }
+}
+
+// Hero Section
+.hero-section {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.meditation-image {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .overlay-badges {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    ion-badge {
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      ion-icon {
+        margin-right: 0.25rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.meditation-header {
+  padding: 1.5rem;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--ion-color-dark);
+    line-height: 1.3;
+  }
+
+  .instructor {
+    font-size: 1rem;
+    color: var(--ion-color-medium);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+}
+
+.session-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ion-color-dark);
+    font-size: 0.9rem;
+
+    ion-icon {
+      font-size: 1rem;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+.action-buttons {
+  .secondary-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+
+    ion-button {
+      flex: 1;
+      --border-radius: 8px;
+      font-size: 0.9rem;
+      height: 36px;
+
+      ion-icon {
+        font-size: 1rem;
+        margin-right: 0.25rem;
+      }
+    }
+  }
+
+  ion-button[expand="block"] {
+    --border-radius: 12px;
+    height: 48px;
+    font-weight: 600;
+    margin-bottom: 0;
+
+    ion-icon {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// Content Sections
+.content-section {
+  padding: 1.5rem;
+  border-top: 1px solid var(--ion-color-light);
+
+  &:first-of-type {
+    border-top: none;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--ion-color-dark);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem 0;
+    color: var(--ion-color-dark);
+  }
+
+  .description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ion-color-dark);
+    margin-bottom: 1rem;
+  }
+}
+
+// Benefits Section
+.benefits-grid {
+  display: grid;
+  gap: 0.75rem;
+
+  .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    ion-icon {
+      font-size: 1.1rem;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Instructions Section
+.instructions-list {
+  display: grid;
+  gap: 1rem;
+
+  .instruction-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--ion-color-primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .instruction-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Tags Section
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  ion-chip {
+    --background: var(--ion-color-light);
+    --color: var(--ion-color-dark);
+    font-size: 0.85rem;
+  }
+}
+
+// Related Sessions
+.related-sessions {
+  display: grid;
+  gap: 1rem;
+
+  .session-card {
+    margin: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-image {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        --background: rgba(0, 0, 0, 0.6);
+        --border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+
+        ion-icon {
+          font-size: 1.2rem;
+        }
+      }
+
+      &:hover .play-button {
+        opacity: 1;
+      }
+    }
+
+    ion-card-header {
+      padding: 1rem 1rem 0.5rem 1rem;
+
+      ion-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 0.25rem;
+      }
+
+      ion-card-subtitle {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    ion-card-content {
+      padding: 0 1rem 1rem 1rem;
+
+      .session-meta-small {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--ion-color-medium);
+
+        .duration, .rating {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+
+          ion-icon {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: var(--ion-color-dark);
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (min-width: 768px) {
+  .meditation-detail {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .meditation-image {
+    height: 300px;
+  }
+
+  .meditation-header {
+    h1 {
+      font-size: 2rem;
+    }
+  }
+
+  .session-meta {
+    gap: 2rem;
+  }
+
+  .action-buttons {
+    .secondary-actions {
+      max-width: 400px;
+      margin-top: 1rem;
+    }
+  }
+
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .related-sessions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .related-sessions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

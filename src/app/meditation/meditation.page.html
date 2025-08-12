@@ -1,13 +1,306 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>meditation</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Meditation</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="openCustomTimer()">
+        <ion-icon name="timer-outline" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">meditation</ion-title>
+      <ion-title size="large">Meditation</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Daily Streak Banner -->
+  <div class="streak-banner" *ngIf="meditationStats">
+    <div class="streak-content">
+      <div class="streak-main">
+        <div class="streak-number">{{ meditationStats.currentStreak }}</div>
+        <div class="streak-label">Day Streak</div>
+      </div>
+      <div class="streak-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ meditationStats.totalMinutes }}</span>
+          <span class="stat-label">Total Minutes</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ meditationStats.totalSessions }}</span>
+          <span class="stat-label">Sessions</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ meditationStats.weeklyMinutes }}</span>
+          <span class="stat-label">This Week</span>
+        </div>
+      </div>
+    </div>
+    <div class="streak-motivational" *ngIf="meditationStats.currentStreak > 0">
+      <ion-icon name="flame" color="warning"></ion-icon>
+      <span>Keep it going! You're building a powerful habit.</span>
+    </div>
+    <div class="streak-motivational" *ngIf="meditationStats.currentStreak === 0">
+      <ion-icon name="heart" color="primary"></ion-icon>
+      <span>Start your meditation journey today!</span>
+    </div>
+  </div>
+
+  <!-- Featured Meditations Carousel -->
+  <div class="featured-section">
+    <h2>Featured Today</h2>
+    <div class="featured-carousel">
+      <div 
+        *ngFor="let meditation of featuredMeditations" 
+        class="featured-card"
+        [style.background]="meditation.backgroundColor"
+        (click)="openMeditationDetail(meditation)">
+        <div class="featured-content">
+          <div class="featured-text">
+            <h3>{{ meditation.title }}</h3>
+            <p>{{ meditation.shortDescription }}</p>
+            <div class="featured-meta">
+              <ion-badge color="light">{{ meditation.duration }} min</ion-badge>
+              <div class="rating">
+                <ion-icon name="star" color="warning"></ion-icon>
+                <span>{{ meditation.rating }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="featured-image">
+            <img [src]="meditation.imageUrl" [alt]="meditation.title" />
+            <ion-button 
+              fill="clear" 
+              class="play-button"
+              (click)="playMeditation(meditation, $event)">
+              <ion-icon name="play" color="light"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+        <ion-badge 
+          *ngIf="meditation.isPremium" 
+          color="warning" 
+          class="premium-badge">
+          <ion-icon name="diamond-outline"></ion-icon>
+          Premium
+        </ion-badge>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Timer Section -->
+  <div class="quick-timer-section">
+    <h2>Quick Timer</h2>
+    <div class="timer-options">
+      <div 
+        *ngFor="let duration of quickTimerDurations" 
+        class="timer-option"
+        (click)="startQuickTimer(duration)">
+        <div class="timer-duration">{{ duration }}</div>
+        <div class="timer-label">min</div>
+      </div>
+      <div class="timer-option custom" (click)="openCustomTimer()">
+        <ion-icon name="settings-outline"></ion-icon>
+        <div class="timer-label">Custom</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="search-filter-section">
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchInput($event)"
+      placeholder="Search meditations, benefits, or moods..."
+      show-clear-button="focus"
+      debounce="300">
+    </ion-searchbar>
+
+    <!-- Category Filters -->
+    <div class="category-filters">
+      <h3>Find Your Focus</h3>
+      <div class="filter-grid">
+        <div 
+          *ngFor="let category of categoryFilters" 
+          class="category-filter"
+          [class.active]="selectedCategory === category.value"
+          (click)="selectCategory(category.value)">
+          <ion-icon [name]="category.icon" [color]="selectedCategory === category.value ? 'primary' : 'medium'"></ion-icon>
+          <span>{{ category.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Duration Filters -->
+    <div class="duration-filters">
+      <ion-chip 
+        *ngFor="let duration of durationFilters" 
+        [color]="selectedDuration === duration.value ? 'primary' : 'medium'"
+        (click)="selectDuration(duration.value)">
+        <ion-label>{{ duration.label }}</ion-label>
+      </ion-chip>
+    </div>
+  </div>
+
+  <!-- Meditation Sessions Grid -->
+  <div class="sessions-section">
+    <div class="section-header">
+      <h2>
+        <span *ngIf="selectedCategory === 'all'">All Meditations</span>
+        <span *ngIf="selectedCategory !== 'all'">{{ getCategoryLabel(selectedCategory) }}</span>
+      </h2>
+      <p *ngIf="filteredSessions.length > 0">{{ filteredSessions.length }} session{{ filteredSessions.length !== 1 ? 's' : '' }} available</p>
+    </div>
+
+    <div class="sessions-grid">
+      <ion-card 
+        *ngFor="let session of filteredSessions" 
+        class="session-card"
+        (click)="openMeditationDetail(session)">
+        
+        <!-- Session Image -->
+        <div class="session-image-container">
+          <img [src]="session.imageUrl" [alt]="session.title" />
+          <div class="session-overlay">
+            <ion-button 
+              fill="clear" 
+              size="small"
+              class="favorite-btn"
+              (click)="toggleFavorite(session, $event)">
+              <ion-icon 
+                [name]="(isFavorite(session._id) | async) ? 'heart' : 'heart-outline'"
+                [color]="(isFavorite(session._id) | async) ? 'danger' : 'light'">
+              </ion-icon>
+            </ion-button>
+            
+            <div class="session-badges">
+              <ion-badge *ngIf="session.isPremium" color="warning">
+                <ion-icon name="diamond-outline"></ion-icon>
+                Premium
+              </ion-badge>
+              <ion-badge *ngIf="session.isPopular" color="success">
+                Popular
+              </ion-badge>
+              <ion-badge [color]="getDifficultyColor(session.difficulty)">
+                {{ session.difficulty }}
+              </ion-badge>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session Header -->
+        <ion-card-header>
+          <div class="session-header">
+            <div class="session-titles">
+              <ion-card-title>{{ session.title }}</ion-card-title>
+              <ion-card-subtitle>{{ session.instructor }}</ion-card-subtitle>
+            </div>
+            <div class="session-duration">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ session.duration }}min</span>
+            </div>
+          </div>
+        </ion-card-header>
+
+        <!-- Session Content -->
+        <ion-card-content>
+          <p class="session-description">{{ session.shortDescription }}</p>
+          
+          <div class="session-meta">
+            <div class="session-technique">
+              <ion-chip size="small" color="light">
+                <ion-icon [name]="getTechniqueIcon(session.technique)"></ion-icon>
+                <ion-label>{{ getTechniqueLabel(session.technique) }}</ion-label>
+              </ion-chip>
+            </div>
+            
+            <div class="session-rating">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{ session.rating }}</span>
+              <span class="rating-count">({{ session.totalRatings }})</span>
+            </div>
+          </div>
+
+          <div class="session-benefits">
+            <div class="benefit-tag" *ngFor="let benefit of session.benefits.slice(0, 2)">
+              {{ benefit }}
+            </div>
+            <span *ngIf="session.benefits.length > 2" class="more-benefits">
+              +{{ session.benefits.length - 2 }} more
+            </span>
+          </div>
+        </ion-card-content>
+
+        <!-- Session Actions -->
+        <div class="session-actions">
+          <ion-button 
+            fill="solid" 
+            size="small"
+            expand="block"
+            (click)="playMeditation(session, $event)">
+            <ion-icon name="play" slot="start"></ion-icon>
+            Start Meditation
+          </ion-button>
+        </div>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredSessions.length === 0 && !isLoading">
+    <ion-icon name="leaf-outline" color="medium"></ion-icon>
+    <h3>No meditations found</h3>
+    <p *ngIf="searchQuery">
+      Try adjusting your search terms or filters
+    </p>
+    <p *ngIf="!searchQuery && selectedCategory !== 'all'">
+      No sessions available in this category yet
+    </p>
+    <ion-button 
+      *ngIf="searchQuery || selectedCategory !== 'all'" 
+      fill="outline" 
+      (click)="clearFilters()">
+      Clear Filters
+    </ion-button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading meditations...</p>
+  </div>
+
+  <!-- Challenges Section -->
+  <div class="challenges-section" *ngIf="meditationChallenges.length > 0">
+    <h2>Meditation Challenges</h2>
+    <div class="challenges-scroll">
+      <ion-card 
+        *ngFor="let challenge of meditationChallenges" 
+        class="challenge-card"
+        (click)="openChallenge(challenge)">
+        <img [src]="challenge.imageUrl" [alt]="challenge.name" />
+        <div class="challenge-content">
+          <h3>{{ challenge.name }}</h3>
+          <p>{{ challenge.description }}</p>
+          <div class="challenge-meta">
+            <ion-badge color="primary">{{ challenge.duration }} days</ion-badge>
+            <ion-badge color="medium">{{ challenge.dailyMinutes }} min/day</ion-badge>
+            <ion-badge *ngIf="challenge.isPremium" color="warning">Premium</ion-badge>
+          </div>
+        </div>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Floating Action Button for Timer -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openCustomTimer()">
+      <ion-icon name="timer"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
