@@ -1,0 +1,463 @@
+// Loading and Error States
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 40px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.6;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ion-color-step-700);
+  }
+
+  p {
+    margin: 0 0 24px 0;
+    color: var(--ion-color-step-600);
+    line-height: 1.5;
+  }
+
+  ion-spinner {
+    margin-bottom: 20px;
+  }
+}
+
+// Main Content
+.pose-content {
+  padding-bottom: 100px; // Space for bottom actions
+}
+
+// Hero Section
+.hero-section {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.pose-image-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    height: 400px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.8));
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+
+    .pose-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      ion-badge {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        
+        ion-icon {
+          margin-right: 4px;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.pose-title-section {
+  padding: 20px;
+  background: var(--ion-background-color);
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    line-height: 1.2;
+
+    @media (min-width: 768px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .sanskrit-name {
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--ion-color-step-600);
+    font-weight: 400;
+  }
+
+  .quick-benefit {
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+    color: var(--ion-color-step-700);
+    line-height: 1.4;
+  }
+
+  .pose-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    ion-chip {
+      --background: var(--ion-color-step-100);
+      --color: var(--ion-color-step-700);
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Action Buttons
+.action-buttons {
+  padding: 0 20px 20px;
+
+  ion-button[expand="block"] {
+    margin-bottom: 16px;
+    --border-radius: #{var(--yoga-border-radius)};
+    font-weight: 600;
+    height: 48px;
+  }
+
+  .secondary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    ion-button {
+      --border-radius: #{var(--yoga-border-radius-small)};
+    }
+  }
+}
+
+// Card Sections
+ion-card {
+  margin: 0 20px 20px;
+  border-radius: var(--yoga-border-radius);
+  box-shadow: var(--yoga-shadow-soft);
+
+  ion-card-header {
+    ion-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+      font-weight: 600;
+
+      ion-icon {
+        font-size: 1.4rem;
+      }
+    }
+  }
+}
+
+// Benefits List
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ion-color-step-150);
+    color: var(--ion-color-step-700);
+    line-height: 1.4;
+    position: relative;
+    padding-left: 24px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--ion-color-success);
+      font-weight: bold;
+    }
+  }
+}
+
+// Instructions
+.instructions-list {
+  .instruction-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    border-radius: var(--yoga-border-radius-small);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+
+    &.active {
+      background: var(--ion-color-primary-tint);
+      border-color: var(--ion-color-primary);
+      box-shadow: var(--yoga-shadow-soft);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ion-color-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+
+      p {
+        margin: 0;
+        line-height: 1.5;
+        color: var(--ion-color-step-700);
+      }
+    }
+  }
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ion-color-step-200);
+
+  .step-indicator {
+    font-size: 0.9rem;
+    color: var(--ion-color-step-600);
+    font-weight: 500;
+  }
+}
+
+// Mistakes List
+.mistakes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ion-color-step-150);
+    color: var(--ion-color-step-700);
+    line-height: 1.4;
+    position: relative;
+    padding-left: 24px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: '⚠';
+      position: absolute;
+      left: 0;
+      color: var(--ion-color-warning);
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// Video Section
+.video-container {
+  width: 100%;
+  border-radius: var(--yoga-border-radius-small);
+  overflow: hidden;
+  background: #000;
+
+  .pose-video {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+}
+
+// Related Poses
+.related-poses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.related-pose-item {
+  cursor: pointer;
+  border-radius: var(--yoga-border-radius-small);
+  overflow: hidden;
+  background: var(--ion-color-step-50);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--yoga-shadow-medium);
+  }
+
+  img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .related-pose-info {
+    padding: 12px;
+
+    h4 {
+      margin: 0 0 6px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      line-height: 1.2;
+    }
+
+    ion-badge {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// Tips Section
+.tips-list {
+  .tip-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--ion-color-step-50);
+    border-radius: var(--yoga-border-radius-small);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    ion-icon {
+      font-size: 1.5rem;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    h4 {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ion-text-color);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--ion-color-step-600);
+      line-height: 1.4;
+    }
+  }
+}
+
+// Bottom Actions
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ion-background-color);
+  padding: 16px 20px;
+  border-top: 1px solid var(--ion-color-step-200);
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+
+  ion-button {
+    --border-radius: #{var(--yoga-border-radius)};
+    font-weight: 600;
+    height: 48px;
+  }
+}
+
+// Responsive Design
+@media (min-width: 768px) {
+  .pose-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+  }
+
+  ion-card {
+    margin: 0 0 20px;
+  }
+
+  .action-buttons {
+    padding: 0 0 20px;
+  }
+
+  .bottom-actions {
+    max-width: 800px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: var(--yoga-border-radius) var(--yoga-border-radius) 0 0;
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .instruction-step,
+  .related-pose-item {
+    transition: none;
+  }
+  
+  .related-pose-item:hover {
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .instruction-step.active {
+    border-width: 3px;
+  }
+  
+  .related-pose-item {
+    border: 2px solid var(--ion-color-step-400);
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .image-overlay {
+    background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.9));
+  }
+  
+  .video-container {
+    background: var(--ion-color-step-100);
+  }
+}

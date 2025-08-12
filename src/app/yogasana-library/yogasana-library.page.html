@@ -1,13 +1,279 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>yogasana-library</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Yogasana Library</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="toggleFavoritesView()">
+        <ion-icon [name]="showFavoritesOnly ? 'heart' : 'heart-outline'" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">yogasana-library</ion-title>
+      <ion-title size="large">Yogasana Library</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Featured Poses Carousel -->
+  <div class="featured-section" *ngIf="!showFavoritesOnly">
+    <h2>Featured Poses</h2>
+    <div class="featured-scroll">
+      <div class="featured-card" *ngFor="let pose of featuredPoses" (click)="openPoseDetail(pose)">
+        <img [src]="pose.imageUrl" [alt]="pose.name" />
+        <div class="featured-overlay">
+          <h3>{{ pose.name }}</h3>
+          <p>{{ pose.quickBenefit }}</p>
+          <ion-badge [color]="getDifficultyColor(pose.difficulty)">
+            {{ pose.difficulty }}
+          </ion-badge>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pose of the Day -->
+  <ion-card class="pose-of-day" *ngIf="poseOfTheDay && !showFavoritesOnly">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="star" color="warning"></ion-icon>
+        Pose of the Day
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="daily-pose" (click)="openPoseDetail(poseOfTheDay)">
+        <img [src]="poseOfTheDay.imageUrl" [alt]="poseOfTheDay.name" />
+        <div class="daily-pose-info">
+          <h3>{{ poseOfTheDay.name }}</h3>
+          <p class="sanskrit">{{ poseOfTheDay.sanskritName }}</p>
+          <p>{{ poseOfTheDay.quickBenefit }}</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Search and Filter Section -->
+  <div class="search-filter-section">
+    <!-- Search Bar -->
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchInput($event)"
+      placeholder="Search poses, benefits, or Sanskrit names..."
+      show-clear-button="focus"
+      debounce="300">
+    </ion-searchbar>
+
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+      <ion-chip 
+        *ngFor="let difficulty of filterOptions.difficulties" 
+        [color]="selectedFilters.difficulty === difficulty ? 'primary' : 'medium'"
+        (click)="toggleFilter('difficulty', difficulty)">
+        <ion-label>{{ difficulty }}</ion-label>
+      </ion-chip>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="advanced-filters" *ngIf="showAdvancedFilters">
+      <!-- Category Filter -->
+      <ion-item>
+        <ion-label>Focus Area</ion-label>
+        <ion-select 
+          [(ngModel)]="selectedFilters.category" 
+          (ionChange)="onFilterChange()"
+          placeholder="All Categories">
+          <ion-select-option value="">All Categories</ion-select-option>
+          <ion-select-option *ngFor="let category of filterOptions.categories" [value]="category">
+            {{ category }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Duration Filter -->
+      <ion-item>
+        <ion-label>Duration</ion-label>
+        <ion-select 
+          [(ngModel)]="selectedFilters.duration" 
+          (ionChange)="onFilterChange()"
+          placeholder="Any Duration">
+          <ion-select-option value="">Any Duration</ion-select-option>
+          <ion-select-option *ngFor="let duration of filterOptions.durations" [value]="duration.value">
+            {{ duration.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Sort Options -->
+      <ion-item>
+        <ion-label>Sort By</ion-label>
+        <ion-select 
+          [(ngModel)]="sortOptions.sortBy" 
+          (ionChange)="onSortChange()">
+          <ion-select-option value="alphabetical">Alphabetical</ion-select-option>
+          <ion-select-option value="difficulty">Difficulty</ion-select-option>
+          <ion-select-option value="popularity">Most Popular</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <!-- Filter Toggle -->
+    <ion-button 
+      fill="clear" 
+      size="small" 
+      (click)="toggleAdvancedFilters()"
+      class="filter-toggle">
+      <ion-icon [name]="showAdvancedFilters ? 'chevron-up' : 'chevron-down'"></ion-icon>
+      {{ showAdvancedFilters ? 'Hide' : 'More' }} Filters
+    </ion-button>
+
+    <!-- Active Filters Display -->
+    <div class="active-filters" *ngIf="hasActiveFilters()">
+      <ion-chip 
+        *ngIf="selectedFilters.difficulty" 
+        color="primary"
+        (click)="clearFilter('difficulty')">
+        <ion-label>{{ selectedFilters.difficulty }}</ion-label>
+        <ion-icon name="close"></ion-icon>
+      </ion-chip>
+      <ion-chip 
+        *ngIf="selectedFilters.category" 
+        color="primary"
+        (click)="clearFilter('category')">
+        <ion-label>{{ selectedFilters.category }}</ion-label>
+        <ion-icon name="close"></ion-icon>
+      </ion-chip>
+      <ion-chip 
+        *ngIf="selectedFilters.duration" 
+        color="primary"
+        (click)="clearFilter('duration')">
+        <ion-label>{{ getDurationLabel(selectedFilters.duration) }}</ion-label>
+        <ion-icon name="close"></ion-icon>
+      </ion-chip>
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        color="medium"
+        (click)="clearAllFilters()">
+        Clear All
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Results Count -->
+  <div class="results-info">
+    <p *ngIf="showFavoritesOnly">
+      {{ filteredPoses.length }} favorite pose{{ filteredPoses.length !== 1 ? 's' : '' }}
+    </p>
+    <p *ngIf="!showFavoritesOnly">
+      {{ filteredPoses.length }} pose{{ filteredPoses.length !== 1 ? 's' : '' }}
+      <span *ngIf="searchQuery || hasActiveFilters()"> found</span>
+    </p>
+  </div>
+
+  <!-- Poses Grid -->
+  <div class="poses-grid">
+    <ion-card 
+      *ngFor="let pose of filteredPoses" 
+      class="pose-card"
+      (click)="openPoseDetail(pose)">
+      
+      <!-- Pose Image -->
+      <div class="pose-image-container">
+        <img [src]="pose.imageUrl" [alt]="pose.name" />
+        <div class="pose-overlay">
+          <ion-button 
+            fill="clear" 
+            size="small"
+            class="favorite-btn"
+            (click)="toggleFavorite(pose, $event)">
+            <ion-icon 
+              [name]="(isFavorite(pose._id) | async) ? 'heart' : 'heart-outline'"
+              [color]="(isFavorite(pose._id) | async) ? 'danger' : 'light'">
+            </ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Pose Header -->
+      <ion-card-header>
+        <div class="pose-header">
+          <div class="pose-titles">
+            <ion-card-title>{{ pose.name }}</ion-card-title>
+            <ion-card-subtitle *ngIf="pose.sanskritName">
+              {{ pose.sanskritName }}
+            </ion-card-subtitle>
+          </div>
+          <ion-badge [color]="getDifficultyColor(pose.difficulty)">
+            {{ pose.difficulty }}
+          </ion-badge>
+        </div>
+      </ion-card-header>
+
+      <!-- Pose Content -->
+      <ion-card-content>
+        <p class="quick-benefit">{{ pose.quickBenefit }}</p>
+        
+        <div class="pose-meta">
+          <div class="pose-tags">
+            <ion-chip 
+              *ngFor="let tag of pose.tags.slice(0, 2)" 
+              size="small"
+              color="light">
+              <ion-label>{{ tag }}</ion-label>
+            </ion-chip>
+            <span *ngIf="pose.tags.length > 2" class="more-tags">
+              +{{ pose.tags.length - 2 }} more
+            </span>
+          </div>
+          
+          <div class="pose-duration">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ pose.duration }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredPoses.length === 0 && !isLoading">
+    <ion-icon name="search-outline" color="medium"></ion-icon>
+    <h3>No poses found</h3>
+    <p *ngIf="searchQuery">
+      Try adjusting your search terms or filters
+    </p>
+    <p *ngIf="!searchQuery && showFavoritesOnly">
+      You haven't added any poses to favorites yet
+    </p>
+    <p *ngIf="!searchQuery && !showFavoritesOnly && hasActiveFilters()">
+      Try removing some filters to see more results
+    </p>
+    <ion-button 
+      *ngIf="hasActiveFilters() || searchQuery" 
+      fill="outline" 
+      (click)="clearAllFilters(); searchQuery = ''">
+      Clear Filters & Search
+    </ion-button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading poses...</p>
+  </div>
+
+  <!-- Infinite Scroll -->
+  <ion-infinite-scroll 
+    threshold="100px" 
+    (ionInfinite)="loadMorePoses($event)"
+    *ngIf="hasMorePoses && !isLoading">
+    <ion-infinite-scroll-content
+      loading-spinner="crescent"
+      loading-text="Loading more poses...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

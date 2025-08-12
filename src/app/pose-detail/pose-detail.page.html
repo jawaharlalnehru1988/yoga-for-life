@@ -1,0 +1,263 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/yogasana-library"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ pose?.name || 'Pose Detail' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="toggleFavorite()" *ngIf="pose">
+        <ion-icon 
+          [name]="(isFavorite | async) ? 'heart' : 'heart-outline'"
+          [color]="(isFavorite | async) ? 'danger' : 'medium'">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ pose?.name || 'Pose Detail' }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading pose details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !isLoading">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <h2>Pose Not Found</h2>
+    <p>The requested pose could not be found.</p>
+    <ion-button routerLink="/yogasana-library" fill="outline">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+      Back to Library
+    </ion-button>
+  </div>
+
+  <!-- Pose Content -->
+  <div class="pose-content" *ngIf="pose && !isLoading">
+    
+    <!-- Hero Image Section -->
+    <div class="hero-section">
+      <div class="pose-image-container">
+        <img [src]="pose.imageUrl" [alt]="pose.name" />
+        <div class="image-overlay">
+          <div class="pose-badges">
+            <ion-badge [color]="getDifficultyColor(pose.difficulty)">
+              {{ pose.difficulty }}
+            </ion-badge>
+            <ion-badge color="light" outline>
+              <ion-icon name="time-outline"></ion-icon>
+              {{ pose.duration }}
+            </ion-badge>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pose Title Info -->
+      <div class="pose-title-section">
+        <h1>{{ pose.name }}</h1>
+        <h2 class="sanskrit-name" *ngIf="pose.sanskritName">{{ pose.sanskritName }}</h2>
+        <p class="quick-benefit">{{ pose.quickBenefit }}</p>
+        
+        <!-- Tags -->
+        <div class="pose-tags">
+          <ion-chip *ngFor="let tag of pose.tags" color="light">
+            <ion-label>{{ tag }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <ion-button expand="block" color="primary" (click)="startPractice()">
+        <ion-icon name="play-circle" slot="start"></ion-icon>
+        Start Practice
+      </ion-button>
+      
+      <div class="secondary-actions">
+        <ion-button fill="outline" (click)="addToRoutine()">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Add to Routine
+        </ion-button>
+        <ion-button fill="outline" (click)="shareService.sharePose(pose)">
+          <ion-icon name="share-outline" slot="start"></ion-icon>
+          Share
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <ion-card class="benefits-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="heart-outline" color="success"></ion-icon>
+          Benefits
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ul class="benefits-list">
+          <li *ngFor="let benefit of pose.benefits">{{ benefit }}</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Instructions Section -->
+    <ion-card class="instructions-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list-outline" color="primary"></ion-icon>
+          Step-by-Step Instructions
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="instructions-list">
+          <div 
+            *ngFor="let step of pose.steps; let i = index" 
+            class="instruction-step"
+            [class.active]="currentStep === i">
+            <div class="step-number">{{ i + 1 }}</div>
+            <div class="step-content">
+              <p>{{ step }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step Navigation -->
+        <div class="step-navigation" *ngIf="pose.steps.length > 1">
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentStep === 0"
+            (click)="previousStep()">
+            <ion-icon name="chevron-back"></ion-icon>
+            Previous
+          </ion-button>
+          <span class="step-indicator">{{ currentStep + 1 }} of {{ pose.steps.length }}</span>
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentStep === pose.steps.length - 1"
+            (click)="nextStep()">
+            Next
+            <ion-icon name="chevron-forward"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Common Mistakes Section -->
+    <ion-card class="mistakes-card" *ngIf="pose.mistakes && pose.mistakes.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="warning-outline" color="warning"></ion-icon>
+          Common Mistakes to Avoid
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ul class="mistakes-list">
+          <li *ngFor="let mistake of pose.mistakes">{{ mistake }}</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Video Section (if available) -->
+    <ion-card class="video-card" *ngIf="pose.videoUrl">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="play-circle-outline" color="primary"></ion-icon>
+          Video Guide
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="video-container">
+          <video 
+            [src]="pose.videoUrl" 
+            controls 
+            preload="metadata"
+            class="pose-video">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Related Poses Section -->
+    <ion-card class="related-poses-card" *ngIf="relatedPoses.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="grid-outline" color="secondary"></ion-icon>
+          Related Poses
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="related-poses-grid">
+          <div 
+            *ngFor="let relatedPose of relatedPoses" 
+            class="related-pose-item"
+            (click)="navigateToPose(relatedPose._id)">
+            <img [src]="relatedPose.imageUrl" [alt]="relatedPose.name" />
+            <div class="related-pose-info">
+              <h4>{{ relatedPose.name }}</h4>
+              <ion-badge [color]="getDifficultyColor(relatedPose.difficulty)" size="small">
+                {{ relatedPose.difficulty }}
+              </ion-badge>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Practice Tips -->
+    <ion-card class="tips-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="bulb-outline" color="tertiary"></ion-icon>
+          Practice Tips
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="tips-list">
+          <div class="tip-item">
+            <ion-icon name="time-outline" color="primary"></ion-icon>
+            <div>
+              <h4>Duration</h4>
+              <p>Hold this pose for {{ pose.duration }}. Listen to your body and adjust as needed.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <ion-icon name="fitness-outline" color="success"></ion-icon>
+            <div>
+              <h4>Breathing</h4>
+              <p>Maintain steady, deep breathing throughout the pose. Inhale to lengthen, exhale to deepen.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <ion-icon name="shield-checkmark-outline" color="warning"></ion-icon>
+            <div>
+              <h4>Safety</h4>
+              <p>Stop immediately if you feel pain. Modify the pose if you have any injuries or limitations.</p>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Bottom Action Bar -->
+    <div class="bottom-actions">
+      <ion-button 
+        expand="block" 
+        color="primary" 
+        size="large"
+        (click)="startPractice()">
+        <ion-icon name="play-circle" slot="start"></ion-icon>
+        Start Practice Session
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>
