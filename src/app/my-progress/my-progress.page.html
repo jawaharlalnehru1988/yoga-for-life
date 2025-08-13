@@ -1,13 +1,250 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>my-progress</ion-title>
+    <ion-title>My Progress</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">my-progress</ion-title>
+      <ion-title size="large">My Progress</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Overview Stats Section -->
+  <div class="overview-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="analytics"></ion-icon>
+        Overview
+      </h2>
+    </div>
+
+    <!-- Level Progress Card -->
+    <ion-card class="level-card">
+      <ion-card-content>
+        <div class="level-header">
+          <div class="level-info">
+            <h3>Level {{ stats.level }}</h3>
+            <p>{{ getLevelProgressText() }}</p>
+          </div>
+          <div class="level-badge">
+            <ion-icon name="trophy-outline"></ion-icon>
+          </div>
+        </div>
+        <ion-progress-bar [value]="getProgressPercentage() / 100" color="primary"></ion-progress-bar>
+        <div class="xp-text">{{ stats.experiencePoints }} / {{ stats.nextLevelXP }} XP</div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Stats Grid -->
+    <ion-grid class="stats-grid">
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="fitness" color="primary"></ion-icon>
+              </div>
+              <div class="stat-value">{{ stats.totalSessions }}</div>
+              <div class="stat-label">Total Sessions</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="time-outline" color="success"></ion-icon>
+              </div>
+              <div class="stat-value">{{ formatDuration(stats.totalMinutes) }}</div>
+              <div class="stat-label">Total Time</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="flame-outline" color="warning"></ion-icon>
+              </div>
+              <div class="stat-value">{{ stats.currentStreak }}</div>
+              <div class="stat-label">Current Streak</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="medal-outline" color="tertiary"></ion-icon>
+              </div>
+              <div class="stat-value">{{ stats.longestStreak }}</div>
+              <div class="stat-label">Best Streak</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Activity Timeline -->
+  <div class="activity-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="calendar-outline"></ion-icon>
+        Weekly Activity
+      </h2>
+    </div>
+
+    <ion-card class="activity-card">
+      <ion-card-content>
+        <div class="activity-timeline">
+          <div 
+            *ngFor="let day of weeklyActivity" 
+            class="activity-day"
+            [class.completed]="day.completed"
+            [class.empty]="day.sessions === 0">
+            <div class="day-name">{{ day.date.toLocaleDateString('en', {weekday: 'short'}) }}</div>
+            <div class="day-indicator">
+              <div class="sessions-count" *ngIf="day.sessions > 0">{{ day.sessions }}</div>
+              <ion-icon *ngIf="day.sessions === 0" name="ellipse-outline"></ion-icon>
+            </div>
+            <div class="day-date">{{ day.date.getDate() }}</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Monthly Goals -->
+  <div class="goals-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="trending-up"></ion-icon>
+        Monthly Goals
+      </h2>
+    </div>
+
+    <div class="goals-grid">
+      <ion-card *ngFor="let goal of monthlyGoals" class="goal-card">
+        <ion-card-content>
+          <div class="goal-header">
+            <div class="goal-icon">
+              <ion-icon [name]="goal.icon" [color]="goal.color"></ion-icon>
+            </div>
+            <div class="goal-progress-circle">
+              <div class="progress-value">{{ roundNumber(getGoalProgress(goal)) }}%</div>
+            </div>
+          </div>
+          <h4>{{ goal.title }}</h4>
+          <p>{{ goal.current }} / {{ goal.target }} {{ goal.unit }}</p>
+          <ion-progress-bar [value]="getGoalProgress(goal) / 100" [color]="goal.color"></ion-progress-bar>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="achievements-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="ribbon"></ion-icon>
+        Achievements
+        <span class="achievement-count">({{ getUnlockedAchievementsCount() }}/{{ achievements.length }})</span>
+      </h2>
+    </div>
+
+    <div class="achievements-grid">
+      <ion-card 
+        *ngFor="let achievement of achievements" 
+        class="achievement-card"
+        [class.unlocked]="achievement.unlocked">
+        <ion-card-content>
+          <div class="achievement-header">
+            <div class="achievement-icon" [class.unlocked]="achievement.unlocked">
+              <ion-icon [name]="achievement.icon" [color]="achievement.unlocked ? achievement.color : 'medium'"></ion-icon>
+            </div>
+            <ion-badge *ngIf="achievement.unlocked" color="success" class="unlocked-badge">
+              <ion-icon name="checkmark"></ion-icon>
+            </ion-badge>
+          </div>
+          <h4>{{ achievement.title }}</h4>
+          <p>{{ achievement.description }}</p>
+          <div class="achievement-progress">
+            <div class="progress-text">{{ achievement.progress }} / {{ achievement.target }}</div>
+            <ion-progress-bar 
+              [value]="getAchievementProgress(achievement) / 100" 
+              [color]="achievement.unlocked ? achievement.color : 'medium'">
+            </ion-progress-bar>
+          </div>
+          <div class="unlocked-date" *ngIf="achievement.unlocked && achievement.unlockedDate">
+            Unlocked {{ formatDate(achievement.unlockedDate) }}
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Recent Sessions -->
+  <div class="sessions-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="time-outline"></ion-icon>
+        Recent Sessions
+      </h2>
+    </div>
+
+    <ion-list class="sessions-list">
+      <ion-item *ngFor="let session of recentSessions" class="session-item">
+        <ion-thumbnail slot="start" class="session-thumbnail">
+          <div class="session-type-icon" [class]="'type-' + session.type">
+            <ion-icon [name]="getSessionTypeIcon(session.type)" [color]="getSessionTypeColor(session.type)"></ion-icon>
+          </div>
+        </ion-thumbnail>
+        
+        <ion-label>
+          <h3>{{ session.title }}</h3>
+          <p>{{ formatDate(session.date) }} • {{ session.duration }} min</p>
+          <div class="session-meta">
+            <ion-chip [color]="getDifficultyColor(session.difficulty)" size="small">
+              {{ session.difficulty }}
+            </ion-chip>
+            <div class="session-rating" *ngIf="session.rating">
+              <ion-icon *ngFor="let star of generateStars(session.rating)" [name]="star" color="warning" size="small"></ion-icon>
+            </div>
+          </div>
+        </ion-label>
+
+        <ion-note slot="end" class="session-status">
+          <ion-icon name="checkmark-circle" color="success" *ngIf="session.completed"></ion-icon>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Analytics Timeframe (for future expansion) -->
+  <div class="analytics-section" style="display: none;">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        Analytics
+      </h2>
+    </div>
+
+    <ion-segment [(ngModel)]="selectedTimeframe" (ionChange)="onTimeframeChange()" class="timeframe-segment">
+      <ion-segment-button value="week">
+        <ion-label>Week</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="month">
+        <ion-label>Month</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="year">
+        <ion-label>Year</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
 </ion-content>

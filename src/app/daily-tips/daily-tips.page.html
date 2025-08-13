@@ -1,13 +1,234 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>daily-tips</ion-title>
+    <ion-title>Daily Tips</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">daily-tips</ion-title>
+      <ion-title size="large">Daily Tips</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Daily Featured Tip -->
+  <div class="featured-tip-section" *ngIf="dailyTip">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="star" color="warning"></ion-icon>
+        Today's Featured Tip
+      </h2>
+    </div>
+    
+    <ion-card class="featured-tip-card" (click)="markAsRead(dailyTip)">
+      <div class="tip-header">
+        <div class="tip-category">
+          <ion-chip [color]="getCategoryInfo(dailyTip.category).color">
+            <ion-icon [name]="getCategoryInfo(dailyTip.category).icon"></ion-icon>
+            <ion-label>{{ getCategoryInfo(dailyTip.category).name }}</ion-label>
+          </ion-chip>
+        </div>
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="toggleFavorite(dailyTip); $event.stopPropagation()">
+          <ion-icon 
+            [name]="dailyTip.isFavorite ? 'heart' : 'heart-outline'" 
+            [color]="dailyTip.isFavorite ? 'danger' : 'medium'">
+          </ion-icon>
+        </ion-button>
+      </div>
+      
+      <ion-card-content>
+        <h3>{{ dailyTip.title }}</h3>
+        <p>{{ dailyTip.content }}</p>
+        
+        <div class="tip-meta">
+          <span class="read-time">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ getReadTimeText(dailyTip.readTime) }}
+          </span>
+          <ion-badge [color]="getDifficultyColor(dailyTip.difficulty)">
+            {{ dailyTip.difficulty }}
+          </ion-badge>
+          <span class="read-status" *ngIf="!dailyTip.isRead">
+            <ion-icon name="radio-button-off" color="primary"></ion-icon>
+            New
+          </span>
+        </div>
+        
+        <div class="tip-tags">
+          <ion-chip *ngFor="let tag of dailyTip.tags" color="light" outline>
+            <ion-label>{{ tag }}</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="search-filter-section">
+    <ion-searchbar 
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchChange()"
+      placeholder="Search tips..."
+      debounce="300">
+    </ion-searchbar>
+    
+    <div class="filter-controls">
+      <ion-segment [(ngModel)]="selectedFilter" (ionChange)="onFilterChange()">
+        <ion-segment-button value="all">
+          <ion-label>All</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="favorites">
+          <ion-label>Favorites</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="unread">
+          <ion-label>Unread</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="categories-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="apps-outline"></ion-icon>
+        Categories
+      </h2>
+    </div>
+    
+    <div class="categories-grid">
+      <div 
+        class="category-card" 
+        *ngFor="let category of categories"
+        [class.active]="selectedCategory === category.id"
+        (click)="selectedCategory = category.id; onCategoryChange()">
+        <ion-icon [name]="category.icon" [color]="category.color"></ion-icon>
+        <h4>{{ category.name }}</h4>
+        <p>{{ category.description }}</p>
+        <div class="tip-count">
+          {{ getCategoryTipCount(category.id) }} tips
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips List -->
+  <div class="tips-section">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="library-outline"></ion-icon>
+        {{ selectedCategory === 'all' ? 'All Tips' : getCategoryInfo(selectedCategory).name + ' Tips' }}
+        <span class="tip-count">({{ filteredTips.length }})</span>
+      </h2>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredTips.length === 0">
+      <ion-icon name="document-text-outline" size="large"></ion-icon>
+      <h3>No tips found</h3>
+      <p>Try adjusting your search or filter criteria</p>
+      <ion-button fill="clear" (click)="selectedCategory = 'all'; selectedFilter = 'all'; searchQuery = ''; filterTips()">
+        Show All Tips
+      </ion-button>
+    </div>
+
+    <!-- Tips Grid -->
+    <div class="tips-grid" *ngIf="filteredTips.length > 0">
+      <ion-card 
+        class="tip-card" 
+        *ngFor="let tip of filteredTips" 
+        (click)="markAsRead(tip)"
+        [class.unread]="!tip.isRead">
+        
+        <div class="tip-header">
+          <div class="tip-category">
+            <ion-chip [color]="getCategoryInfo(tip.category).color" size="small">
+              <ion-icon [name]="getCategoryInfo(tip.category).icon"></ion-icon>
+              <ion-label>{{ getCategoryInfo(tip.category).name }}</ion-label>
+            </ion-chip>
+          </div>
+          <div class="tip-actions">
+            <ion-button 
+              fill="clear" 
+              size="small" 
+              (click)="toggleFavorite(tip); $event.stopPropagation()">
+              <ion-icon 
+                [name]="tip.isFavorite ? 'heart' : 'heart-outline'" 
+                [color]="tip.isFavorite ? 'danger' : 'medium'">
+              </ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <ion-card-content>
+          <h4>{{ tip.title }}</h4>
+          <p>{{ tip.content | slice:0:120 }}{{ tip.content.length > 120 ? '...' : '' }}</p>
+          
+          <div class="tip-meta">
+            <span class="read-time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ getReadTimeText(tip.readTime) }}
+            </span>
+            <ion-badge [color]="getDifficultyColor(tip.difficulty)" size="small">
+              {{ tip.difficulty }}
+            </ion-badge>
+            <span class="tip-date">{{ formatDate(tip.date) }}</span>
+          </div>
+          
+          <div class="tip-footer">
+            <div class="tip-tags">
+              <ion-chip 
+                *ngFor="let tag of tip.tags | slice:0:2" 
+                color="light" 
+                outline 
+                size="small">
+                <ion-label>{{ tag }}</ion-label>
+              </ion-chip>
+              <span *ngIf="tip.tags.length > 2" class="more-tags">+{{ tip.tags.length - 2 }}</span>
+            </div>
+            <div class="read-indicator" *ngIf="!tip.isRead">
+              <ion-badge color="primary" size="small">New</ion-badge>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Favorites Section (if any) -->
+  <div class="favorites-section" *ngIf="favoriteTips.length > 0 && selectedCategory === 'all' && selectedFilter === 'all'">
+    <div class="section-header">
+      <h2>
+        <ion-icon name="heart" color="danger"></ion-icon>
+        Your Favorites
+      </h2>
+    </div>
+    
+    <div class="favorites-scroll">
+      <ion-card 
+        class="favorite-tip-card" 
+        *ngFor="let tip of favoriteTips | slice:0:5" 
+        (click)="markAsRead(tip)">
+        <ion-card-content>
+          <div class="favorite-header">
+            <ion-chip [color]="getCategoryInfo(tip.category).color" size="small">
+              <ion-icon [name]="getCategoryInfo(tip.category).icon"></ion-icon>
+              <ion-label>{{ getCategoryInfo(tip.category).name }}</ion-label>
+            </ion-chip>
+          </div>
+          <h5>{{ tip.title }}</h5>
+          <div class="favorite-meta">
+            <span class="read-time">{{ getReadTimeText(tip.readTime) }}</span>
+            <ion-badge [color]="getDifficultyColor(tip.difficulty)" size="small">
+              {{ tip.difficulty }}
+            </ion-badge>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
 </ion-content>

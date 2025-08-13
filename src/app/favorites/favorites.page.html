@@ -1,13 +1,249 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>favorites</ion-title>
+    <ion-title>My Favorites</ion-title>
+    <ion-button 
+      slot="end" 
+      fill="clear" 
+      (click)="toggleViewMode()"
+      [title]="viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'">
+      <ion-icon [name]="viewMode === 'grid' ? 'list-outline' : 'grid-outline'"></ion-icon>
+    </ion-button>
+    <ion-button 
+      slot="end" 
+      fill="clear" 
+      (click)="toggleSelectionMode()"
+      [color]="isSelectionMode ? 'primary' : 'medium'">
+      <ion-icon name="checkmark-circle"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">favorites</ion-title>
+      <ion-title size="large">My Favorites</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Search and Filter Section -->
+  <div class="search-filter-section">
+    <ion-searchbar 
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearchChange()"
+      placeholder="Search favorites..."
+      debounce="300">
+    </ion-searchbar>
+
+    <!-- Category Filter -->
+    <ion-segment [(ngModel)]="selectedCategory" (ionChange)="onCategoryChange()" class="category-segment">
+      <ion-segment-button 
+        *ngFor="let category of categories" 
+        [value]="category.id"
+        class="category-button">
+        <ion-icon [name]="category.icon" [color]="category.color"></ion-icon>
+        <ion-label>{{ category.name }}</ion-label>
+        <ion-badge [color]="category.color" *ngIf="category.count > 0">{{ category.count }}</ion-badge>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Selection Mode Controls -->
+  <div class="selection-controls" *ngIf="isSelectionMode">
+    <div class="selection-info">
+      <span>{{ getSelectedCount() }} of {{ filteredItems.length }} selected</span>
+    </div>
+    <div class="selection-actions">
+      <ion-button fill="clear" color="danger" (click)="removeSelectedFavorites()" [disabled]="selectedItems.size === 0">
+        <ion-icon name="heart-outline"></ion-icon>
+        Remove
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredItems.length === 0">
+    <ion-icon name="heart-outline"></ion-icon>
+    <h3 *ngIf="selectedCategory === 'all' && searchQuery === ''">No Favorites Yet</h3>
+    <h3 *ngIf="selectedCategory !== 'all' || searchQuery !== ''">No Results Found</h3>
+    <p *ngIf="selectedCategory === 'all' && searchQuery === ''">
+      Start adding items to your favorites by tapping the heart icon on poses, sequences, and more!
+    </p>
+    <p *ngIf="selectedCategory !== 'all' || searchQuery !== ''">
+      Try adjusting your search or filter criteria to find your favorite content.
+    </p>
+    <ion-button fill="clear" (click)="selectedCategory = 'all'; searchQuery = ''; filterItems()" *ngIf="selectedCategory !== 'all' || searchQuery !== ''">
+      Clear Filters
+    </ion-button>
+  </div>
+
+  <!-- Grid View -->
+  <div class="favorites-grid" *ngIf="viewMode === 'grid' && filteredItems.length > 0">
+    <ion-card 
+      *ngFor="let item of filteredItems" 
+      class="favorite-card"
+      [class.selected]="isItemSelected(item.id)"
+      (click)="isSelectionMode ? toggleItemSelection(item.id) : playItem(item)">
+      
+      <!-- Selection Checkbox -->
+      <ion-checkbox 
+        *ngIf="isSelectionMode"
+        class="selection-checkbox"
+        [checked]="isItemSelected(item.id)"
+        (ionChange)="toggleItemSelection(item.id)">
+      </ion-checkbox>
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="item-type">
+          <ion-chip [color]="getTypeColor(item.type)" size="small">
+            <ion-icon [name]="getTypeIcon(item.type)"></ion-icon>
+            <ion-label>{{ item.type | titlecase }}</ion-label>
+          </ion-chip>
+        </div>
+        <div class="card-actions" *ngIf="!isSelectionMode">
+          <ion-button fill="clear" size="small" (click)="removeFavorite(item); $event.stopPropagation()">
+            <ion-icon name="heart" color="danger"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="shareItem(item); $event.stopPropagation()">
+            <ion-icon name="share-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Card Content -->
+      <ion-card-content>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        
+        <!-- Item Meta -->
+        <div class="item-meta">
+          <div class="duration" *ngIf="item.duration">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ formatDuration(item.duration) }}</span>
+          </div>
+          <div class="difficulty">
+            <ion-badge [color]="getDifficultyColor(item.difficulty)" size="small">
+              {{ item.difficulty }}
+            </ion-badge>
+          </div>
+          <div class="rating">
+            <ion-icon *ngFor="let star of generateStars(item.rating)" [name]="star" color="warning" size="small"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="benefits" *ngIf="item.benefits && item.benefits.length > 0">
+          <ion-chip *ngFor="let benefit of item.benefits.slice(0, 2)" color="light" size="small">
+            {{ benefit }}
+          </ion-chip>
+          <span *ngIf="item.benefits.length > 2" class="more-benefits">+{{ item.benefits.length - 2 }} more</span>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+          <div class="date-added">
+            Added {{ formatDate(item.dateAdded) }}
+          </div>
+          <div class="download-status" *ngIf="item.isDownloaded">
+            <ion-icon name="download-outline" color="success"></ion-icon>
+          </div>
+        </div>
+      </ion-card-content>
+
+      <!-- Play Button Overlay -->
+      <div class="play-overlay" *ngIf="!isSelectionMode">
+        <ion-button fill="clear" size="large" class="play-button">
+          <ion-icon name="play-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card>
+  </div>
+
+  <!-- List View -->
+  <ion-list class="favorites-list" *ngIf="viewMode === 'list' && filteredItems.length > 0">
+    <ion-item 
+      *ngFor="let item of filteredItems" 
+      class="favorite-item"
+      [class.selected]="isItemSelected(item.id)"
+      (click)="isSelectionMode ? toggleItemSelection(item.id) : playItem(item)">
+      
+      <!-- Selection Checkbox -->
+      <ion-checkbox 
+        slot="start"
+        *ngIf="isSelectionMode"
+        [checked]="isItemSelected(item.id)"
+        (ionChange)="toggleItemSelection(item.id)">
+      </ion-checkbox>
+
+      <!-- Item Thumbnail -->
+      <ion-thumbnail slot="start" *ngIf="!isSelectionMode">
+        <div class="item-thumbnail" [class]="'type-' + item.type">
+          <ion-icon [name]="getTypeIcon(item.type)" [color]="getTypeColor(item.type)"></ion-icon>
+        </div>
+      </ion-thumbnail>
+
+      <!-- Item Content -->
+      <ion-label>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.description }}</p>
+        <div class="item-details">
+          <ion-chip [color]="getTypeColor(item.type)" size="small">
+            {{ item.type | titlecase }}
+          </ion-chip>
+          <ion-badge [color]="getDifficultyColor(item.difficulty)" size="small">
+            {{ item.difficulty }}
+          </ion-badge>
+          <span class="duration" *ngIf="item.duration">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ formatDuration(item.duration) }}
+          </span>
+          <div class="rating">
+            <ion-icon *ngFor="let star of generateStars(item.rating)" [name]="star" color="warning" size="small"></ion-icon>
+          </div>
+        </div>
+      </ion-label>
+
+      <!-- Item Actions -->
+      <div slot="end" class="item-actions" *ngIf="!isSelectionMode">
+        <ion-button fill="clear" size="small" (click)="removeFavorite(item); $event.stopPropagation()">
+          <ion-icon name="heart" color="danger"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" size="small" (click)="downloadItem(item); $event.stopPropagation()" *ngIf="!item.isDownloaded">
+          <ion-icon name="download-outline"></ion-icon>
+        </ion-button>
+        <ion-icon name="download-outline" color="success" *ngIf="item.isDownloaded"></ion-icon>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Statistics Section -->
+  <div class="stats-section" *ngIf="filteredItems.length > 0">
+    <ion-card class="stats-card">
+      <ion-card-content>
+        <h4>Your Collection</h4>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ getFavoritesCount() }}</div>
+            <div class="stat-label">Total Favorites</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ getDownloadedCount() }}</div>
+            <div class="stat-label">Downloaded</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ getRecentlyAccessedCount() }}</div>
+            <div class="stat-label">Recent</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!isSelectionMode">
+    <ion-fab-button color="primary">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

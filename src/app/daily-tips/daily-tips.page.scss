@@ -1,0 +1,540 @@
+// Daily Tips Page Styles
+
+:host {
+  --tips-primary: #667eea;
+  --tips-secondary: #764ba2;
+  --tips-success: #10b981;
+  --tips-warning: #f59e0b;
+  --tips-danger: #ef4444;
+  --tips-card-radius: 16px;
+  --tips-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+// Section Headers
+.section-header {
+  padding: 1.5rem 1rem 1rem;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    ion-icon {
+      font-size: 1.5rem;
+    }
+
+    .tip-count {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ion-color-medium);
+      margin-left: 0.5rem;
+    }
+  }
+}
+
+// Featured Tip Section
+.featured-tip-section {
+  background: linear-gradient(135deg, var(--tips-primary), var(--tips-secondary));
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+
+  .section-header {
+    padding-bottom: 0.5rem;
+
+    h2 {
+      color: white;
+    }
+  }
+
+  .featured-tip-card {
+    margin: 0 1rem;
+    border-radius: var(--tips-card-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .tip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1rem 1rem 0;
+
+      .tip-category {
+        flex: 1;
+      }
+    }
+
+    ion-card-content {
+      padding: 0.5rem 1rem 1.5rem;
+
+      h3 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin: 0 0 1rem 0;
+        line-height: 1.3;
+      }
+
+      p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ion-color-step-600);
+        margin: 0 0 1.5rem 0;
+      }
+
+      .tip-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+
+        .read-time {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+
+          ion-icon {
+            font-size: 1rem;
+          }
+        }
+
+        .read-status {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.85rem;
+          color: var(--tips-primary);
+          font-weight: 600;
+
+          ion-icon {
+            font-size: 1rem;
+          }
+        }
+      }
+
+      .tip-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        ion-chip {
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+}
+
+// Search and Filter Section
+.search-filter-section {
+  padding: 0 1rem 1rem;
+
+  ion-searchbar {
+    --border-radius: 12px;
+    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
+
+  .filter-controls {
+    ion-segment {
+      --border-radius: 12px;
+      --background: var(--ion-color-step-50);
+
+      ion-segment-button {
+        --indicator-color: var(--tips-primary);
+        --color-checked: white;
+        --color: var(--ion-color-medium);
+
+        &.segment-button-checked {
+          --background: var(--tips-primary);
+        }
+      }
+    }
+  }
+}
+
+// Categories Section
+.categories-section {
+  margin-bottom: 2rem;
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .category-card {
+      background: var(--ion-color-step-50);
+      border-radius: var(--tips-card-radius);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--tips-shadow);
+      }
+
+      &.active {
+        border-color: var(--tips-primary);
+        background: var(--ion-color-primary-tint);
+      }
+
+      ion-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        display: block;
+      }
+
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        margin: 0 0 0.5rem 0;
+      }
+
+      p {
+        font-size: 0.8rem;
+        color: var(--ion-color-medium);
+        line-height: 1.4;
+        margin: 0 0 0.5rem 0;
+      }
+
+      .tip-count {
+        font-size: 0.75rem;
+        color: var(--ion-color-step-400);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Tips Section
+.tips-section {
+  .tips-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 1rem 2rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tip-card {
+      border-radius: var(--tips-card-radius);
+      box-shadow: var(--tips-shadow);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid var(--ion-color-step-150);
+      margin: 0;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      &.unread {
+        border-left: 4px solid var(--tips-primary);
+      }
+
+      .tip-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 1rem 1rem 0;
+
+        .tip-category {
+          flex: 1;
+        }
+
+        .tip-actions {
+          flex-shrink: 0;
+        }
+      }
+
+      ion-card-content {
+        padding: 0.5rem 1rem 1rem;
+
+        h4 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.75rem 0;
+          line-height: 1.3;
+        }
+
+        p {
+          font-size: 0.9rem;
+          line-height: 1.5;
+          color: var(--ion-color-step-600);
+          margin: 0 0 1rem 0;
+        }
+
+        .tip-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+
+          .read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--ion-color-medium);
+
+            ion-icon {
+              font-size: 0.9rem;
+            }
+          }
+
+          .tip-date {
+            font-size: 0.8rem;
+            color: var(--ion-color-step-400);
+          }
+        }
+
+        .tip-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .tip-tags {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+            flex: 1;
+
+            ion-chip {
+              font-size: 0.7rem;
+            }
+
+            .more-tags {
+              font-size: 0.7rem;
+              color: var(--ion-color-medium);
+              margin-left: 0.25rem;
+            }
+          }
+
+          .read-indicator {
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Favorites Section
+.favorites-section {
+  margin-bottom: 2rem;
+
+  .favorites-scroll {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .favorite-tip-card {
+      flex: 0 0 250px;
+      scroll-snap-align: start;
+      border-radius: var(--tips-card-radius);
+      box-shadow: var(--tips-shadow);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0;
+      border: 1px solid var(--tips-danger);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+      }
+
+      ion-card-content {
+        padding: 1rem;
+
+        .favorite-header {
+          margin-bottom: 0.75rem;
+        }
+
+        h5 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.75rem 0;
+          line-height: 1.3;
+        }
+
+        .favorite-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          .read-time {
+            font-size: 0.8rem;
+            color: var(--ion-color-medium);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+    color: var(--ion-color-medium);
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0 0 0.75rem 0;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin: 0 0 1.5rem 0;
+    max-width: 280px;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+
+    .category-card {
+      padding: 1rem;
+
+      ion-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      h4 {
+        font-size: 0.9rem;
+      }
+
+      p {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .tips-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem 2rem;
+  }
+
+  .featured-tip-card {
+    margin: 0 0.5rem;
+
+    ion-card-content {
+      h3 {
+        font-size: 1.2rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .favorites-scroll {
+    padding: 0 0.5rem;
+
+    .favorite-tip-card {
+      flex: 0 0 220px;
+    }
+  }
+
+  .section-header {
+    padding: 1rem 0.5rem 0.75rem;
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+
+  .search-filter-section {
+    padding: 0 0.5rem 1rem;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .category-card,
+  .tip-card,
+  .favorite-tip-card,
+  .featured-tip-card {
+    background: var(--ion-color-step-50);
+    border-color: var(--ion-color-step-200);
+  }
+
+  .featured-tip-section {
+    .featured-tip-card {
+      background: var(--ion-color-step-100);
+    }
+  }
+}
+
+// Custom filter pipe styles
+.filter-badge {
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+}

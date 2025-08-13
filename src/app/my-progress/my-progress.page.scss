@@ -1,0 +1,644 @@
+// My Progress Page Styles
+
+:host {
+  --progress-primary: #667eea;
+  --progress-secondary: #764ba2;
+  --progress-success: #10b981;
+  --progress-warning: #f59e0b;
+  --progress-danger: #ef4444;
+  --progress-card-radius: 16px;
+  --progress-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --progress-gradient: linear-gradient(135deg, var(--progress-primary), var(--progress-secondary));
+}
+
+// Section Headers
+.section-header {
+  padding: 1.5rem 1rem 1rem;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    ion-icon {
+      font-size: 1.5rem;
+    }
+
+    .achievement-count {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ion-color-medium);
+      margin-left: 0.5rem;
+    }
+  }
+}
+
+// Overview Section
+.overview-section {
+  background: var(--progress-gradient);
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+
+  .section-header {
+    padding-bottom: 0.5rem;
+
+    h2 {
+      color: white;
+    }
+  }
+
+  .level-card {
+    margin: 0 1rem;
+    border-radius: var(--progress-card-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    margin-bottom: 1rem;
+
+    .level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .level-info {
+        h3 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.25rem 0;
+        }
+
+        p {
+          font-size: 0.9rem;
+          color: var(--ion-color-medium);
+          margin: 0;
+        }
+      }
+
+      .level-badge {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--progress-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        ion-icon {
+          font-size: 1.5rem;
+          color: white;
+        }
+      }
+    }
+
+    .xp-text {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+      margin-top: 0.5rem;
+    }
+
+    ion-progress-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+  }
+
+  .stats-grid {
+    padding: 0 1rem;
+
+    .stat-card {
+      border-radius: var(--progress-card-radius);
+      box-shadow: var(--progress-shadow);
+      margin: 0;
+      text-align: center;
+
+      ion-card-content {
+        padding: 1.5rem 1rem;
+
+        .stat-icon {
+          margin-bottom: 0.75rem;
+
+          ion-icon {
+            font-size: 2rem;
+          }
+        }
+
+        .stat-value {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--ion-color-dark);
+          margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Activity Section
+.activity-section {
+  margin-bottom: 2rem;
+
+  .activity-card {
+    margin: 0 1rem;
+    border-radius: var(--progress-card-radius);
+    box-shadow: var(--progress-shadow);
+
+    .activity-timeline {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      .activity-day {
+        flex: 1;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+
+        &.completed {
+          background: var(--ion-color-success-tint);
+          border: 2px solid var(--ion-color-success);
+
+          .day-indicator {
+            .sessions-count {
+              background: var(--ion-color-success);
+              color: white;
+            }
+          }
+        }
+
+        &.empty {
+          opacity: 0.5;
+
+          .day-indicator ion-icon {
+            color: var(--ion-color-medium);
+          }
+        }
+
+        .day-name {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: var(--ion-color-medium);
+          margin-bottom: 0.5rem;
+        }
+
+        .day-indicator {
+          margin-bottom: 0.5rem;
+
+          .sessions-count {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--ion-color-step-150);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ion-color-dark);
+          }
+
+          ion-icon {
+            font-size: 1.5rem;
+          }
+        }
+
+        .day-date {
+          font-size: 0.8rem;
+          color: var(--ion-color-step-600);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Goals Section
+.goals-section {
+  margin-bottom: 2rem;
+
+  .goals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .goal-card {
+      border-radius: var(--progress-card-radius);
+      box-shadow: var(--progress-shadow);
+      margin: 0;
+
+      ion-card-content {
+        padding: 1.5rem 1rem;
+
+        .goal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+
+          .goal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ion-color-step-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            ion-icon {
+              font-size: 1.25rem;
+            }
+          }
+
+          .goal-progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ion-color-step-50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--ion-color-step-200);
+
+            .progress-value {
+              font-size: 0.7rem;
+              font-weight: 600;
+              color: var(--ion-color-dark);
+            }
+          }
+        }
+
+        h4 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.5rem 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+          margin: 0 0 1rem 0;
+        }
+
+        ion-progress-bar {
+          height: 6px;
+          border-radius: 3px;
+        }
+      }
+    }
+  }
+}
+
+// Achievements Section
+.achievements-section {
+  margin-bottom: 2rem;
+
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .achievement-card {
+      border-radius: var(--progress-card-radius);
+      box-shadow: var(--progress-shadow);
+      margin: 0;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+
+      &.unlocked {
+        border-color: var(--ion-color-success);
+        background: var(--ion-color-success-tint);
+      }
+
+      &:not(.unlocked) {
+        opacity: 0.7;
+      }
+
+      ion-card-content {
+        padding: 1.5rem 1rem;
+        position: relative;
+
+        .achievement-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+
+          .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ion-color-step-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--ion-color-step-200);
+
+            &.unlocked {
+              background: var(--ion-color-success-tint);
+              border-color: var(--ion-color-success);
+            }
+
+            ion-icon {
+              font-size: 1.5rem;
+            }
+          }
+
+          .unlocked-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            ion-icon {
+              font-size: 0.8rem;
+            }
+          }
+        }
+
+        h4 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.5rem 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+          margin: 0 0 1rem 0;
+          line-height: 1.4;
+        }
+
+        .achievement-progress {
+          margin-bottom: 1rem;
+
+          .progress-text {
+            font-size: 0.8rem;
+            color: var(--ion-color-step-600);
+            margin-bottom: 0.5rem;
+          }
+
+          ion-progress-bar {
+            height: 6px;
+            border-radius: 3px;
+          }
+        }
+
+        .unlocked-date {
+          font-size: 0.75rem;
+          color: var(--ion-color-success);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// Sessions Section
+.sessions-section {
+  margin-bottom: 2rem;
+
+  .sessions-list {
+    margin: 0 1rem;
+    border-radius: var(--progress-card-radius);
+    box-shadow: var(--progress-shadow);
+    overflow: hidden;
+
+    .session-item {
+      --padding-start: 1rem;
+      --padding-end: 1rem;
+      --inner-padding-end: 0;
+
+      .session-thumbnail {
+        margin-right: 1rem;
+
+        .session-type-icon {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--ion-color-step-100);
+
+          &.type-yoga {
+            background: var(--ion-color-primary-tint);
+          }
+
+          &.type-meditation {
+            background: var(--ion-color-secondary-tint);
+          }
+
+          &.type-breathing {
+            background: var(--ion-color-tertiary-tint);
+          }
+
+          &.type-challenge {
+            background: var(--ion-color-warning-tint);
+          }
+
+          ion-icon {
+            font-size: 1.25rem;
+          }
+        }
+      }
+
+      ion-label {
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          margin: 0 0 0.25rem 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: var(--ion-color-medium);
+          margin: 0 0 0.75rem 0;
+        }
+
+        .session-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          .session-rating {
+            display: flex;
+            gap: 0.125rem;
+
+            ion-icon {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+
+      .session-status {
+        display: flex;
+        align-items: center;
+
+        ion-icon {
+          font-size: 1.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Analytics Section (hidden by default)
+.analytics-section {
+  margin-bottom: 2rem;
+
+  .timeframe-segment {
+    margin: 0 1rem;
+    --border-radius: 12px;
+    --background: var(--ion-color-step-50);
+
+    ion-segment-button {
+      --indicator-color: var(--progress-primary);
+      --color-checked: white;
+      --color: var(--ion-color-medium);
+
+      &.segment-button-checked {
+        --background: var(--progress-primary);
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .goals-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+
+    .goal-card ion-card-content {
+      padding: 1rem;
+    }
+  }
+
+  .achievements-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+
+    .achievement-card ion-card-content {
+      padding: 1rem;
+    }
+  }
+
+  .overview-section {
+    .level-card {
+      margin: 0 0.5rem;
+    }
+
+    .stats-grid {
+      padding: 0 0.5rem;
+
+      .stat-card ion-card-content {
+        padding: 1rem;
+
+        .stat-value {
+          font-size: 1.25rem;
+        }
+      }
+    }
+  }
+
+  .activity-section .activity-card {
+    margin: 0 0.5rem;
+
+    .activity-timeline .activity-day {
+      padding: 0.5rem 0.25rem;
+
+      .day-indicator .sessions-count {
+        width: 25px;
+        height: 25px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .sessions-section .sessions-list {
+    margin: 0 0.5rem;
+
+    .session-item {
+      .session-thumbnail .session-type-icon {
+        width: 40px;
+        height: 40px;
+
+        ion-icon {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .section-header {
+    padding: 1rem 0.5rem 0.75rem;
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .level-card,
+  .stat-card,
+  .activity-card,
+  .goal-card,
+  .achievement-card,
+  .sessions-list {
+    background: var(--ion-color-step-50);
+    border-color: var(--ion-color-step-200);
+  }
+
+  .achievement-card.unlocked {
+    background: var(--ion-color-success-shade);
+  }
+}
+
+// Animation for unlocked achievements
+.achievement-card.unlocked {
+  animation: unlockPulse 2s ease-in-out infinite;
+}
+
+@keyframes unlockPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
