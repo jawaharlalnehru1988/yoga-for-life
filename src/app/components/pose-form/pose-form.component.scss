@@ -1,0 +1,283 @@
+.pose-form-modal {
+  --max-width: 90%;
+  --max-height: 90%;
+  --border-radius: 12px;
+}
+
+ion-content {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+h3 {
+  color: var(--ion-color-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.section-description {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+ion-card {
+  margin: 0 0 16px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 16px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  ion-label {
+    font-weight: 500;
+    
+    &[position="stacked"] {
+      color: var(--ion-color-primary);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+  }
+  
+  ion-input, ion-textarea, ion-select {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    border: 2px solid var(--ion-color-light);
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    
+    &:focus, &.ion-focused {
+      border-color: var(--ion-color-primary);
+    }
+    
+    &.ion-invalid {
+      border-color: var(--ion-color-danger);
+    }
+  }
+  
+  ion-note[slot="error"] {
+    color: var(--ion-color-danger);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+}
+
+// Checkbox grid layout
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+  
+  ion-item {
+    margin-bottom: 8px;
+    --min-height: 40px;
+    
+    ion-checkbox {
+      margin-right: 12px;
+    }
+    
+    ion-label {
+      font-size: 0.9rem;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Dynamic items (chips)
+.dynamic-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  
+  ion-chip {
+    --background: var(--ion-color-primary-tint);
+    --color: var(--ion-color-primary-shade);
+    border-radius: 20px;
+    
+    ion-icon {
+      cursor: pointer;
+      margin-left: 8px;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: var(--ion-color-danger);
+      }
+    }
+    
+    &[color="secondary"] {
+      --background: var(--ion-color-secondary-tint);
+      --color: var(--ion-color-secondary-shade);
+    }
+    
+    &[color="tertiary"] {
+      --background: var(--ion-color-tertiary-tint);
+      --color: var(--ion-color-tertiary-shade);
+    }
+    
+    &[color="warning"] {
+      --background: var(--ion-color-warning-tint);
+      --color: var(--ion-color-warning-shade);
+    }
+  }
+}
+
+// Instruction list
+.instruction-list {
+  margin-top: 12px;
+  
+  ion-item {
+    --background: var(--ion-color-light);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    ion-label {
+      white-space: normal;
+      line-height: 1.5;
+    }
+    
+    .step-number {
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin-right: 8px;
+    }
+  }
+}
+
+// Form actions
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding: 20px 0;
+  
+  ion-button {
+    --border-radius: 8px;
+    height: 44px;
+    
+    &[fill="outline"] {
+      --border-width: 2px;
+    }
+    
+    &[type="submit"] {
+      min-width: 120px;
+    }
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+    
+    ion-spinner {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Header styling
+ion-header {
+  ion-toolbar {
+    --background: var(--ion-color-primary);
+    --color: white;
+    
+    ion-title {
+      font-weight: 600;
+    }
+    
+    ion-button[fill="clear"] {
+      --color: white;
+      
+      &:hover {
+        --background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  ion-content {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+  
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 8px;
+    
+    ion-button {
+      width: 100%;
+    }
+  }
+  
+  ion-card {
+    ion-card-content {
+      padding: 16px;
+    }
+  }
+}
+
+// Animation for form validation
+ion-item.ion-invalid ion-input,
+ion-item.ion-invalid ion-textarea {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+// Loading state
+.form-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Focus states
+ion-input:focus,
+ion-textarea:focus,
+ion-select:focus {
+  --highlight-color-focused: var(--ion-color-primary);
+}
+
+// Chip animations
+.dynamic-items ion-chip {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -520,15 +520,85 @@ ion-chip:focus,
   }
 }
 
+// Pose Actions
+.pose-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-color-light);
+
+  ion-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    width: 36px;
+    height: 36px;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+    
+    &[color="primary"] {
+      --background-hover: var(--ion-color-primary-tint);
+    }
+    
+    &[color="danger"] {
+      --background-hover: var(--ion-color-danger-tint);
+    }
+    
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// Floating Action Button
+ion-fab {
+  ion-fab-button {
+    --background: var(--ion-color-primary);
+    --color: white;
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --border-radius: 50%;
+    
+    &:hover {
+      --background: var(--ion-color-primary-shade);
+      transform: scale(1.05);
+    }
+    
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}
+
+// Modal styling
+.pose-form-modal {
+  --width: 90%;
+  --max-width: 800px;
+  --height: 90%;
+  --max-height: none;
+  --border-radius: 12px;
+  
+  @media (max-width: 768px) {
+    --width: 95%;
+    --height: 95%;
+  }
+}
+
 // Reduced motion support
 @media (prefers-reduced-motion: reduce) {
   .pose-card,
   .featured-card,
-  .pose-image-container img {
+  .pose-image-container img,
+  .pose-actions ion-button,
+  ion-fab ion-fab-button {
     transition: none;
   }
   
-  .pose-card:hover {
+  .pose-card:hover,
+  .pose-actions ion-button:hover,
+  ion-fab ion-fab-button:hover {
     transform: none;
   }
 }

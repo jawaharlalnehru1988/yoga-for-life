@@ -15,18 +15,13 @@ import {
   IonLabel,
   IonChip,
   IonBadge,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonItem,
   IonList,
   IonThumbnail,
-  IonNote,
   IonSearchbar,
   IonFab,
   IonFabButton,
-  IonCheckbox,
-  IonActionSheet
+  IonCheckbox
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -100,18 +95,13 @@ export interface FavoriteCategory {
     IonLabel,
     IonChip,
     IonBadge,
-    IonGrid,
-    IonRow,
-    IonCol,
     IonItem,
     IonList,
     IonThumbnail,
-    IonNote,
     IonSearchbar,
     IonFab,
     IonFabButton,
     IonCheckbox,
-    IonActionSheet,
     CommonModule, 
     FormsModule
   ]

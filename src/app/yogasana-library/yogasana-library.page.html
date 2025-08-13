@@ -235,6 +235,24 @@
             <span>{{ pose.duration }}</span>
           </div>
         </div>
+
+        <!-- Action Buttons -->
+        <div class="pose-actions">
+          <ion-button 
+            fill="clear" 
+            size="small"
+            color="primary"
+            (click)="editPose(pose, $event)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            size="small"
+            color="danger"
+            (click)="deletePose(pose, $event)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   </div>
@@ -276,4 +294,11 @@
       loading-text="Loading more poses...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNewPose()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
