@@ -1,0 +1,411 @@
+// Challenges Page Styles
+
+:host {
+  --challenges-primary: #667eea;
+  --challenges-secondary: #764ba2;
+  --challenges-success: #10b981;
+  --challenges-warning: #f59e0b;
+  --challenges-danger: #ef4444;
+}
+
+// Segment Navigation
+.challenges-tabs {
+  margin: 1rem;
+  border-radius: 12px;
+  background: var(--ion-color-step-50);
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  ion-segment-button {
+    --indicator-color: var(--challenges-primary);
+    --indicator-color-checked: var(--challenges-primary);
+    --color: var(--ion-color-medium);
+    --color-checked: white;
+    border-radius: 8px;
+    min-height: 44px;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &.segment-button-checked {
+      background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+    }
+
+    ion-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+}
+
+// Challenge Content Container
+.challenge-content {
+  padding-bottom: 2rem;
+}
+
+// Tab Content
+.tab-content {
+  padding: 1rem;
+}
+
+// Section Styling
+.section {
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 1.5rem 0;
+    padding: 0 0.5rem;
+  }
+}
+
+.featured-challenges {
+  margin-bottom: 3rem;
+  
+  h2 {
+    color: var(--challenges-primary);
+    text-align: center;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+      border-radius: 2px;
+    }
+  }
+}
+
+.all-challenges {
+  h2 {
+    margin-left: 0.5rem;
+  }
+}
+
+// Challenge Cards
+.challenge-card {
+  margin: 0 0 1rem 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--ion-color-step-150);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &.featured {
+    border: 2px solid var(--challenges-primary);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+    
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+    }
+  }
+
+  &.active {
+    border: 2px solid var(--challenges-success);
+  }
+
+  &.completed {
+    border: 2px solid var(--challenges-warning);
+    opacity: 0.9;
+  }
+}
+
+// Challenge Image
+.challenge-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .challenge-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.challenge-card:hover .challenge-image img {
+  transform: scale(1.05);
+}
+
+// Challenge Stats
+.challenge-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+
+    &.duration {
+      color: var(--challenges-primary);
+      font-weight: 600;
+    }
+
+    &.rating {
+      color: var(--challenges-warning);
+    }
+
+    &.participants {
+      color: var(--challenges-success);
+    }
+
+    &.difficulty {
+      padding: 2px 8px;
+      background: var(--ion-color-step-100);
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Card Content
+ion-card-content {
+  padding: 1.5rem;
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.3;
+  }
+
+  p {
+    color: var(--ion-color-step-600);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    
+    &[fill="clear"] {
+      --color: var(--challenges-primary);
+      
+      &:hover {
+        --background: var(--ion-color-primary-tint);
+      }
+    }
+
+    &[fill="solid"] {
+      --background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+      --color: white;
+    }
+
+    &[fill="outline"] {
+      --border-color: var(--challenges-primary);
+      --color: var(--challenges-primary);
+    }
+  }
+}
+
+// Progress Section for Active Challenges
+.progress-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--ion-color-step-50);
+  border-radius: 12px;
+
+  .progress-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  ion-progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    --progress-background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+  }
+}
+
+// Completion Info for Completed Challenges
+.completion-info {
+  margin: 1rem 0;
+
+  .completion-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    
+    span {
+      font-weight: 600;
+      color: var(--challenges-success);
+    }
+  }
+
+  .completion-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    span {
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+// Empty States
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  min-height: 50vh;
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+    color: var(--ion-color-medium);
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0 0 0.75rem 0;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin: 0 0 1.5rem 0;
+    max-width: 280px;
+    font-size: 0.95rem;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
+    --background: linear-gradient(135deg, var(--challenges-primary), var(--challenges-secondary));
+    --color: white;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .challenge-content {
+    padding-bottom: 1rem;
+  }
+
+  .tab-content {
+    padding: 0.5rem;
+  }
+
+  .section {
+    margin-bottom: 1.5rem;
+    
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .challenge-image {
+    height: 160px;
+  }
+
+  ion-card-content {
+    padding: 1rem;
+    
+    h3 {
+      font-size: 1.1rem;
+    }
+    
+    p {
+      font-size: 0.85rem;
+    }
+  }
+
+  .challenge-stats {
+    gap: 0.75rem;
+    
+    span {
+      font-size: 0.8rem;
+    }
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+    min-height: 40vh;
+    
+    ion-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    h2 {
+      font-size: 1.1rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .challenge-card {
+    background: var(--ion-color-step-50);
+    border-color: var(--ion-color-step-200);
+  }
+
+  .challenges-tabs {
+    background: var(--ion-color-step-100);
+  }
+
+  .progress-section {
+    background: var(--ion-color-step-100);
+  }
+}

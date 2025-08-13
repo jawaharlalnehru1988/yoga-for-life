@@ -1,0 +1,858 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+.challenge-banner {
+  position: relative;
+  height: 300px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+
+  .banner-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+
+  .banner-content {
+    color: white;
+    width: 100%;
+  }
+
+  .challenge-meta {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .difficulty-chip, .type-chip {
+      --background: rgba(255, 255, 255, 0.2);
+      --color: white;
+      font-size: 12px;
+      height: 24px;
+    }
+
+    .difficulty-beginner { --background: rgba(76, 175, 80, 0.8); }
+    .difficulty-intermediate { --background: rgba(255, 152, 0, 0.8); }
+    .difficulty-advanced { --background: rgba(244, 67, 54, 0.8); }
+  }
+
+  .challenge-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+
+  .challenge-short-desc {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+  }
+
+  .challenge-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      opacity: 0.9;
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.progress-overview {
+  padding: 20px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 1;
+
+  .progress-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        color: var(--ion-color-dark);
+      }
+
+      .progress-percentage {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--ion-color-primary);
+      }
+    }
+
+    .progress-bar-container {
+      margin-bottom: 20px;
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+          border-radius: 4px;
+          transition: width 0.3s ease;
+        }
+      }
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-around;
+
+      .stat {
+        text-align: center;
+
+        .stat-value {
+          display: block;
+          font-size: 20px;
+          font-weight: bold;
+          color: var(--ion-color-primary);
+        }
+
+        .stat-label {
+          font-size: 12px;
+          color: var(--ion-color-medium);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+  }
+}
+
+.action-buttons {
+  padding: 0 20px 20px;
+
+  .join-button {
+    --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    height: 56px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .joined-actions {
+    .practice-button {
+      --background: linear-gradient(135deg, #4CAF50, #45a049);
+      height: 56px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+
+      &[disabled] {
+        --background: var(--ion-color-medium);
+      }
+    }
+
+    .leave-button {
+      --color: var(--ion-color-danger);
+      --border-color: var(--ion-color-danger);
+      height: 48px;
+    }
+  }
+}
+
+.detail-tabs {
+  --background: white;
+  margin: 0 20px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  ion-segment-button {
+    --indicator-color: var(--ion-color-primary);
+    --color: var(--ion-color-medium);
+    --color-checked: var(--ion-color-primary);
+  }
+}
+
+.tab-content {
+  padding: 0 20px;
+}
+
+// Overview Tab Styles
+.overview-tab {
+  .description-section, 
+  .instructor-section, 
+  .goals-section, 
+  .rewards-section, 
+  .benefits-section, 
+  .requirements-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .description-text {
+    line-height: 1.6;
+    color: var(--ion-color-dark);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    &.expanded {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+      display: block;
+    }
+  }
+
+  .instructor-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .instructor-avatar {
+      ion-avatar {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    .instructor-info {
+      h4 {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        color: var(--ion-color-medium);
+        font-size: 14px;
+      }
+    }
+  }
+
+  .goals-list {
+    .goal-item {
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .goal-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+
+        .goal-icon {
+          font-size: 20px;
+
+          &.required {
+            color: var(--ion-color-primary);
+          }
+
+          &.optional {
+            color: var(--ion-color-medium);
+          }
+        }
+
+        h4 {
+          margin: 0;
+          flex: 1;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .goal-badge {
+          background: var(--ion-color-primary);
+          color: white;
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .goal-description {
+        margin: 0 0 8px 0;
+        color: var(--ion-color-dark);
+        line-height: 1.4;
+      }
+
+      .goal-target {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+
+        .goal-type {
+          font-style: italic;
+        }
+      }
+    }
+  }
+
+  .rewards-grid {
+    .reward-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      position: relative;
+
+      &.earned {
+        border-color: var(--ion-color-success);
+        background: rgba(76, 175, 80, 0.05);
+      }
+
+      .reward-badge {
+        width: 50px;
+        height: 50px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        ion-icon {
+          font-size: 24px;
+        }
+      }
+
+      .reward-info {
+        flex: 1;
+
+        h4 {
+          margin: 0 0 4px 0;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0 0 8px 0;
+          color: var(--ion-color-dark);
+          line-height: 1.4;
+        }
+
+        .reward-meta {
+          display: flex;
+          gap: 12px;
+          font-size: 12px;
+          color: var(--ion-color-medium);
+
+          .points {
+            font-weight: 600;
+            color: var(--ion-color-primary);
+          }
+        }
+      }
+
+      .earned-check {
+        color: var(--ion-color-success);
+        font-size: 24px;
+      }
+    }
+  }
+
+  .benefits-list {
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      .benefit-icon {
+        color: var(--ion-color-success);
+        font-size: 18px;
+      }
+
+      span {
+        line-height: 1.4;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+
+  .equipment-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .equipment-chip {
+      --background: var(--ion-color-light);
+      --color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Progress Tab Styles
+.progress-tab {
+  .not-joined-message {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .lock-icon {
+      font-size: 64px;
+      color: var(--ion-color-medium);
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .progress-summary {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .summary-card {
+      text-align: center;
+
+      h3 {
+        margin: 0 0 20px 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .circular-progress {
+        position: relative;
+        display: inline-block;
+
+        .progress-circle {
+          transform: rotate(-90deg);
+        }
+
+        .progress-stroke {
+          transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
+
+          .percentage {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--ion-color-primary);
+          }
+
+          .label {
+            font-size: 12px;
+            color: var(--ion-color-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+
+  .daily-calendar {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 12px;
+
+      .day-item {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        position: relative;
+
+        &.day-completed {
+          background: var(--ion-color-success);
+          color: white;
+        }
+
+        &.day-current {
+          background: var(--ion-color-primary);
+          color: white;
+          animation: pulse 2s infinite;
+        }
+
+        &.day-upcoming {
+          background: var(--ion-color-light);
+          color: var(--ion-color-medium);
+        }
+
+        &.day-locked {
+          background: #f8f9fa;
+          color: var(--ion-color-light);
+          pointer-events: none;
+        }
+
+        .day-number {
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        .day-date {
+          font-size: 10px;
+          opacity: 0.8;
+        }
+
+        .day-status {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+
+          ion-icon {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  .goal-progress {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .goal-progress-item {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .goal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        h4 {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .goal-progress-value {
+          font-size: 14px;
+          color: var(--ion-color-medium);
+        }
+      }
+
+      .goal-progress-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .progress-bar {
+          flex: 1;
+          height: 6px;
+          background: #e9ecef;
+          border-radius: 3px;
+          overflow: hidden;
+
+          .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+          }
+        }
+
+        .progress-percentage {
+          font-size: 12px;
+          color: var(--ion-color-medium);
+          min-width: 40px;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  .achievements {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .badges-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+
+      .earned-badge {
+        .badge-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          padding: 16px;
+          background: rgba(76, 175, 80, 0.1);
+          border-radius: 12px;
+          min-width: 80px;
+
+          ion-icon {
+            font-size: 32px;
+          }
+
+          span {
+            font-size: 12px;
+            text-align: center;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Community Tab Styles
+.community-tab {
+  .community-stats {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: var(--ion-color-light);
+        border-radius: 12px;
+
+        .stat-icon {
+          font-size: 32px;
+          color: var(--ion-color-primary);
+        }
+
+        .stat-info {
+          .stat-number {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--ion-color-dark);
+          }
+
+          .stat-label {
+            font-size: 12px;
+            color: var(--ion-color-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+
+  .coming-soon {
+    background: white;
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .coming-soon-icon {
+      font-size: 64px;
+      color: var(--ion-color-primary);
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin: 0 0 32px 0;
+      color: var(--ion-color-medium);
+      line-height: 1.5;
+    }
+
+    .upcoming-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ion-color-medium);
+        font-size: 14px;
+
+        ion-icon {
+          color: var(--ion-color-primary);
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--ion-color-primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--ion-color-primary-rgb), 0);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .challenge-banner {
+    height: 250px;
+
+    .challenge-title {
+      font-size: 24px;
+    }
+
+    .challenge-stats {
+      gap: 12px;
+
+      .stat {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .progress-overview .progress-card .progress-stats {
+    .stat {
+      .stat-value {
+        font-size: 18px;
+      }
+      
+      .stat-label {
+        font-size: 10px;
+      }
+    }
+  }
+
+  .daily-calendar .calendar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+
+    .day-item {
+      .day-number {
+        font-size: 14px;
+      }
+
+      .day-date {
+        font-size: 8px;
+      }
+    }
+  }
+
+  .community-tab .community-stats .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coming-soon .upcoming-features {
+    grid-template-columns: 1fr;
+  }
+}

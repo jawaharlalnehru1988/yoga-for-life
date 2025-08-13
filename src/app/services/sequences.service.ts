@@ -305,7 +305,7 @@ export class SequencesService {
       description: 'Perfect introduction to yoga with progressive daily sequences building strength, flexibility, and confidence.',
       duration: 21,
       sequences: ['seq005', 'seq006', 'seq007', 'seq002'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754926633/21-day-challenge_wvh8xp.jpg',
+      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012611/Perfect_introduction_wjql6h.png',
       isPremium: false
     },
     {
@@ -314,7 +314,7 @@ export class SequencesService {
       description: 'Week-long journey to reduce stress and find inner peace through gentle yoga practices.',
       duration: 7,
       sequences: ['seq002', 'seq008', 'seq006'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754926634/stress-relief-challenge_mxr2kv.jpg',
+      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012826/7-Day_Stress_Relief__t6ek7p.png',
       isPremium: false
     },
     {
@@ -323,7 +323,7 @@ export class SequencesService {
       description: 'Transform your flexibility with targeted stretching sequences designed to increase range of motion.',
       duration: 14,
       sequences: ['seq003', 'seq006', 'seq007'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754926635/flexibility-challenge_qw9erv.jpg',
+      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012958/14-Day_Flexibility_J_twnllw.png',
       isPremium: true
     }
   ];

@@ -1,0 +1,327 @@
+<ion-header [translucent]="true" class="session-header" [class.hidden]="sessionState.isActive && !sessionState.isPaused">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="stopSession()" fill="clear">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ technique?.name || 'Breathing Session' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleStats()" fill="clear">
+        <ion-icon name="stats-chart-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="session-content">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-animation">
+      <div class="breathing-loader"></div>
+    </div>
+    <h3>Preparing Your Session</h3>
+    <p>Setting up your breathing experience...</p>
+  </div>
+
+  <!-- Pre-Session Instructions -->
+  <div *ngIf="showInstructions && !isLoading" class="instructions-container">
+    <div class="instructions-content">
+      <div class="technique-preview">
+        <div class="preview-circle" [attr.data-category]="technique?.category">
+          <span class="technique-emoji">
+            {{ technique?.category === 'relaxation' ? '🧘' : 
+               technique?.category === 'energizing' ? '⚡' : 
+               technique?.category === 'sleep' ? '🌙' : 
+               technique?.category === 'focus' ? '🎯' : '🌬' }}
+          </span>
+        </div>
+        
+        <h2>{{ technique?.name }}</h2>
+        <p class="technique-description">{{ technique?.shortDescription }}</p>
+      </div>
+
+      <div class="session-details">
+        <div class="detail-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <div>
+            <strong>Duration</strong>
+            <span>{{ sessionSettings?.duration }} minutes</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <ion-icon name="analytics-outline"></ion-icon>
+          <div>
+            <strong>Pattern</strong>
+            <span>{{ technique?.pattern?.inhale || 0 }}-{{ technique?.pattern?.hold1 || 0 }}-{{ technique?.pattern?.exhale || 0 }}-{{ technique?.pattern?.hold2 || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <ion-icon name="volume-high-outline"></ion-icon>
+          <div>
+            <strong>Audio</strong>
+            <span>{{ sessionSettings?.voiceGuidance ? 'Voice guidance' : 'Silent' }} + {{ sessionSettings?.backgroundSound === 'none' ? 'No sound' : sessionSettings?.backgroundSound }}</span>
+          </div>
+        </div>
+      </div>
+
+        <div class="instructions-list">
+        <h3>How to Practice</h3>
+        <ng-container *ngIf="technique?.instructions">
+          <div class="instruction-item" *ngFor="let instruction of technique?.instructions?.slice(0, 3); let i = index">
+            <div class="step-number">{{ i + 1 }}</div>
+            <p>{{ instruction }}</p>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="ready-section">
+        <h3>Ready to Begin?</h3>
+        <p>Find a comfortable position and prepare to focus on your breath.</p>
+        
+        <ion-button 
+          expand="block" 
+          size="large"
+          class="start-button"
+          (click)="startSession()">
+          <ion-icon name="play-outline" slot="start"></ion-icon>
+          Start Breathing Session
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Session -->
+  <div *ngIf="sessionState.isActive && !isSessionComplete" class="active-session">
+    
+    <!-- Session Progress Bar -->
+    <div class="session-progress">
+      <ion-progress-bar 
+        [value]="sessionState.sessionProgress / 100"
+        color="primary">
+      </ion-progress-bar>
+      <div class="progress-text">
+        <span>{{ formatTime(sessionState.remainingTime) }} remaining</span>
+        <span>{{ Math.round(sessionState.sessionProgress) }}%</span>
+      </div>
+    </div>
+
+    <!-- Breathing Circle Animation -->
+    <div class="breathing-animation-container">
+      <div class="breathing-background">
+        <!-- Animated background elements -->
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+      </div>
+
+      <div 
+        #breathingCircle
+        class="breathing-circle"
+        [class]="animationClass"
+        [style.transform]="'scale(' + circleScale + ')'">
+        
+        <div class="circle-content">
+          <div class="phase-instruction">
+            <h2>{{ getPhaseInstruction() }}</h2>
+            <p>{{ getPhaseDescription() }}</p>
+          </div>
+          
+          <div class="phase-timer">
+            <div class="timer-circle">
+              <svg class="timer-svg" viewBox="0 0 100 100">
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45"
+                  class="timer-background">
+                </circle>
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45"
+                  class="timer-progress"
+                  [style.stroke-dashoffset]="282 - (282 * sessionState.phaseProgress / 100)">
+                </circle>
+              </svg>
+              <div class="timer-text">
+                <span class="phase-time">{{ Math.ceil(sessionState.currentPhaseTotal - sessionState.currentPhaseTime) }}</span>
+                <span class="phase-unit">sec</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pulse rings -->
+        <div class="pulse-ring pulse-ring-1"></div>
+        <div class="pulse-ring pulse-ring-2"></div>
+        <div class="pulse-ring pulse-ring-3"></div>
+      </div>
+    </div>
+
+    <!-- Session Controls -->
+    <div class="session-controls">
+      <ion-button 
+        fill="clear" 
+        size="large"
+        (click)="stopSession()"
+        class="control-button stop-button">
+        <ion-icon name="stop-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <ion-button 
+        fill="clear" 
+        size="large"
+        *ngIf="!sessionState.isPaused"
+        (click)="pauseSession()"
+        class="control-button pause-button">
+        <ion-icon name="pause-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <ion-button 
+        fill="clear" 
+        size="large"
+        *ngIf="sessionState.isPaused"
+        (click)="resumeSession()"
+        class="control-button play-button">
+        <ion-icon name="play-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <ion-button 
+        fill="clear" 
+        size="large"
+        (click)="toggleStats()"
+        class="control-button stats-button">
+        <ion-icon name="stats-chart-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+
+    <!-- Cycle Counter -->
+    <div class="cycle-counter">
+      <span class="cycle-text">Cycle {{ sessionState.currentCycle + 1 }} of {{ sessionState.totalCycles }}</span>
+    </div>
+  </div>
+
+  <!-- Session Complete -->
+  <div *ngIf="isSessionComplete" class="completion-container">
+    <div class="completion-content">
+      <div class="celebration-animation">
+        <div class="celebration-circle">
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </div>
+        <div class="confetti"></div>
+      </div>
+
+      <h2>Session Complete!</h2>
+      <p class="completion-message">Congratulations on completing your {{ sessionSettings?.duration }}-minute breathing session.</p>
+
+      <div class="completion-stats">
+        <div class="stat-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <div>
+            <strong>{{ sessionSettings?.duration }} min</strong>
+            <span>Duration</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <ion-icon name="refresh-outline"></ion-icon>
+          <div>
+            <strong>{{ sessionState.currentCycle }}</strong>
+            <span>Cycles</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <ion-icon name="fitness-outline"></ion-icon>
+          <div>
+            <strong>{{ technique?.name }}</strong>
+            <span>Technique</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="completion-actions">
+        <ion-button 
+          expand="block" 
+          fill="outline"
+          (click)="restartSession()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Practice Again
+        </ion-button>
+
+        <ion-button 
+          expand="block" 
+          (click)="goHome()"
+          class="primary-action">
+          <ion-icon name="home-outline" slot="start"></ion-icon>
+          Back to Breathing
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Stats Modal -->
+  <div *ngIf="showStats" class="stats-overlay" (click)="toggleStats()">
+    <div class="stats-modal" (click)="$event.stopPropagation()">
+      <div class="stats-header">
+        <h3>Session Statistics</h3>
+        <ion-button fill="clear" (click)="toggleStats()">
+          <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="stats-content">
+        <div class="stat-row">
+          <span>Progress</span>
+          <span>{{ Math.round(sessionState.sessionProgress) }}%</span>
+        </div>
+        <div class="stat-row">
+          <span>Time Remaining</span>
+          <span>{{ formatTime(sessionState.remainingTime) }}</span>
+        </div>
+        <div class="stat-row">
+          <span>Current Cycle</span>
+          <span>{{ sessionState.currentCycle + 1 }} / {{ sessionState.totalCycles }}</span>
+        </div>
+        <div class="stat-row">
+          <span>Current Phase</span>
+          <span>{{ getPhaseInstruction() }}</span>
+        </div>
+        <div class="stat-row">
+          <span>Technique</span>
+          <span>{{ technique?.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paused Overlay -->
+  <div *ngIf="sessionState.isPaused && sessionState.isActive" class="paused-overlay">
+    <div class="paused-content">
+      <ion-icon name="pause-outline"></ion-icon>
+      <h3>Session Paused</h3>
+      <p>Take your time. Resume when you're ready.</p>
+      
+      <div class="paused-actions">
+        <ion-button 
+          fill="outline"
+          (click)="resumeSession()">
+          <ion-icon name="play-outline" slot="start"></ion-icon>
+          Resume
+        </ion-button>
+        
+        <ion-button 
+          fill="clear"
+          (click)="stopSession()">
+          <ion-icon name="stop-outline" slot="start"></ion-icon>
+          End Session
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

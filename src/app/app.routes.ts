@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadComponent: () => import('./breathing/breathing.page').then( m => m.BreathingPage)
   },
   {
+    path: 'breathing-detail/:id',
+    loadComponent: () => import('./breathing-detail/breathing-detail.page').then( m => m.BreathingDetailPage)
+  },
+  {
     path: 'challenges',
     loadComponent: () => import('./challenges/challenges.page').then( m => m.ChallengesPage)
   },
@@ -73,5 +77,9 @@ export const routes: Routes = [
   {
     path: 'sequence-builder',
     loadComponent: () => import('./sequence-builder/sequence-builder.page').then( m => m.SequenceBuilderPage)
+  },
+  {
+    path: 'challenge-detail/:id',
+    loadComponent: () => import('./challenge-detail/challenge-detail.page').then( m => m.ChallengeDetailPage)
   },
 ];

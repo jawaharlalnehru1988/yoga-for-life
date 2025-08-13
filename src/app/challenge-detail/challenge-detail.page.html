@@ -1,0 +1,424 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Challenge Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleBookmark()">
+        <ion-icon [name]="isBookmarked ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+      </ion-button>
+      <ion-button (click)="shareChallenge()">
+        <ion-icon name="share"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Loading State -->
+  <div *ngIf="!challenge" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading challenge details...</p>
+  </div>
+
+  <!-- Challenge Content -->
+  <div *ngIf="challenge">
+  <!-- Challenge Banner -->
+  <div class="challenge-banner">
+    <div class="banner-gradient">
+      <div class="banner-content">
+        <div class="challenge-meta">
+          <ion-chip class="difficulty-chip" [class]="'difficulty-' + challenge.difficulty">
+            {{challenge.difficulty | titlecase}}
+          </ion-chip>
+          <ion-chip class="type-chip">
+            {{challenge.type | titlecase}}
+          </ion-chip>
+        </div>
+        
+        <h1 class="challenge-title">{{challenge.title}}</h1>
+        <p class="challenge-short-desc">{{challenge.shortDescription}}</p>
+        
+        <div class="challenge-stats">
+          <div class="stat">
+            <ion-icon name="calendar"></ion-icon>
+            <span>{{challenge.duration}} Days</span>
+          </div>
+          <div class="stat">
+            <ion-icon name="time"></ion-icon>
+            <span>{{challenge.estimatedTimePerDay}} min/day</span>
+          </div>
+          <div class="stat">
+            <ion-icon name="star"></ion-icon>
+            <span>{{challenge.rating}}</span>
+          </div>
+          <div class="stat">
+            <ion-icon name="people"></ion-icon>
+            <span>{{challenge.participants | number}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Overview (if joined) -->
+  <div class="progress-overview" *ngIf="userProgress?.isJoined">
+    <div class="progress-card">
+      <div class="progress-header">
+        <h2>Your Progress</h2>
+        <span class="progress-percentage">{{userProgress?.completionPercentage | number:'1.0-0'}}%</span>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="userProgress?.completionPercentage || 0"></div>
+        </div>
+      </div>
+      
+      <div class="progress-stats">
+        <div class="stat">
+          <span class="stat-value">{{userProgress?.completedDays?.length || 0}}</span>
+          <span class="stat-label">Days Complete</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{userProgress?.currentStreak || 0}}</span>
+          <span class="stat-label">Current Streak</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{userProgress?.earnedRewards?.length || 0}}</span>
+          <span class="stat-label">Badges Earned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <ion-button 
+      *ngIf="!userProgress?.isJoined" 
+      expand="block" 
+      class="join-button"
+      (click)="joinChallenge()">
+      <ion-icon name="play-circle" slot="start"></ion-icon>
+      Join Challenge
+    </ion-button>
+    
+    <div *ngIf="userProgress?.isJoined" class="joined-actions">
+      <ion-button 
+        expand="block" 
+        class="practice-button"
+        (click)="startDailyPractice()"
+        [disabled]="userProgress?.isCompleted">
+        <ion-icon name="play" slot="start"></ion-icon>
+        {{userProgress?.isCompleted ? 'Challenge Complete!' : 'Start Today\'s Practice'}}
+      </ion-button>
+      
+      <ion-button 
+        fill="outline" 
+        expand="block" 
+        class="leave-button"
+        (click)="joinChallenge()">
+        Leave Challenge
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ion-segment [(ngModel)]="currentTab" class="detail-tabs">
+    <ion-segment-button value="overview">
+      <ion-label>Overview</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="progress">
+      <ion-label>Progress</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="community">
+      <ion-label>Community</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    
+    <!-- Overview Tab -->
+    <div *ngIf="currentTab === 'overview'" class="overview-tab">
+      
+      <!-- Description -->
+      <div class="description-section">
+        <h3>About This Challenge</h3>
+        <p class="description-text" 
+           [class.expanded]="showFullDescription">
+          {{challenge.description}}
+        </p>
+        <ion-button 
+          fill="clear" 
+          size="small" 
+          (click)="toggleDescription()"
+          *ngIf="challenge.description.length > 150">
+          {{showFullDescription ? 'Show Less' : 'Read More'}}
+        </ion-button>
+      </div>
+
+      <!-- Instructor -->
+      <div class="instructor-section" *ngIf="challenge.instructorName">
+        <h3>Your Instructor</h3>
+        <div class="instructor-card">
+          <div class="instructor-avatar">
+            <ion-avatar>
+              <img [src]="challenge.instructorImage" [alt]="challenge.instructorName">
+            </ion-avatar>
+          </div>
+          <div class="instructor-info">
+            <h4>{{challenge.instructorName}}</h4>
+            <p>Certified Yoga Instructor</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="goals-section">
+        <h3>Challenge Goals</h3>
+        <div class="goals-list">
+          <div *ngFor="let goal of challenge.goals" class="goal-item">
+            <div class="goal-header">
+              <ion-icon 
+                [name]="goal.isRequired ? 'checkmark-circle' : 'ellipse-outline'"
+                [class]="'goal-icon ' + (goal.isRequired ? 'required' : 'optional')">
+              </ion-icon>
+              <h4>{{goal.title}}</h4>
+              <span class="goal-badge" *ngIf="goal.isRequired">Required</span>
+            </div>
+            <p class="goal-description">{{goal.description}}</p>
+            <div class="goal-target">
+              Target: {{goal.targetValue}} {{goal.unit}}
+              <span class="goal-type">({{goal.type}})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rewards -->
+      <div class="rewards-section">
+        <h3>Rewards & Badges</h3>
+        <div class="rewards-grid">
+          <div *ngFor="let reward of challenge.rewards" 
+               class="reward-item"
+               [class.earned]="userProgress?.earnedRewards?.includes(reward.id)">
+            <div class="reward-badge">
+              <ion-icon [name]="reward.badgeIcon" [style.color]="reward.badgeColor"></ion-icon>
+            </div>
+            <div class="reward-info">
+              <h4>{{reward.title}}</h4>
+              <p>{{reward.description}}</p>
+              <div class="reward-meta">
+                <span class="points">{{reward.pointsValue}} pts</span>
+                <span class="unlock-at">{{reward.unlocksAt}}% completion</span>
+              </div>
+            </div>
+            <ion-icon 
+              *ngIf="userProgress?.earnedRewards?.includes(reward.id)"
+              name="checkmark-circle" 
+              class="earned-check">
+            </ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits -->
+      <div class="benefits-section">
+        <h3>Benefits</h3>
+        <div class="benefits-list">
+          <div *ngFor="let benefit of challenge.benefits" class="benefit-item">
+            <ion-icon name="checkmark-circle" class="benefit-icon"></ion-icon>
+            <span>{{benefit}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requirements -->
+      <div class="requirements-section" *ngIf="challenge.prerequisites || challenge.equipment">
+        <div *ngIf="challenge.prerequisites" class="prerequisites">
+          <h3>Prerequisites</h3>
+          <ul>
+            <li *ngFor="let prerequisite of challenge.prerequisites">{{prerequisite}}</li>
+          </ul>
+        </div>
+        
+        <div *ngIf="challenge.equipment" class="equipment">
+          <h3>Equipment Needed</h3>
+          <div class="equipment-list">
+            <ion-chip *ngFor="let item of challenge.equipment" class="equipment-chip">
+              {{item}}
+            </ion-chip>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Progress Tab -->
+    <div *ngIf="currentTab === 'progress'" class="progress-tab">
+      
+      <div *ngIf="!userProgress?.isJoined" class="not-joined-message">
+        <ion-icon name="lock-closed" class="lock-icon"></ion-icon>
+        <h3>Join Challenge to Track Progress</h3>
+        <p>Start your journey to see detailed progress tracking and achievements.</p>
+        <ion-button (click)="joinChallenge()">Join Now</ion-button>
+      </div>
+
+      <div *ngIf="userProgress?.isJoined" class="progress-content">
+        
+        <!-- Progress Summary -->
+        <div class="progress-summary">
+          <div class="summary-card">
+            <h3>Overall Progress</h3>
+            <div class="circular-progress">
+              <svg width="120" height="120" class="progress-circle">
+                <circle cx="60" cy="60" r="50" 
+                        stroke="#e9ecef" 
+                        stroke-width="8" 
+                        fill="none">
+                </circle>
+                <circle cx="60" cy="60" r="50" 
+                        [attr.stroke]="getProgressColor(userProgress?.completionPercentage || 0)"
+                        stroke-width="8" 
+                        fill="none"
+                        stroke-linecap="round"
+                        [style.stroke-dasharray]="314.16"
+                        [style.stroke-dashoffset]="314.16 - (314.16 * (userProgress?.completionPercentage || 0) / 100)"
+                        class="progress-stroke">
+                </circle>
+              </svg>
+              <div class="progress-text">
+                <span class="percentage">{{userProgress?.completionPercentage | number:'1.0-0'}}%</span>
+                <span class="label">Complete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Calendar -->
+        <div class="daily-calendar">
+          <h3>Daily Progress</h3>
+          <div class="calendar-grid">
+            <div *ngFor="let activity of dailyActivities" 
+                 class="day-item"
+                 [class]="'day-' + getDayStatus(activity.day)"
+                 (click)="markDayComplete(activity.day)">
+              <div class="day-number">{{activity.day}}</div>
+              <div class="day-date">{{getFormattedDate(activity.date)}}</div>
+              <div class="day-status">
+                <ion-icon 
+                  *ngIf="activity.isCompleted" 
+                  name="checkmark-circle" 
+                  class="completed-icon">
+                </ion-icon>
+                <ion-icon 
+                  *ngIf="activity.day === (userProgress?.currentDay || 1) && !activity.isCompleted" 
+                  name="play-circle" 
+                  class="current-icon">
+                </ion-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goal Progress -->
+        <div class="goal-progress">
+          <h3>Goal Progress</h3>
+          <div class="goals-progress-list">
+            <div *ngFor="let goal of challenge.goals" class="goal-progress-item">
+              <div class="goal-header">
+                <h4>{{goal.title}}</h4>
+                <span class="goal-progress-value">
+                  {{userProgress?.goalProgress?.[goal.id] || 0}} / {{goal.targetValue}} {{goal.unit}}
+                </span>
+              </div>
+              <div class="goal-progress-bar">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="((userProgress?.goalProgress?.[goal.id] || 0) / goal.targetValue) * 100">
+                  </div>
+                </div>
+                <span class="progress-percentage">
+                  {{((userProgress?.goalProgress?.[goal.id] || 0) / goal.targetValue) * 100 | number:'1.0-0'}}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="achievements" *ngIf="(userProgress?.earnedRewards?.length || 0) > 0">
+          <h3>Earned Badges</h3>
+          <div class="badges-list">
+            <div *ngFor="let rewardId of userProgress?.earnedRewards || []" 
+                 class="earned-badge">
+              <ng-container *ngFor="let reward of challenge.rewards">
+                <div *ngIf="reward.id === rewardId" class="badge-item">
+                  <ion-icon [name]="reward.badgeIcon" [style.color]="reward.badgeColor"></ion-icon>
+                  <span>{{reward.title}}</span>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Community Tab -->
+    <div *ngIf="currentTab === 'community'" class="community-tab">
+      <div class="community-stats">
+        <h3>Community</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <ion-icon name="people" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <span class="stat-number">{{challenge.participants | number}}</span>
+              <span class="stat-label">Participants</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <ion-icon name="trophy" class="stat-icon"></ion-icon>
+            <div class="stat-info">
+              <span class="stat-number">{{challenge.completionRate}}%</span>
+              <span class="stat-label">Completion Rate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="coming-soon">
+        <ion-icon name="sparkles" class="coming-soon-icon"></ion-icon>
+        <h3>Community Features Coming Soon!</h3>
+        <p>Connect with other participants, share progress, and motivate each other.</p>
+        
+        <div class="upcoming-features">
+          <div class="feature-item">
+            <ion-icon name="people"></ion-icon>
+            <span>Discussion Forums</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="trophy"></ion-icon>
+            <span>Leaderboards</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="heart"></ion-icon>
+            <span>Motivation Groups</span>
+          </div>
+          <div class="feature-item">
+            <ion-icon name="share"></ion-icon>
+            <span>Progress Sharing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+  <!-- End Challenge Content -->
+
+</ion-content>

@@ -1,0 +1,404 @@
+<ion-header [translucent]="true" class="breathing-detail-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ technique?.name || 'Breathing Technique' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFavorite()" fill="clear">
+        <ion-icon 
+          [name]="isFavorite ? 'heart' : 'heart-outline'" 
+          [color]="isFavorite ? 'danger' : ''"
+          slot="icon-only">
+        </ion-icon>
+      </ion-button>
+      <ion-button (click)="customizeSession()" fill="clear">
+        <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Loading technique details...</p>
+  </div>
+
+  <!-- Technique Details -->
+  <div *ngIf="!isLoading && technique" class="technique-detail-container">
+    
+    <!-- Hero Section -->
+    <div class="hero-section" [attr.data-category]="technique.category">
+      <div class="hero-content">
+        <div class="category-badge">
+          <span class="category-emoji">{{ getCategoryEmoji() }}</span>
+          <span class="category-label">{{ technique.category | titlecase }}</span>
+        </div>
+        
+        <h1 class="technique-title">{{ technique.name }}</h1>
+        <p class="technique-subtitle">{{ technique.shortDescription }}</p>
+        
+        <div class="hero-meta">
+          <ion-chip [color]="getDifficultyColor()" class="difficulty-chip">
+            <ion-icon name="trending-up-outline"></ion-icon>
+            <ion-label>{{ technique.difficulty }}</ion-label>
+          </ion-chip>
+          
+          <ion-chip color="primary" class="pattern-chip">
+            <ion-icon name="analytics-outline"></ion-icon>
+            <ion-label>{{ getPatternDisplay() }}</ion-label>
+          </ion-chip>
+          
+          <ion-chip color="warning" class="rating-chip">
+            <ion-icon name="star"></ion-icon>
+            <ion-label>{{ technique.rating.toFixed(1) }}</ion-label>
+          </ion-chip>
+        </div>
+        
+        <!-- Premium Badge -->
+        <div *ngIf="technique.isPremium" class="premium-badge">
+          <ion-icon name="diamond-outline"></ion-icon>
+          <span>Premium</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segments -->
+    <div class="segments-container">
+      <ion-segment [(ngModel)]="activeSegment" (ionChange)="onSegmentChange($event)">
+        <ion-segment-button value="overview">
+          <ion-label>Overview</ion-label>
+          <ion-icon name="information-circle-outline"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="benefits">
+          <ion-label>Benefits</ion-label>
+          <ion-icon name="fitness-outline"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="instructions">
+          <ion-label>How To</ion-label>
+          <ion-icon name="list-outline"></ion-icon>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Overview Tab -->
+    <div *ngIf="activeSegment === 'overview'" class="tab-content overview-tab">
+      
+      <!-- Session Customization -->
+      <ion-card class="customization-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="settings-outline"></ion-icon>
+            Customize Your Session
+          </ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <!-- Duration Selection -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>Duration</span>
+            </div>
+            <div class="duration-options">
+              <ion-chip 
+                *ngFor="let duration of technique.durationOptions"
+                [color]="duration === selectedDuration ? 'primary' : 'medium'"
+                (click)="selectedDuration = duration"
+                class="duration-chip">
+                {{ duration }}min
+              </ion-chip>
+            </div>
+          </div>
+          
+          <!-- Voice Guidance -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <ion-icon name="mic-outline"></ion-icon>
+              <span>Voice Guidance</span>
+            </div>
+            <ion-toggle 
+              [(ngModel)]="selectedVoiceGuide" 
+              color="primary">
+            </ion-toggle>
+          </div>
+          
+          <!-- Background Sound -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <ion-icon name="musical-notes-outline"></ion-icon>
+              <span>Background Sound</span>
+            </div>
+            <div class="background-sound-selection">
+              <ion-button 
+                fill="outline" 
+                size="small"
+                (click)="selectBackgroundSound()">
+                {{ getSelectedBackgroundSoundLabel() }}
+                <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Description -->
+      <ion-card class="description-card">
+        <ion-card-header>
+          <ion-card-title>About This Technique</ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <p 
+            class="technique-description"
+            [class.expanded]="showFullDescription">
+            {{ technique.fullDescription }}
+          </p>
+          
+          <ion-button 
+            *ngIf="technique.fullDescription.length > 200"
+            fill="clear" 
+            size="small"
+            (click)="toggleDescription()">
+            {{ showFullDescription ? 'Show Less' : 'Read More' }}
+            <ion-icon 
+              [name]="showFullDescription ? 'chevron-up-outline' : 'chevron-down-outline'" 
+              slot="end">
+            </ion-icon>
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Breathing Pattern -->
+      <ion-card class="pattern-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="analytics-outline"></ion-icon>
+            Breathing Pattern
+          </ion-card-title>
+          <ion-card-subtitle>{{ getPatternDisplay() }} rhythm</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div class="pattern-breakdown">
+            <div class="pattern-step">
+              <div class="step-circle inhale">
+                <ion-icon name="arrow-down-outline"></ion-icon>
+              </div>
+              <div class="step-details">
+                <h4>Inhale</h4>
+                <p>{{ technique.pattern.inhale }}s</p>
+              </div>
+            </div>
+            
+            <div *ngIf="technique.pattern.hold1 > 0" class="pattern-step">
+              <div class="step-circle hold">
+                <ion-icon name="pause-outline"></ion-icon>
+              </div>
+              <div class="step-details">
+                <h4>Hold</h4>
+                <p>{{ technique.pattern.hold1 }}s</p>
+              </div>
+            </div>
+            
+            <div class="pattern-step">
+              <div class="step-circle exhale">
+                <ion-icon name="arrow-up-outline"></ion-icon>
+              </div>
+              <div class="step-details">
+                <h4>Exhale</h4>
+                <p>{{ technique.pattern.exhale }}s</p>
+              </div>
+            </div>
+            
+            <div *ngIf="technique.pattern.hold2 > 0" class="pattern-step">
+              <div class="step-circle hold">
+                <ion-icon name="pause-outline"></ion-icon>
+              </div>
+              <div class="step-details">
+                <h4>Hold</h4>
+                <p>{{ technique.pattern.hold2 }}s</p>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Benefits Tab -->
+    <div *ngIf="activeSegment === 'benefits'" class="tab-content benefits-tab">
+      <ion-card class="benefits-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="fitness-outline"></ion-icon>
+            Health Benefits
+          </ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div class="benefits-grid">
+            <div 
+              *ngFor="let benefit of technique.benefits; let i = index"
+              class="benefit-item"
+              [style.animation-delay]="i * 0.1 + 's'">
+              <div class="benefit-icon">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </div>
+              <p>{{ benefit }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Tags -->
+      <ion-card class="tags-card">
+        <ion-card-header>
+          <ion-card-title>Related Benefits</ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div class="tags-container">
+            <ion-chip 
+              *ngFor="let tag of technique.tags"
+              color="primary"
+              outline="true">
+              <ion-label>{{ tag }}</ion-label>
+            </ion-chip>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Instructions Tab -->
+    <div *ngIf="activeSegment === 'instructions'" class="tab-content instructions-tab">
+      <ion-card class="instructions-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="list-outline"></ion-icon>
+            Step-by-Step Instructions
+          </ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div class="instructions-list">
+            <div 
+              *ngFor="let instruction of technique.instructions; let i = index"
+              class="instruction-item"
+              [style.animation-delay]="i * 0.15 + 's'">
+              <div class="instruction-number">{{ i + 1 }}</div>
+              <div class="instruction-content">
+                <p>{{ instruction }}</p>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Pro Tips -->
+      <ion-card class="tips-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="bulb-outline"></ion-icon>
+            Pro Tips
+          </ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <div class="tips-list">
+            <div class="tip-item">
+              <ion-icon name="star-outline" color="warning"></ion-icon>
+              <p>Start with shorter sessions and gradually increase duration</p>
+            </div>
+            <div class="tip-item">
+              <ion-icon name="leaf-outline" color="success"></ion-icon>
+              <p>Find a quiet, comfortable space for best results</p>
+            </div>
+            <div class="tip-item">
+              <ion-icon name="time-outline" color="primary"></ion-icon>
+              <p>Practice regularly for maximum benefits</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Related Techniques -->
+    <div *ngIf="relatedTechniques.length > 0" class="related-section">
+      <h3 class="section-title">
+        <ion-icon name="library-outline"></ion-icon>
+        Similar Techniques
+      </h3>
+      
+      <div class="related-techniques">
+        <ion-card 
+          *ngFor="let related of relatedTechniques"
+          class="related-card"
+          (click)="navigateToRelated(related)">
+          
+          <div class="related-content">
+            <div class="related-icon" [attr.data-category]="related.category">
+              <span class="category-emoji">{{ getCategoryEmoji() }}</span>
+            </div>
+            
+            <div class="related-details">
+              <h4>{{ related.name }}</h4>
+              <p>{{ related.shortDescription }}</p>
+              
+              <div class="related-meta">
+                <ion-chip size="small" [color]="getDifficultyColor()">
+                  {{ related.difficulty }}
+                </ion-chip>
+                <ion-chip size="small" color="medium">
+                  <ion-icon name="star"></ion-icon>
+                  {{ related.rating.toFixed(1) }}
+                </ion-chip>
+              </div>
+            </div>
+            
+            <ion-icon name="chevron-forward-outline" class="related-arrow"></ion-icon>
+          </div>
+        </ion-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && !technique" class="error-state">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <h3>Technique Not Found</h3>
+    <p>The breathing technique you're looking for doesn't exist or has been removed.</p>
+    <ion-button (click)="goBack()" fill="outline">
+      <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+      Go Back
+    </ion-button>
+  </div>
+</ion-content>
+
+<!-- Start Session FAB -->
+<ion-fab 
+  *ngIf="!isLoading && technique" 
+  vertical="bottom" 
+  horizontal="center" 
+  slot="fixed">
+  <ion-fab-button 
+    (click)="startSession()"
+    class="start-session-fab"
+    [color]="technique.isPremium && !isPremiumUser() ? 'warning' : 'primary'">
+    <ion-icon 
+      [name]="technique.isPremium && !isPremiumUser() ? 'diamond-outline' : 'play-outline'">
+    </ion-icon>
+  </ion-fab-button>
+  
+  <ion-fab-list side="top">
+    <ion-fab-button 
+      (click)="customizeSession()"
+      color="medium"
+      size="small">
+      <ion-icon name="settings-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
