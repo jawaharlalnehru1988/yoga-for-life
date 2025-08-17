@@ -17,13 +17,8 @@ import {
   IonSelectOption,
   IonCheckbox,
   IonChip,
-  IonGrid,
-  IonRow,
-  IonCol,
-
   IonCard,
   IonCardContent,
-  IonList,
   IonNote,
   IonSpinner,
   ModalController
