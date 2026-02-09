@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Asana Detail - Bhujangasana</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#36cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142111",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Newsreader', serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+    <!-- Top Navigation Bar -->
+    <header
+        class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined">eco</span>
+                    </div>
+                    <h1 class="text-2xl font-bold tracking-tight">Vedic Yoga</h1>
+                </div>
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a class="hover:text-primary transition-colors" href="#">Asana Library</a>
+                    <a class="hover:text-primary transition-colors" href="#">Pranayama</a>
+                    <a class="hover:text-primary transition-colors" href="#">Sutras</a>
+                    <a class="hover:text-primary transition-colors" href="#">My Practice</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input
+                        class="pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary w-64"
+                        placeholder="Search poses..." type="text" />
+                </div>
+                <button class="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-5xl mx-auto px-6 lg:px-12 py-12">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 mb-8 text-sm text-slate-500 dark:text-slate-400">
+            <a class="hover:text-primary" href="#">Library</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <a class="hover:text-primary" href="#">Hatha Yoga</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <span class="text-slate-900 dark:text-slate-100 font-semibold">Bhujangasana</span>
+        </nav>
+        <!-- Hero Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+            <div>
+                <span class="text-primary font-bold tracking-widest uppercase text-sm mb-4 block">Asana Spotlight</span>
+                <h2 class="text-6xl font-extrabold mb-2">Bhujangasana</h2>
+                <h3 class="text-2xl text-slate-500 italic mb-6">Cobra Pose</h3>
+                <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-300 mb-8">
+                    A powerful backbend that awakens the serpent power (Kundalini) and opens the heart center. Derived
+                    from the Sanskrit words 'Bhujanga' meaning cobra and 'Asana' meaning posture.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <span
+                        class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-full text-sm font-semibold">Strengthening</span>
+                    <span
+                        class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-full text-sm font-semibold">Heart
+                        Opening</span>
+                    <span
+                        class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-full text-sm font-semibold">Intermediate</span>
+                </div>
+            </div>
+            <div class="relative group">
+                <div
+                    class="absolute -inset-4 bg-primary/5 rounded-3xl blur-2xl group-hover:bg-primary/10 transition duration-500">
+                </div>
+                <div class="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-white">
+                    <img alt="Person performing cobra pose on a yoga mat" class="w-full h-full object-cover"
+                        data-alt="Peaceful person performing the Bhujangasana cobra pose"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNuxlRmSp30ikPRfetViGK1YsWhUgtbxdea3tvlD4kVkNjIUuAt36Vgml67DNLSLzlxY4nERBn6sDo-eNmGawNzfb1615zlQ-O7j9hhJxBHKDQ2SFh-zHQIX0yVIx_m0i_yiIj7h8imoyWEgvHlTAs7vGyTANXySZ3Cew7vOLMVYkgPG63EExDHinv_vG521n-N7osGf0gTujEfoZ0pQmm-jt0XfFn9amxIKL5ZAUkYq9-_nu0ULGWKMWgO76A1Dgk0_pzdW-XbvQ" />
+                    <div
+                        class="absolute bottom-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-tighter">
+                        Vedic Wisdom
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Left Column: Instructions -->
+            <div class="lg:col-span-2 space-y-12">
+                <section>
+                    <div class="flex items-center gap-3 mb-8">
+                        <span class="material-symbols-outlined text-primary text-3xl">format_list_numbered</span>
+                        <h4 class="text-3xl font-bold">Step-by-Step Instructions</h4>
+                    </div>
+                    <div class="space-y-6 relative">
+                        <!-- Step 1 -->
+                        <div class="flex gap-6 group">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">
+                                    1</div>
+                                <div class="w-0.5 grow bg-slate-200 dark:bg-slate-800 mt-2"></div>
+                            </div>
+                            <div class="pb-8">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h5 class="text-xl font-bold">Foundation</h5>
+                                    <span
+                                        class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold uppercase tracking-wider rounded text-slate-500">Preparation</span>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-300 mb-3">Lie prone on the mat with your legs
+                                    extended behind you, tops of the feet resting on the floor. Keep your feet together
+                                    or hip-distance apart.</p>
+                                <div
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-bold">
+                                    <span class="material-symbols-outlined text-sm">air</span>
+                                    Breath: Natural Awareness
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="flex gap-6 group">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">
+                                    2</div>
+                                <div class="w-0.5 grow bg-slate-200 dark:bg-slate-800 mt-2"></div>
+                            </div>
+                            <div class="pb-8">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h5 class="text-xl font-bold">Hand Placement</h5>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-300 mb-3">Spread your hands on the floor under
+                                    your shoulders. Hug your elbows into your body. Press the tops of the feet and
+                                    thighs firmly into the floor.</p>
+                                <div
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-bold">
+                                    <span class="material-symbols-outlined text-sm">air</span>
+                                    Breath: Deep Exhale
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="flex gap-6 group">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">
+                                    3</div>
+                                <div class="w-0.5 grow bg-slate-200 dark:bg-slate-800 mt-2"></div>
+                            </div>
+                            <div class="pb-8">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h5 class="text-xl font-bold">The Ascension</h5>
+                                    <span
+                                        class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider rounded">Critical
+                                        Step</span>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-300 mb-3">On an inhalation, begin to straighten
+                                    the arms to lift the chest off the floor, going only to the height at which you can
+                                    maintain a connection through your pubis to the floor.</p>
+                                <div
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20">
+                                    <span class="material-symbols-outlined text-sm">arrow_upward</span>
+                                    Breath: Slow Inhale
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="flex gap-6 group">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">
+                                    4</div>
+                            </div>
+                            <div class="pb-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h5 class="text-xl font-bold">The Hold</h5>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-300 mb-3">Distribute the backbend evenly
+                                    through the entire spine. Gaze forward or slightly upward without crunching the back
+                                    of the neck.</p>
+                                <div
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-bold">
+                                    <span class="material-symbols-outlined text-sm">pause_circle</span>
+                                    Breath: Kumbhaka (Hold)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- What Not To Do -->
+                <section
+                    class="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/50 rounded-xl p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-orange-500 text-3xl">warning</span>
+                        <h4 class="text-2xl font-bold text-orange-800 dark:text-orange-300">Important: What Not To Do
+                        </h4>
+                    </div>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-orange-400 mt-1">cancel</span>
+                            <span class="text-slate-700 dark:text-slate-300">Don't over-straighten elbows or "lock"
+                                joints.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-orange-400 mt-1">cancel</span>
+                            <span class="text-slate-700 dark:text-slate-300">Avoid shrugging shoulders up toward
+                                ears.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-orange-400 mt-1">cancel</span>
+                            <span class="text-slate-700 dark:text-slate-300">Don't force the lift using only arm
+                                strength.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-orange-400 mt-1">cancel</span>
+                            <span class="text-slate-700 dark:text-slate-300">Never hold your breath during the
+                                transition.</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <!-- Right Column: Sidebar Stats & Benefits -->
+            <aside class="space-y-8">
+                <!-- Benefits Card -->
+                <div
+                    class="bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <h4 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">verified</span>
+                        Benefits
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div
+                                class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-lg">accessibility_new</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">Strengthens Spine</p>
+                                <p class="text-xs text-slate-500">Increases flexibility and tones the spinal nerves.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div
+                                class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-lg">favorite</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">Stretches Chest</p>
+                                <p class="text-xs text-slate-500">Expands the lungs and improves respiratory capacity.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div
+                                class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-lg">bolt</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">Invigorates Body</p>
+                                <p class="text-xs text-slate-500">Reduces fatigue and stress while boosting energy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contraindications Card -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/50 p-8 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xl font-bold mb-6 flex items-center gap-2 text-red-600 dark:text-red-400">
+                        <span class="material-symbols-outlined">report</span>
+                        Who Should Avoid
+                    </h4>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+                        <li class="flex items-center gap-2">
+                            <span class="size-1.5 bg-red-400 rounded-full"></span>
+                            Recent abdominal surgery
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="size-1.5 bg-red-400 rounded-full"></span>
+                            Carpal tunnel syndrome
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="size-1.5 bg-red-400 rounded-full"></span>
+                            3rd Trimester Pregnancy
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="size-1.5 bg-red-400 rounded-full"></span>
+                            Severe back injury
+                        </li>
+                    </ul>
+                </div>
+                <!-- Spiritual Wisdom -->
+                <div
+                    class="p-8 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 italic">
+                    <span class="material-symbols-outlined text-primary mb-2">format_quote</span>
+                    <p class="text-slate-800 dark:text-slate-200 text-sm leading-relaxed">
+                        "As the cobra raises its hood, the practitioner raises their consciousness, shedding the old
+                        skin of ego to reveal the light within."
+                    </p>
+                    <p class="mt-4 text-xs font-bold text-primary uppercase tracking-widest">— Gheranda Samhita</p>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-6 bg-primary/20 rounded-md flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-sm">eco</span>
+                </div>
+                <span class="font-bold">Vedic Yoga Wisdom</span>
+            </div>
+            <div class="flex gap-8 text-sm text-slate-500">
+                <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+                <a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+                <a class="hover:text-primary transition-colors" href="#">Contact Teacher</a>
+            </div>
+            <div class="flex gap-4">
+                <button
+                    class="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all">
+                    <span class="material-symbols-outlined text-xl">share</span>
+                </button>
+                <button
+                    class="px-6 py-2 bg-primary text-white rounded-xl font-bold hover:shadow-lg hover:shadow-primary/30 transition-all">
+                    Start Practice
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

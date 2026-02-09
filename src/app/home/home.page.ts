@@ -1,79 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
-  IonToolbar, 
-  IonButtons, 
-  IonMenuButton, 
-  IonButton, 
-  IonIcon, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardContent,
-  IonChip 
-} from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { 
-  personCircleOutline, 
-  flame, 
-  calendarOutline, 
-  timeOutline, 
-  trophyOutline, 
-  bulbOutline, 
-  refreshOutline, 
-  playOutline, 
-  flashOutline, 
-  leafOutline, 
-  planetOutline, 
-  listOutline, 
-  libraryOutline, 
-  ribbonOutline, 
-  starOutline, 
-  star 
-} from 'ionicons/icons';
+import { IonContent } from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
-import { Subscription } from 'rxjs';
 
-interface Suggestion {
-  name: string;
+interface LearningPathCard {
+  icon: string;
+  title: string;
   description: string;
-  duration: number;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  route?: string;
+}
+
+interface HeroSlide {
+  label: string;
+  title: string;
+  description: string;
   image: string;
-  type: string;
-}
-
-interface Challenge {
-  name: string;
-  description: string;
-  progress: number;
-  currentDay: number;
-  totalDays: number;
-  daysLeft: number;
-}
-
-interface DailyTip {
-  quote: string;
-  author: string;
-  category: string;
-}
-
-interface RecentSession {
-  name: string;
-  date: Date;
-  duration: number;
-  type: string;
-  rating: number;
-}
-
-interface MotivationalQuote {
-  text: string;
-  author: string;
 }
 
 @Component({
@@ -82,246 +25,102 @@ interface MotivationalQuote {
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
-    IonButtons, 
-    IonMenuButton, 
-    IonButton, 
-    IonIcon, 
-    IonCard, 
-    IonCardHeader, 
-    IonCardTitle, 
-    IonCardContent,
-    IonChip,
-    CommonModule, 
+    IonContent,
+    CommonModule,
     FormsModule
   ]
 })
-export class HomePage implements OnInit, OnDestroy {
-  
-  // User data
+export class HomePage implements OnInit {
+
   userName = 'Yogi';
-  currentGreeting = '';
-  currentStreak = 7;
-  
-  // Stats
-  totalSessions = 24;
-  totalMinutes = 480;
-  achievementsCount = 5;
-  
-  // Today's suggestion
-  todaysSuggestion: Suggestion = {
-    name: 'Morning Sun Salutation',
-    description: 'Start your day with energizing sun salutations to awaken your body and mind.',
-    duration: 15,
-    difficulty: 'beginner',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&crop=center',
-    type: 'sequence'
-  };
-  
-  // Current challenge
-  currentChallenge: Challenge | null = {
-    name: '21-Day Flexibility Challenge',
-    description: 'Improve your flexibility with daily stretching routines',
-    progress: 33,
-    currentDay: 7,
-    totalDays: 21,
-    daysLeft: 14
-  };
-  
-  // Daily wellness tip
-  dailyTip: DailyTip = {
-    quote: 'Yoga is not about touching your toes. It is about what you learn on the way down.',
-    author: 'Judith Hanson Lasater',
-    category: 'Philosophy'
-  };
-  
-  // Recent sessions
-  recentSessions: RecentSession[] = [
-    {
-      name: 'Evening Relaxation',
-      date: new Date(Date.now() - 86400000), // Yesterday
-      duration: 20,
-      type: 'meditation',
-      rating: 5
-    },
-    {
-      name: 'Morning Stretch',
-      date: new Date(Date.now() - 2 * 86400000), // 2 days ago
-      duration: 15,
-      type: 'sequence',
-      rating: 4
-    },
-    {
-      name: 'Breathing Practice',
-      date: new Date(Date.now() - 3 * 86400000), // 3 days ago
-      duration: 10,
-      type: 'breathing',
-      rating: 5
-    }
-  ];
-  
-  // Motivational quote
-  motivationalQuote: MotivationalQuote = {
-    text: 'The success of yoga does not lie in the ability to attain the perfect posture but in how it brings positive changes in people\'s lives.',
-    author: 'T.K.V. Desikachar'
-  };
+  activeSlideIndex = 0;
 
-  private suggestions: Suggestion[] = [
+  heroSlides: HeroSlide[] = [
     {
-      name: 'Morning Sun Salutation',
-      description: 'Start your day with energizing sun salutations to awaken your body and mind.',
-      duration: 15,
-      difficulty: 'beginner',
-      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&crop=center',
-      type: 'sequence'
+      label: 'Vedic Wisdom',
+      title: 'Embrace the Path of Patanjali',
+      description: 'A traditional approach to modern wellness. Unlock the secrets of the ancient Yoga Sutras through guided practice and meditation.',
+      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-rnTZsNK_1Tr3X6KJDqW3jubkVviYBsHWdhEhaJSNMNyR7QbbShkr-3ikRwgBOo3AT1NPDoQKjtS7oFkwQOA5lvhy6Ys0f9eudbFICNo55xVdUZ133PULqBacdIF0jd05tXXxn23YCZCROXXQE7LX6pOK-RHJC_ue5FhsNofIhSktEuuHdwfbkE8EJsLj4m-vGWWJ3A7_uyrItAx0BDW4p94zJZy1COdP3Iw3eyqk-dK-XlJ8DoIcCkwapHBfQylOrhdl9R2BTSY'
     },
     {
-      name: 'Stress Relief Flow',
-      description: 'Gentle movements to release tension and calm your nervous system.',
-      duration: 20,
-      difficulty: 'beginner',
-      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&crop=center',
-      type: 'sequence'
+      label: 'Prana Flow',
+      title: 'Master Your Vital Breath',
+      description: 'Discover the transformative power of Pranayama. Learn techniques to balance your energy and sharpen your focus.',
+      image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1200&auto=format&fit=crop'
     },
     {
-      name: 'Core Strength Builder',
-      description: 'Build core stability with targeted poses and movements.',
-      duration: 25,
-      difficulty: 'intermediate',
-      image: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=400&h=300&fit=crop&crop=center',
-      type: 'sequence'
-    },
-    {
-      name: 'Deep Breathing Session',
-      description: 'Practice pranayama techniques for better focus and relaxation.',
-      duration: 10,
-      difficulty: 'beginner',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center',
-      type: 'breathing'
+      label: 'Dhyana State',
+      title: 'Find Your Inner Silence',
+      description: 'Journey into deeper states of consciousness with meditation practices rooted in Himalayan tradition.',
+      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop'
     }
   ];
 
-  private themeSubscription?: Subscription;
+  learningPaths: LearningPathCard[] = [
+    {
+      icon: 'self_improvement',
+      title: 'Yogasana Libraries',
+      description: 'A detailed database of traditional hatha and ashtanga postures with alignment cues and benefits.',
+      route: '/yogasana-library'
+    },
+    {
+      icon: 'air',
+      title: 'Pranayam Library',
+      description: 'Master the science of breath control with ancient techniques to balance your vital energy and calm the mind.',
+      route: '/breathing'
+    },
+    {
+      icon: 'directions_run',
+      title: 'Warmup Exercises',
+      description: 'Prepare your body for practice with subtle movements (Sukshma Vyayama) to loosen joints and improve flow.'
+    },
+    {
+      icon: 'psychology_alt',
+      title: 'Meditation Techniques',
+      description: 'Explore various Dhyana methods including mantra, visualization, and mindfulness based on Vedic scriptures.'
+    },
+    {
+      icon: 'grid_view',
+      title: 'Various Yoga Sequences',
+      description: 'Curated flows for different levels, times of day, and specific goals like flexibility or strength.',
+      route: '/sequences-routines'
+    },
+    {
+      icon: 'health_and_safety',
+      title: 'Health Based Yoga',
+      description: 'Therapeutic yoga sequences targeting specific ailments like back pain, stress, and digestive issues.'
+    }
+  ];
 
   constructor(
     private router: Router,
     private themeService: ThemeService
-  ) {
-    addIcons({ 
-      personCircleOutline, 
-      flame, 
-      calendarOutline, 
-      timeOutline, 
-      trophyOutline, 
-      bulbOutline, 
-      refreshOutline, 
-      playOutline, 
-      flashOutline, 
-      leafOutline, 
-      planetOutline, 
-      listOutline, 
-      libraryOutline, 
-      ribbonOutline, 
-      starOutline, 
-      star 
-    });
-  }
+  ) { }
 
   ngOnInit() {
-    this.setGreeting();
     this.loadUserData();
-    
-    // Subscribe to theme changes if needed
-    this.themeSubscription = this.themeService.currentTheme$.subscribe(() => {
-      // Handle theme changes if needed
-    });
+    this.themeService.setTheme('yogasanam-dark');
+    this.startSlideTimer();
   }
 
-  ngOnDestroy() {
-    if (this.themeSubscription) {
-      this.themeSubscription.unsubscribe();
-    }
-  }
-
-  private setGreeting() {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      this.currentGreeting = 'Good morning! Ready to start your practice?';
-    } else if (hour < 17) {
-      this.currentGreeting = 'Good afternoon! Time for some mindful movement.';
-    } else {
-      this.currentGreeting = 'Good evening! Let\'s unwind with some yoga.';
-    }
+  private startSlideTimer() {
+    setInterval(() => {
+      this.activeSlideIndex = (this.activeSlideIndex + 1) % this.heroSlides.length;
+    }, 6000);
   }
 
   private loadUserData() {
-    // In a real app, this would load from a service/API
-    // For now, we'll use mock data
     const savedUserName = localStorage.getItem('yoga-user-name');
     if (savedUserName) {
       this.userName = savedUserName;
     }
-    
-    // Load user stats
-    const savedStats = localStorage.getItem('yoga-user-stats');
-    if (savedStats) {
-      const stats = JSON.parse(savedStats);
-      this.totalSessions = stats.totalSessions || this.totalSessions;
-      this.totalMinutes = stats.totalMinutes || this.totalMinutes;
-      this.currentStreak = stats.currentStreak || this.currentStreak;
-      this.achievementsCount = stats.achievementsCount || this.achievementsCount;
-    }
   }
 
   openProfile() {
-    // Navigate to profile page or open profile modal
     this.router.navigate(['/settings']);
-  }
-
-  refreshSuggestion() {
-    // Get a random suggestion from the array
-    const randomIndex = Math.floor(Math.random() * this.suggestions.length);
-    this.todaysSuggestion = { ...this.suggestions[randomIndex] };
-  }
-
-  startSuggestedPractice() {
-    // Navigate to the appropriate page based on suggestion type
-    switch (this.todaysSuggestion.type) {
-      case 'sequence':
-        this.router.navigate(['/sequences-routines']);
-        break;
-      case 'breathing':
-        this.router.navigate(['/breathing']);
-        break;
-      case 'meditation':
-        this.router.navigate(['/meditation']);
-        break;
-      default:
-        this.router.navigate(['/yogasana-library']);
-    }
   }
 
   navigateTo(route: string) {
     this.router.navigate([route]);
-  }
-
-  viewChallenge() {
-    this.router.navigate(['/challenges']);
-  }
-
-  getSessionIcon(type: string): string {
-    switch (type) {
-      case 'meditation':
-        return 'planet-outline';
-      case 'breathing':
-        return 'leaf-outline';
-      case 'sequence':
-        return 'list-outline';
-      default:
-        return 'fitness-outline';
-    }
   }
 }

@@ -27,16 +27,16 @@
       <div class="preparation-icon">
         <ion-icon name="hourglass-outline"></ion-icon>
       </div>
-      
+
       <h1>Get Ready</h1>
       <p>Find a comfortable position and prepare for your practice</p>
-      
+
       <div class="preparation-timer">
         <div class="preparation-circle">
           <span class="preparation-countdown">{{ preparationTimeLeft }}</span>
         </div>
       </div>
-      
+
       <div class="sequence-preview" *ngIf="sequence">
         <h3>{{ sequence.name }}</h3>
         <div class="preview-stats">
@@ -64,11 +64,8 @@
           <span class="remaining">{{ getRemainingTimeDisplay() }} left</span>
         </div>
       </div>
-      
-      <ion-progress-bar 
-        [value]="getProgress() / 100" 
-        color="primary"
-        class="session-progress">
+
+      <ion-progress-bar [value]="getProgress() / 100" color="primary" class="session-progress">
       </ion-progress-bar>
     </div>
 
@@ -76,30 +73,17 @@
     <div class="pose-display" (click)="toggleControls()">
       <div class="pose-image-container" *ngIf="getCurrentPose() as currentPose">
         <img [src]="currentPose.imageUrl" [alt]="currentPose.name" />
-        
+
         <!-- Pose Timer Overlay -->
         <div class="timer-overlay">
           <div class="pose-timer">
             <svg class="timer-circle" width="120" height="120">
-              <circle
-                class="timer-background"
-                stroke="rgba(255, 255, 255, 0.3)"
-                stroke-width="6"
-                fill="transparent"
-                r="54"
-                cx="60"
-                cy="60"/>
-              <circle
-                class="timer-progress"
-                stroke="white"
-                stroke-width="6"
-                fill="transparent"
-                r="54"
-                cx="60"
-                cy="60"
+              <circle class="timer-background" stroke="rgba(255, 255, 255, 0.3)" stroke-width="6" fill="transparent"
+                r="54" cx="60" cy="60" />
+              <circle class="timer-progress" stroke="white" stroke-width="6" fill="transparent" r="54" cx="60" cy="60"
                 [style.stroke-dasharray]="339.3"
                 [style.stroke-dashoffset]="339.3 - (339.3 * (getCurrentSequencePose() ? (1 - state.currentPoseTimeLeft / getCurrentSequencePose()!.duration) : 0))"
-                stroke-linecap="round"/>
+                stroke-linecap="round" />
             </svg>
             <div class="timer-text">
               <span class="time-left">{{ getTimeDisplay(state.currentPoseTimeLeft) }}</span>
@@ -107,7 +91,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Pause Overlay -->
         <div class="pause-overlay" *ngIf="state.isPaused">
           <ion-icon name="pause" color="light"></ion-icon>
@@ -122,17 +106,14 @@
           {{ currentPose.sanskritName }}
         </p>
         <p class="pose-benefit">{{ currentPose.quickBenefit }}</p>
-        
+
         <!-- Pose Instructions -->
-        <div class="pose-instructions" *ngIf="options.instructions && currentPose.steps.length > 0">
+        <div class="pose-instructions" *ngIf="options.instructions && currentPose.detailedSteps.length > 0">
           <h4>How to do this pose:</h4>
           <ol>
-            <li *ngFor="let step of currentPose.steps.slice(0, 3)">{{ step }}</li>
+            <li *ngFor="let step of currentPose.detailedSteps.slice(0, 3)">{{ step.description }}</li>
           </ol>
-          <ion-button 
-            fill="clear" 
-            size="small"
-            (click)="openPoseDetail()">
+          <ion-button fill="clear" size="small" (click)="openPoseDetail()">
             View full instructions
           </ion-button>
         </div>
@@ -142,46 +123,27 @@
     <!-- Control Panel -->
     <div class="control-panel" [class.hidden]="!showControls">
       <div class="primary-controls">
-        <ion-button 
-          fill="clear" 
-          size="large"
-          (click)="goBackPose()"
-          [disabled]="state.currentPoseIndex === 0">
+        <ion-button fill="clear" size="large" (click)="goBackPose()" [disabled]="state.currentPoseIndex === 0">
           <ion-icon name="play-skip-back"></ion-icon>
         </ion-button>
-        
-        <ion-button 
-          fill="solid" 
-          size="large"
-          color="primary"
-          (click)="togglePause()"
-          class="play-pause-btn">
+
+        <ion-button fill="solid" size="large" color="primary" (click)="togglePause()" class="play-pause-btn">
           <ion-icon [name]="state.isPaused ? 'play' : 'pause'"></ion-icon>
         </ion-button>
-        
-        <ion-button 
-          fill="clear" 
-          size="large"
-          (click)="skipPose()"
+
+        <ion-button fill="clear" size="large" (click)="skipPose()"
           [disabled]="state.currentPoseIndex >= ((sequence?.poses?.length || 0) - 1)">
           <ion-icon name="play-skip-forward"></ion-icon>
         </ion-button>
       </div>
 
       <div class="secondary-controls">
-        <ion-button 
-          fill="outline" 
-          size="small"
-          (click)="restartPose()">
+        <ion-button fill="outline" size="small" (click)="restartPose()">
           <ion-icon name="refresh" slot="start"></ion-icon>
           Restart Pose
         </ion-button>
-        
-        <ion-button 
-          fill="outline" 
-          size="small"
-          color="danger"
-          (click)="endSession()">
+
+        <ion-button fill="outline" size="small" color="danger" (click)="endSession()">
           <ion-icon name="stop" slot="start"></ion-icon>
           End Session
         </ion-button>
@@ -196,7 +158,7 @@
           <h1>Practice Complete!</h1>
           <p>You've successfully completed your {{ sequence?.name }} session</p>
         </div>
-        
+
         <div class="completion-stats">
           <div class="stat-item">
             <div class="stat-number">{{ sequence?.poses?.length || 0 }}</div>
@@ -211,21 +173,14 @@
             <div class="stat-label">Level</div>
           </div>
         </div>
-        
+
         <div class="completion-actions">
-          <ion-button 
-            expand="block" 
-            size="large"
-            color="primary"
-            (click)="router.navigate(['/sequences-routines'])">
+          <ion-button expand="block" size="large" color="primary" (click)="router.navigate(['/sequences-routines'])">
             <ion-icon name="home" slot="start"></ion-icon>
             Back to Sequences
           </ion-button>
-          
-          <ion-button 
-            expand="block" 
-            fill="outline"
-            size="large"
+
+          <ion-button expand="block" fill="outline" size="large"
             (click)="router.navigate(['/sequence-detail', sequence?._id])">
             <ion-icon name="information-circle" slot="start"></ion-icon>
             View Sequence Details

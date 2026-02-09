@@ -2,25 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonBadge,
-  IonLabel,
-  IonChip,
-  IonSpinner
-} from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { Observable, Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
 import { YogaPosesService, YogaPose } from '../services/yoga-poses.service';
 
 @Component({
@@ -29,24 +13,10 @@ import { YogaPosesService, YogaPose } from '../services/yoga-poses.service';
   styleUrls: ['./pose-detail.page.scss'],
   standalone: true,
   imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar,
-    IonButtons,
-    IonBackButton,
-    IonButton,
-    IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonBadge,
-    IonLabel,
-    IonChip,
-    IonSpinner,
-    CommonModule, 
-    FormsModule
+    IonContent,
+    CommonModule,
+    FormsModule,
+    RouterLink
   ]
 })
 export class PoseDetailPage implements OnInit, OnDestroy {
@@ -56,7 +26,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
   error = false;
   currentStep = 0;
   isFavorite!: Observable<boolean>;
-  
+
   private subscriptions: Subscription[] = [];
   private poseId: string = '';
 
@@ -82,7 +52,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private yogaPosesService: YogaPosesService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -131,10 +101,10 @@ export class PoseDetailPage implements OnInit, OnDestroy {
     // Find poses with similar tags or same category
     const sub = this.yogaPosesService.getAllPoses().subscribe(allPoses => {
       this.relatedPoses = allPoses
-        .filter(p => 
-          p._id !== this.pose!._id && 
-          (p.category === this.pose!.category || 
-           p.tags.some(tag => this.pose!.tags.includes(tag)))
+        .filter(p =>
+          p._id !== this.pose!._id &&
+          (p.category === this.pose!.category ||
+            p.tags.some(tag => this.pose!.tags.includes(tag)))
         )
         .slice(0, 4); // Show only 4 related poses
     });
@@ -144,7 +114,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
 
   // Navigation methods
   nextStep() {
-    if (this.pose && this.currentStep < this.pose.steps.length - 1) {
+    if (this.pose && this.currentStep < this.pose.detailedSteps.length - 1) {
       this.currentStep++;
     }
   }
@@ -171,10 +141,10 @@ export class PoseDetailPage implements OnInit, OnDestroy {
       // In a real app, this would navigate to a practice session
       // For now, we'll just log it
       console.log('Starting practice for:', this.pose.name);
-      
+
       // You could navigate to a practice page or show a modal
       // this.router.navigate(['/practice', this.pose._id]);
-      
+
       // Or show instructions in a guided format
       this.showPracticeModal();
     }
@@ -185,7 +155,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
       // In a real app, this would show a modal to select routines
       // or add to a default routine
       console.log('Adding to routine:', this.pose.name);
-      
+
       // Mock implementation - in real app this would interact with a routine service
       const routines = JSON.parse(localStorage.getItem('yoga-routines') || '[]');
       const defaultRoutine = routines.find((r: any) => r.name === 'My Routine') || {
@@ -193,7 +163,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
         name: 'My Routine',
         poses: []
       };
-      
+
       if (!defaultRoutine.poses.includes(this.pose._id)) {
         defaultRoutine.poses.push(this.pose._id);
         if (!routines.some((r: any) => r.id === 'default')) {
@@ -209,7 +179,7 @@ export class PoseDetailPage implements OnInit, OnDestroy {
     // In a real app, this would show a modal or navigate to practice mode
     // For now, just reset the step counter to start guided practice
     this.currentStep = 0;
-    
+
     // Could implement auto-advance through steps with timer
     // this.startGuidedPractice();
   }
@@ -227,13 +197,13 @@ export class PoseDetailPage implements OnInit, OnDestroy {
   // Optional: Auto-advance through steps for guided practice
   private startGuidedPractice() {
     if (!this.pose) return;
-    
+
     // Reset to first step
     this.currentStep = 0;
-    
+
     // Auto-advance every 5 seconds (example)
     const interval = setInterval(() => {
-      if (this.currentStep < this.pose!.steps.length - 1) {
+      if (this.currentStep < this.pose!.detailedSteps.length - 1) {
         this.currentStep++;
       } else {
         clearInterval(interval);

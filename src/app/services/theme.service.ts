@@ -61,6 +61,16 @@ export class ThemeService {
         secondary: '#c39bd3',
         accent: '#f4f1f8'
       }
+    },
+    {
+      name: 'yogasanam-dark',
+      displayName: 'Yogasanam Dark',
+      description: 'Premium dark mode with vibrant green accent for Focus',
+      colors: {
+        primary: '#19e64d',
+        secondary: '#000000',
+        accent: '#1e1e1e'
+      }
     }
   ];
 
@@ -89,13 +99,13 @@ export class ThemeService {
 
     // Remove existing theme classes
     document.body.classList.remove(...this.themes.map(t => t.name));
-    
+
     // Add new theme class
     document.body.classList.add(themeName);
-    
+
     // Save to localStorage
     localStorage.setItem(this.THEME_KEY, themeName);
-    
+
     // Update current theme
     this.currentThemeSubject.next(themeName);
   }

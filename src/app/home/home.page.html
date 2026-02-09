@@ -1,236 +1,178 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Yoga for Life</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="openProfile()">
-        <ion-icon name="person-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <div class="home-container">
-    
-    <!-- Welcome Banner -->
-    <div class="welcome-banner yoga-gradient-bg">
-      <div class="banner-content">
-        <h1>Welcome back, {{ userName }}!</h1>
-        <p>{{ currentGreeting }}</p>
-        <div class="streak-info">
-          <ion-icon name="flame"></ion-icon>
-          <span>{{ currentStreak }} day streak</span>
+<ion-content [fullscreen]="true" class="yogasanam-content">
+  <!-- Navigation Bar -->
+  <nav class="glass-nav">
+    <div class="nav-container">
+      <div class="logo-section">
+        <div class="logo-svg">
+          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
+              fill="currentColor"></path>
+          </svg>
         </div>
+        <h1>Yogasanam</h1>
       </div>
-      <div class="banner-image">
-        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&h=200&fit=crop&crop=center" alt="Yoga pose" />
+
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#" (click)="navigateTo('/yogasana-library')">Libraries</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
       </div>
+
+      <button class="cta-button" (click)="navigateTo('/sequences-routines')">
+        Start Your Journey
+      </button>
     </div>
+  </nav>
 
-    <!-- Quick Stats -->
-    <div class="stats-grid">
-      <div class="stat-card yoga-card">
-        <ion-icon name="calendar-outline" class="stat-icon"></ion-icon>
-        <div class="stat-info">
-          <h3>{{ totalSessions }}</h3>
-          <p>Sessions</p>
-        </div>
-      </div>
-      <div class="stat-card yoga-card">
-        <ion-icon name="time-outline" class="stat-icon"></ion-icon>
-        <div class="stat-info">
-          <h3>{{ totalMinutes }}m</h3>
-          <p>Practice Time</p>
-        </div>
-      </div>
-      <div class="stat-card yoga-card">
-        <ion-icon name="trophy-outline" class="stat-icon"></ion-icon>
-        <div class="stat-info">
-          <h3>{{ achievementsCount }}</h3>
-          <p>Achievements</p>
+  <!-- Hero Section -->
+  <header class="hero-header">
+    <div class="hero-slider">
+      <div *ngFor="let slide of heroSlides; let i = index" class="hero-slide" [class.active]="i === activeSlideIndex"
+        [style.background-image]="'url(' + slide.image + ')'">
+        <div class="hero-content-wrapper" [class.active]="i === activeSlideIndex">
+          <span class="hero-label">{{ slide.label }}</span>
+          <h2 class="hero-title">{{ slide.title }}</h2>
+          <p class="hero-description">
+            {{ slide.description }} Namaste, {{ userName }}.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-btn" (click)="navigateTo('/yogasana-library')">Explore Courses</button>
+            <button class="secondary-btn">Watch Intro</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Today's Suggestion -->
-    <ion-card class="suggestion-card yoga-card">
-      <div class="card-header">
-        <h2>
-          <ion-icon name="bulb-outline"></ion-icon>
-          Today's Suggested Practice
-        </h2>
-        <ion-button fill="clear" size="small" (click)="refreshSuggestion()">
-          <ion-icon name="refresh-outline"></ion-icon>
-        </ion-button>
-      </div>
-      
-      <div class="suggestion-content">
-        <div class="suggestion-image">
-          <img [src]="todaysSuggestion.image" [alt]="todaysSuggestion.name" />
-        </div>
-        <div class="suggestion-details">
-          <h3>{{ todaysSuggestion.name }}</h3>
-          <p>{{ todaysSuggestion.description }}</p>
-          <div class="suggestion-meta">
-            <span class="duration">
-              <ion-icon name="time-outline"></ion-icon>
-              {{ todaysSuggestion.duration }} min
-            </span>
-            <span class="difficulty" [ngClass]="todaysSuggestion.difficulty">
-              {{ todaysSuggestion.difficulty | titlecase }}
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="suggestion-actions">
-        <ion-button expand="block" class="yoga-button" (click)="startSuggestedPractice()">
-          <ion-icon name="play-outline" slot="start"></ion-icon>
-          Start Practice
-        </ion-button>
-      </div>
-    </ion-card>
-
-    <!-- Quick Access Actions -->
-    <ion-card class="quick-access-card yoga-card">
-      <ion-card-header>
-        <ion-card-title>
-          <ion-icon name="flash-outline"></ion-icon>
-          Quick Start
-        </ion-card-title>
-      </ion-card-header>
-      
-      <ion-card-content>
-        <div class="quick-actions-grid">
-          <div class="quick-action" (click)="navigateTo('/breathing')">
-            <div class="action-icon breathing">
-              <ion-icon name="leaf-outline"></ion-icon>
-            </div>
-            <h4>Breathing</h4>
-            <p>5-15 min</p>
-          </div>
-          
-          <div class="quick-action" (click)="navigateTo('/meditation')">
-            <div class="action-icon meditation">
-              <ion-icon name="planet-outline"></ion-icon>
-            </div>
-            <h4>Meditation</h4>
-            <p>10-30 min</p>
-          </div>
-          
-          <div class="quick-action" (click)="navigateTo('/sequences-routines')">
-            <div class="action-icon routine">
-              <ion-icon name="list-outline"></ion-icon>
-            </div>
-            <h4>Quick Routine</h4>
-            <p>15-45 min</p>
-          </div>
-          
-          <div class="quick-action" (click)="navigateTo('/yogasana-library')">
-            <div class="action-icon poses">
-              <ion-icon name="library-outline"></ion-icon>
-            </div>
-            <h4>Browse Poses</h4>
-            <p>Explore</p>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Current Challenge -->
-    <ion-card class="challenge-card yoga-card" *ngIf="currentChallenge">
-      <div class="challenge-header">
-        <div>
-          <h3>
-            <ion-icon name="ribbon-outline"></ion-icon>
-            Current Challenge
-          </h3>
-          <h4>{{ currentChallenge.name }}</h4>
-        </div>
-        <div class="challenge-progress">
-          <div class="progress-circle">
-            <span>{{ currentChallenge.progress }}%</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="challenge-details">
-        <p>{{ currentChallenge.description }}</p>
-        <div class="challenge-meta">
-          <span>Day {{ currentChallenge.currentDay }} of {{ currentChallenge.totalDays }}</span>
-          <span class="days-left">{{ currentChallenge.daysLeft }} days left</span>
-        </div>
-      </div>
-      
-      <ion-button fill="outline" expand="block" (click)="viewChallenge()">
-        View Challenge
-      </ion-button>
-    </ion-card>
-
-    <!-- Daily Wellness Tip -->
-    <ion-card class="tip-card yoga-card">
-      <ion-card-header>
-        <ion-card-title>
-          <ion-icon name="star-outline"></ion-icon>
-          Daily Wellness Tip
-        </ion-card-title>
-      </ion-card-header>
-      
-      <ion-card-content>
-        <div class="tip-content">
-          <blockquote>
-            "{{ dailyTip.quote }}"
-          </blockquote>
-          <cite>— {{ dailyTip.author }}</cite>
-        </div>
-        <div class="tip-category">
-          <ion-chip color="primary">{{ dailyTip.category }}</ion-chip>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Recent Sessions -->
-    <ion-card class="recent-sessions-card yoga-card" *ngIf="recentSessions.length > 0">
-      <ion-card-header>
-        <ion-card-title>
-          <ion-icon name="time-outline"></ion-icon>
-          Recent Sessions
-        </ion-card-title>
-        <ion-button fill="clear" size="small" (click)="navigateTo('/my-progress')">
-          View All
-        </ion-button>
-      </ion-card-header>
-      
-      <ion-card-content>
-        <div class="sessions-list">
-          <div class="session-item" *ngFor="let session of recentSessions; let i = index" [class.last]="i === recentSessions.length - 1">
-            <div class="session-icon">
-              <ion-icon [name]="getSessionIcon(session.type)"></ion-icon>
-            </div>
-            <div class="session-details">
-              <h4>{{ session.name }}</h4>
-              <p>{{ session.date | date:'MMM d' }} • {{ session.duration }} min</p>
-            </div>
-            <div class="session-rating">
-              <ion-icon name="star" [class.filled]="session.rating >= 1"></ion-icon>
-              <ion-icon name="star" [class.filled]="session.rating >= 2"></ion-icon>
-              <ion-icon name="star" [class.filled]="session.rating >= 3"></ion-icon>
-            </div>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Motivational Quote -->
-    <div class="motivation-banner">
-      <div class="motivation-content">
-        <h3>{{ motivationalQuote.text }}</h3>
-        <p>— {{ motivationalQuote.author }}</p>
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators">
+      <div *ngFor="let slide of heroSlides; let i = index" class="indicator" [class.active]="i === activeSlideIndex"
+        (click)="activeSlideIndex = i">
       </div>
     </div>
+  </header>
 
-  </div>
+  <!-- Yoga Sutra Quote Section -->
+  <section class="sutra-section">
+    <div class="sutra-box">
+      <div class="parchment-container parchment-texture">
+        <div class="decorative-border"></div>
+        <div class="sutra-content">
+          <span class="material-symbols-outlined">auto_stories</span>
+          <h3>Patanjali Yoga Sutra 2.46</h3>
+          <p class="devanagari">स्थिरसुखमासनम्</p>
+          <div class="divider"></div>
+          <p class="transliteration">"Sthira Sukham Asanam"</p>
+          <p class="meaning">
+            Posture should be steady and comfortable. The balance between stability and ease is the gateway
+            to meditation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Daily Inspiration -->
+  <section class="inspiration-section">
+    <div class="inspiration-content">
+      <span class="material-symbols-outlined quote-icon">format_quote</span>
+      <h2>"Yoga is the journey of the self, through the self, to the self."</h2>
+      <p class="author">— Bhagavad Gita</p>
+    </div>
+  </section>
+
+  <!-- Holistic Learning Path Grid -->
+  <section class="holistic-section">
+    <div class="section-header">
+      <h2>Holistic Learning Path</h2>
+      <div class="accent-bar"></div>
+      <p>
+        Discover a comprehensive collection of resources designed to guide you through every stage of your
+        spiritual and physical development.
+      </p>
+    </div>
+
+    <div class="holistic-grid">
+      <div *ngFor="let path of learningPaths" class="holistic-card"
+        (click)="path.route ? navigateTo(path.route) : null">
+        <div class="icon-box">
+          <span class="material-symbols-outlined">{{ path.icon }}</span>
+        </div>
+        <h3>{{ path.title }}</h3>
+        <p>{{ path.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-main">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <!-- Branding -->
+        <div class="footer-brand">
+          <div class="logo-footer">
+            <div class="logo-svg">
+              <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+            <h2>Yogasanam</h2>
+          </div>
+          <p>Dedicated to preserving the authentic tradition of Yoga as described in the ancient Vedic scriptures.</p>
+          <div class="footer-socials">
+            <a href="#"><span class="material-symbols-outlined">public</span></a>
+            <a href="#"><span class="material-symbols-outlined">chat</span></a>
+            <a href="#"><span class="material-symbols-outlined">play_circle</span></a>
+          </div>
+        </div>
+
+        <!-- Sitemap -->
+        <div class="footer-column">
+          <h3>Libraries</h3>
+          <ul>
+            <li><a href="#" (click)="navigateTo('/yogasana-library')">Asana Library</a></li>
+            <li><a href="#" (click)="navigateTo('/breathing')">Pranayama Guide</a></li>
+            <li><a href="#">Meditation Hub</a></li>
+            <li><a href="#">Health Protocols</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div class="footer-column">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">Our Vision</a></li>
+            <li><a href="#">Vedic Wisdom</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-column">
+          <h3>Newsletter</h3>
+          <div class="newsletter-box">
+            <p>Stay updated with our latest sequences and sutra reflections.</p>
+            <div class="input-group">
+              <input type="email" placeholder="Your email" />
+              <button>
+                <span class="material-symbols-outlined">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>© 2024 Yogasanam. All spiritual rights reserved.</p>
+        <div class="legal-tags">
+          <span>Namaste</span>
+          <span>Sthira Sukham</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 </ion-content>
