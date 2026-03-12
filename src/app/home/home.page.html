@@ -29,7 +29,8 @@
   <!-- Hero Section -->
   <header class="hero-header">
     <div class="hero-slider">
-      <div *ngFor="let slide of heroSlides; let i = index" class="hero-slide" [class.active]="i === activeSlideIndex"
+      @for (slide of heroSlides; track slide.title; let i = $index) {
+      <div class="hero-slide" [class.active]="i === activeSlideIndex"
         [style.background-image]="'url(' + slide.image + ')'">
         <div class="hero-content-wrapper" [class.active]="i === activeSlideIndex">
           <span class="hero-label">{{ slide.label }}</span>
@@ -43,13 +44,15 @@
           </div>
         </div>
       </div>
+      }
     </div>
 
     <!-- Carousel Indicators -->
     <div class="carousel-indicators">
-      <div *ngFor="let slide of heroSlides; let i = index" class="indicator" [class.active]="i === activeSlideIndex"
-        (click)="activeSlideIndex = i">
+      @for (slide of heroSlides; track slide.title; let i = $index) {
+      <div class="indicator" [class.active]="i === activeSlideIndex" (click)="activeSlideIndex = i">
       </div>
+      }
     </div>
   </header>
 
@@ -94,14 +97,15 @@
     </div>
 
     <div class="holistic-grid">
-      <div *ngFor="let path of learningPaths" class="holistic-card"
-        (click)="path.route ? navigateTo(path.route) : null">
+      @for (path of learningPaths; track path.title) {
+      <div class="holistic-card" (click)="path.route ? navigateTo(path.route) : null">
         <div class="icon-box">
           <span class="material-symbols-outlined">{{ path.icon }}</span>
         </div>
         <h3>{{ path.title }}</h3>
         <p>{{ path.description }}</p>
       </div>
+      }
     </div>
   </section>
 

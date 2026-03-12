@@ -40,7 +40,7 @@ export class HomePage implements OnInit {
       label: 'Vedic Wisdom',
       title: 'Embrace the Path of Patanjali',
       description: 'A traditional approach to modern wellness. Unlock the secrets of the ancient Yoga Sutras through guided practice and meditation.',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-rnTZsNK_1Tr3X6KJDqW3jubkVviYBsHWdhEhaJSNMNyR7QbbShkr-3ikRwgBOo3AT1NPDoQKjtS7oFkwQOA5lvhy6Ys0f9eudbFICNo55xVdUZ133PULqBacdIF0jd05tXXxn23YCZCROXXQE7LX6pOK-RHJC_ue5FhsNofIhSktEuuHdwfbkE8EJsLj4m-vGWWJ3A7_uyrItAx0BDW4p94zJZy1COdP3Iw3eyqk-dK-XlJ8DoIcCkwapHBfQylOrhdl9R2BTSY'
+      image: 'https://images.unsplash.com/photo-1545208393-2160291bd04e?q=80&w=1200&auto=format&fit=crop'
     },
     {
       label: 'Prana Flow',

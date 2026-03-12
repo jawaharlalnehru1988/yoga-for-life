@@ -102,18 +102,20 @@
     <ion-card class="activity-card">
       <ion-card-content>
         <div class="activity-timeline">
-          <div 
-            *ngFor="let day of weeklyActivity" 
-            class="activity-day"
-            [class.completed]="day.completed"
-            [class.empty]="day.sessions === 0">
+          @for (day of weeklyActivity; track day.date) {
+          <div class="activity-day" [class.completed]="day.completed" [class.empty]="day.sessions === 0">
             <div class="day-name">{{ day.date.toLocaleDateString('en', {weekday: 'short'}) }}</div>
             <div class="day-indicator">
-              <div class="sessions-count" *ngIf="day.sessions > 0">{{ day.sessions }}</div>
-              <ion-icon *ngIf="day.sessions === 0" name="ellipse-outline"></ion-icon>
+              @if (day.sessions > 0) {
+              <div class="sessions-count">{{ day.sessions }}</div>
+              }
+              @if (day.sessions === 0) {
+              <ion-icon name="ellipse-outline"></ion-icon>
+              }
             </div>
             <div class="day-date">{{ day.date.getDate() }}</div>
           </div>
+          }
         </div>
       </ion-card-content>
     </ion-card>
@@ -129,7 +131,8 @@
     </div>
 
     <div class="goals-grid">
-      <ion-card *ngFor="let goal of monthlyGoals" class="goal-card">
+      @for (goal of monthlyGoals; track goal.title) {
+      <ion-card class="goal-card">
         <ion-card-content>
           <div class="goal-header">
             <div class="goal-icon">
@@ -144,6 +147,7 @@
           <ion-progress-bar [value]="getGoalProgress(goal) / 100" [color]="goal.color"></ion-progress-bar>
         </ion-card-content>
       </ion-card>
+      }
     </div>
   </div>
 
@@ -158,33 +162,36 @@
     </div>
 
     <div class="achievements-grid">
-      <ion-card 
-        *ngFor="let achievement of achievements" 
-        class="achievement-card"
-        [class.unlocked]="achievement.unlocked">
+      @for (achievement of achievements; track achievement.title) {
+      <ion-card class="achievement-card" [class.unlocked]="achievement.unlocked">
         <ion-card-content>
           <div class="achievement-header">
             <div class="achievement-icon" [class.unlocked]="achievement.unlocked">
-              <ion-icon [name]="achievement.icon" [color]="achievement.unlocked ? achievement.color : 'medium'"></ion-icon>
+              <ion-icon [name]="achievement.icon"
+                [color]="achievement.unlocked ? achievement.color : 'medium'"></ion-icon>
             </div>
-            <ion-badge *ngIf="achievement.unlocked" color="success" class="unlocked-badge">
+            @if (achievement.unlocked) {
+            <ion-badge color="success" class="unlocked-badge">
               <ion-icon name="checkmark"></ion-icon>
             </ion-badge>
+            }
           </div>
           <h4>{{ achievement.title }}</h4>
           <p>{{ achievement.description }}</p>
           <div class="achievement-progress">
             <div class="progress-text">{{ achievement.progress }} / {{ achievement.target }}</div>
-            <ion-progress-bar 
-              [value]="getAchievementProgress(achievement) / 100" 
+            <ion-progress-bar [value]="getAchievementProgress(achievement) / 100"
               [color]="achievement.unlocked ? achievement.color : 'medium'">
             </ion-progress-bar>
           </div>
-          <div class="unlocked-date" *ngIf="achievement.unlocked && achievement.unlockedDate">
+          @if (achievement.unlocked && achievement.unlockedDate) {
+          <div class="unlocked-date">
             Unlocked {{ formatDate(achievement.unlockedDate) }}
           </div>
+          }
         </ion-card-content>
       </ion-card>
+      }
     </div>
   </div>
 
@@ -198,13 +205,14 @@
     </div>
 
     <ion-list class="sessions-list">
-      <ion-item *ngFor="let session of recentSessions" class="session-item">
+      @for (session of recentSessions; track session.date) {
+      <ion-item class="session-item">
         <ion-thumbnail slot="start" class="session-thumbnail">
           <div class="session-type-icon" [class]="'type-' + session.type">
             <ion-icon [name]="getSessionTypeIcon(session.type)" [color]="getSessionTypeColor(session.type)"></ion-icon>
           </div>
         </ion-thumbnail>
-        
+
         <ion-label>
           <h3>{{ session.title }}</h3>
           <p>{{ formatDate(session.date) }} • {{ session.duration }} min</p>
@@ -212,16 +220,23 @@
             <ion-chip [color]="getDifficultyColor(session.difficulty)" size="small">
               {{ session.difficulty }}
             </ion-chip>
-            <div class="session-rating" *ngIf="session.rating">
-              <ion-icon *ngFor="let star of generateStars(session.rating)" [name]="star" color="warning" size="small"></ion-icon>
+            @if (session.rating) {
+            <div class="session-rating">
+              @for (star of generateStars(session.rating); track star) {
+              <ion-icon [name]="star" color="warning" size="small"></ion-icon>
+              }
             </div>
+            }
           </div>
         </ion-label>
 
         <ion-note slot="end" class="session-status">
-          <ion-icon name="checkmark-circle" color="success" *ngIf="session.completed"></ion-icon>
+          @if (session.completed) {
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          }
         </ion-note>
       </ion-item>
+      }
     </ion-list>
   </div>
 

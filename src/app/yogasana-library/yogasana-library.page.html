@@ -14,7 +14,6 @@
 
       <nav class="main-nav">
         <a class="active" href="#">Library</a>
-        <a href="#">Sutras</a>
         <a href="#">Practices</a>
         <a href="#">About</a>
       </nav>
@@ -24,8 +23,7 @@
           <span class="material-symbols-outlined">notifications</span>
         </button>
         <div class="profile-circle" (click)="openProfile()">
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmuoJ2QKbso6Sn4SKwBuR_9BDUyJwBm-d5s-uvMoZIVYbVnazsszXhJ2jjpe8uBBJi2HElhiEtL9powsZUZUyGtmveXE-HAeRAoEaLuPO_MNr-l0FKx_6K6oV7mXCggeAh8z_m5xKqMxF-u_NJjw5YzsoOcvZ5xwL6CvzzqhjRByD4yC1_dHXuo2PtOpDKy8yTDZbolToYbOHbHcrxwgu2IYV2TLgJyy1eFzdZ6pT90jeQXPDu8u6W9QyB_B2C_lVgIJxKRBfzFO8"
+          <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&auto=format&fit=crop"
             alt="Profile" />
         </div>
       </div>
@@ -36,12 +34,12 @@
     <!-- Hero & Search Section -->
     <div class="hero-search">
       <h2>Yogasana Library Explorer</h2>
-      <p>Immerse yourself in traditional Vedic wisdom through the lens of Patanjali Yoga Sutras. Discover the perfect
-        asana for your path.</p>
+      <p>Immerse yourself in traditional Vedic wisdom. Discover the perfect asana for your path through our curated
+        collection.</p>
 
       <div class="search-box">
         <span class="material-symbols-outlined search-icon">search</span>
-        <input type="text" placeholder="Search for an asana (e.g. Tadasana, Vrikshasana...)" [(ngModel)]="searchQuery"
+        <input type="text" placeholder="Search for an asana (e.g. Tadasana...)" [(ngModel)]="searchQuery"
           (input)="onSearchInput($event)" />
       </div>
     </div>
@@ -49,59 +47,58 @@
     <!-- Filters Section -->
     <div class="filters-wrapper">
       <div class="filter-group">
-        <label>Difficulty Level</label>
-        <div class="pill-group">
-          <button class="pill" [class.active]="!selectedFilters.difficulty" (click)="clearFilter('difficulty')">All
-            Levels</button>
-          <button *ngFor="let diff of filterOptions.difficulties" class="pill"
-            [class.active]="selectedFilters.difficulty === diff" (click)="toggleFilter('difficulty', diff)">{{ diff
-            }}</button>
-        </div>
-      </div>
-
-      <div class="filter-group">
         <label>Primary Focus</label>
         <div class="pill-group">
-          <button *ngFor="let cat of filterOptions.categories" class="pill"
-            [class.active-alt]="selectedFilters.category === cat" (click)="toggleFilter('category', cat)">{{ cat
+          <button class="pill" [class.active-alt]="!selectedFilters.category" (click)="clearFilter('category')">All
+            Categories</button>
+          @for (cat of filterOptions.categories; track cat) {
+          <button class="pill" [class.active-alt]="selectedFilters.category === cat"
+            (click)="toggleFilter('category', cat)">{{ cat
             }}</button>
+          }
         </div>
       </div>
     </div>
 
     <!-- Grid Results -->
     <div class="poses-grid">
-      <div *ngFor="let pose of filteredPoses" class="pose-card" (click)="openPoseDetail(pose)">
+      @for (pose of filteredPoses; track pose.id) {
+      <div class="pose-card" (click)="openPoseDetail(pose)">
         <div class="media-wrapper">
-          <img [src]="pose.imageUrl" [alt]="pose.name" />
+          <img
+            [src]="pose.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop'"
+            [alt]="pose.yogaName" />
+          @if (pose.category) {
           <div class="difficulty-badge">
-            <span>{{ pose.difficulty }}</span>
+            <span>{{ pose.category.split(',')[0] }}</span>
           </div>
+          }
         </div>
         <div class="card-body">
-          <h3>{{ pose.name }}</h3>
-          <p class="scientific-name">{{ pose.sanskritName }}</p>
-          <div class="benefit-tag">
-            <span class="material-symbols-outlined">verified</span>
-            <span>{{ pose.quickBenefit }}</span>
-          </div>
+          <h3>{{ pose.yogaName }}</h3>
+          <p class="scientific-name">{{ pose.category }}</p>
         </div>
       </div>
+      }
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="filteredPoses.length === 0 && !isLoading" class="hero-search" style="margin-top: 4rem;">
+    @if (filteredPoses.length === 0 && !isLoading) {
+    <div class="hero-search" style="margin-top: 4rem;">
       <p>No asanas found matching your search. Try another term or clear filters.</p>
       <button class="pill active" (click)="clearAllFilters()">Clear All Filters</button>
     </div>
+    }
 
     <!-- Load More -->
-    <div class="load-more-section" *ngIf="filteredPoses.length > 0">
+    @if (filteredPoses.length > 0) {
+    <div class="load-more-section">
       <button class="load-btn">
         Load More Asanas
         <span class="material-symbols-outlined">expand_more</span>
       </button>
     </div>
+    }
   </main>
 
   <!-- Footer -->
@@ -112,12 +109,8 @@
           <span class="material-symbols-outlined">spa</span>
           <h4>VedaYoga Library</h4>
         </div>
-        <p>Dedicated to preserving the authentic wisdom of the Patanjali Yoga Sutras. Our mission is to bridge ancient
-          Vedic tradition with modern wellness journeys.</p>
-        <div class="social-links">
-          <a href="#"><span class="material-symbols-outlined">public</span></a>
-          <a href="#"><span class="material-symbols-outlined">share</span></a>
-        </div>
+        <p>Dedicated to preserving authentic yoga wisdom. Our mission is to bridge ancient Vedic tradition with modern
+          wellness journeys.</p>
       </div>
 
       <div class="link-col">
@@ -126,7 +119,6 @@
           <li><a href="#">Library</a></li>
           <li><a href="#">Practices</a></li>
           <li><a href="#">Community</a></li>
-          <li><a href="#">Teacher Training</a></li>
         </ul>
       </div>
 
@@ -135,7 +127,6 @@
         <ul>
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Use</a></li>
-          <li><a href="#">Help Center</a></li>
           <li><a href="#">Contact Us</a></li>
         </ul>
       </div>

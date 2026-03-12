@@ -5,34 +5,43 @@
     </ion-buttons>
     <ion-title>Meditation Details</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="shareMeditation()" *ngIf="session">
+      @if (session) {
+      <ion-button fill="clear" (click)="shareMeditation()">
         <ion-icon name="share-outline"></ion-icon>
       </ion-button>
+      }
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="loading-state">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Loading meditation...</p>
   </div>
+  }
 
   <!-- Main Content -->
-  <div *ngIf="!isLoading && session" class="meditation-detail">
+  @if (!isLoading && session) {
+  <div class="meditation-detail">
     <!-- Hero Section -->
     <div class="hero-section">
       <div class="meditation-image">
         <img [src]="session.imageUrl" [alt]="session.title" />
         <div class="overlay-badges">
-          <ion-badge *ngIf="session.isPremium" color="warning">
+          @if (session.isPremium) {
+          <ion-badge color="warning">
             <ion-icon name="diamond-outline"></ion-icon>
             Premium
           </ion-badge>
-          <ion-badge *ngIf="session.isPopular" color="success">
+          }
+          @if (session.isPopular) {
+          <ion-badge color="success">
             Popular
           </ion-badge>
+          }
           <ion-badge [color]="getDifficultyColor(session.difficulty)">
             {{ session.difficulty }}
           </ion-badge>
@@ -42,7 +51,7 @@
       <div class="meditation-header">
         <h1>{{ session.title }}</h1>
         <p class="instructor">with {{ session.instructor }}</p>
-        
+
         <div class="session-meta">
           <div class="meta-item">
             <ion-icon name="time-outline"></ion-icon>
@@ -63,16 +72,14 @@
             <ion-icon name="play" slot="start"></ion-icon>
             Play Meditation
           </ion-button>
-          
+
           <div class="secondary-actions">
             <ion-button fill="outline" (click)="toggleFavorite()">
-              <ion-icon 
-                [name]="isFavorite ? 'heart' : 'heart-outline'" 
-                [color]="isFavorite ? 'danger' : 'medium'">
+              <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" [color]="isFavorite ? 'danger' : 'medium'">
               </ion-icon>
               {{ isFavorite ? 'Favorited' : 'Add to Favorites' }}
             </ion-button>
-            
+
             <ion-button fill="outline" (click)="downloadForOffline()">
               <ion-icon name="download-outline"></ion-icon>
               Download
@@ -86,58 +93,68 @@
     <div class="content-section">
       <h2>About This Meditation</h2>
       <p class="description">{{ session.fullDescription }}</p>
-      
-      <div class="benefits-section" *ngIf="session.benefits.length > 0">
+
+      @if (session.benefits.length > 0) {
+      <div class="benefits-section">
         <h3>Benefits</h3>
         <div class="benefits-grid">
-          <div class="benefit-item" *ngFor="let benefit of session.benefits">
+          @for (benefit of session.benefits; track benefit) {
+          <div class="benefit-item">
             <ion-icon name="checkmark-circle" color="success"></ion-icon>
             <span>{{ benefit }}</span>
           </div>
+          }
         </div>
       </div>
+      }
 
-      <div class="tags-section" *ngIf="session.tags.length > 0">
+      @if (session.tags.length > 0) {
+      <div class="tags-section">
         <h3>Tags</h3>
         <div class="tags-container">
-          <ion-chip *ngFor="let tag of session.tags" color="light">
+          @for (tag of session.tags; track tag) {
+          <ion-chip color="light">
             <ion-label>{{ tag }}</ion-label>
           </ion-chip>
+          }
         </div>
       </div>
+      }
 
-      <div class="instructions-section" *ngIf="session.instructions.length > 0">
+      @if (session.instructions.length > 0) {
+      <div class="instructions-section">
         <h3>Instructions</h3>
         <div class="instructions-list">
-          <div class="instruction-item" *ngFor="let instruction of session.instructions; let i = index">
+          @for (instruction of session.instructions; track instruction; let i = $index) {
+          <div class="instruction-item">
             <span class="step-number">{{ i + 1 }}</span>
             <span class="instruction-text">{{ instruction }}</span>
           </div>
+          }
         </div>
       </div>
+      }
     </div>
 
     <!-- Instructor Section -->
-    <div class="content-section" *ngIf="session.instructor">
+    @if (session.instructor) {
+    <div class="content-section">
       <h2>Instructor</h2>
       <p><strong>{{ session.instructor }}</strong> guides you through this meditation experience.</p>
     </div>
+    }
 
     <!-- Related Meditations -->
-    <div class="content-section" *ngIf="relatedSessions.length > 0">
+    @if (relatedSessions.length > 0) {
+    <div class="content-section">
       <h2>More Like This</h2>
       <div class="related-sessions">
-        <ion-card 
-          *ngFor="let relatedSession of relatedSessions" 
-          class="session-card"
-          (click)="openRelatedSession(relatedSession)">
-          
+        @for (relatedSession of relatedSessions; track relatedSession.title) {
+        <ion-card class="session-card" (click)="openRelatedSession(relatedSession)">
+
           <div class="card-image">
             <img [src]="relatedSession.imageUrl" [alt]="relatedSession.title" />
-            <ion-button 
-              fill="clear" 
-              class="play-button"
-              (click)="playMeditation(); $event.stopPropagation()">
+            <ion-button fill="clear" class="play-button" (click)="playMeditation(); $event.stopPropagation()">
               <ion-icon name="play" color="light"></ion-icon>
             </ion-button>
           </div>
@@ -161,12 +178,16 @@
             <p>{{ relatedSession.shortDescription }}</p>
           </ion-card-content>
         </ion-card>
+        }
       </div>
     </div>
+    }
   </div>
+  }
 
   <!-- Error State -->
-  <div class="error-state" *ngIf="!isLoading && !session">
+  @if (!isLoading && !session) {
+  <div class="error-state">
     <ion-icon name="alert-circle-outline" color="medium"></ion-icon>
     <h2>Meditation Not Found</h2>
     <p>The meditation you're looking for couldn't be found.</p>
@@ -175,4 +196,5 @@
       Go Back
     </ion-button>
   </div>
+  }
 </ion-content>

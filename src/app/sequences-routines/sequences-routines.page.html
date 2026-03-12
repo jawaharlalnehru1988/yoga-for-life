@@ -20,7 +20,8 @@
   </ion-header>
 
   <!-- Quick Stats Banner -->
-  <div class="stats-banner" *ngIf="userStats">
+  @if (userStats) {
+  <div class="stats-banner">
     <div class="stat-item">
       <div class="stat-number">{{ userStats.completedSequences }}</div>
       <div class="stat-label">Completed</div>
@@ -38,34 +39,34 @@
       <div class="stat-label">My Routines</div>
     </div>
   </div>
+  }
 
   <!-- Featured Challenges -->
-  <div class="featured-challenges" *ngIf="featuredChallenges.length > 0">
+  @if (featuredChallenges.length > 0) {
+  <div class="featured-challenges">
     <h2>Featured Challenges</h2>
     <div class="challenges-scroll">
-      <div 
-        *ngFor="let challenge of featuredChallenges" 
-        class="challenge-card"
-        (click)="openChallenge(challenge)">
+      @for (challenge of featuredChallenges; track challenge.name) {
+      <div class="challenge-card" (click)="openChallenge(challenge)">
         <img [src]="challenge.imageUrl" [alt]="challenge.name" />
         <div class="challenge-overlay">
           <h3>{{ challenge.name }}</h3>
           <p>{{ challenge.duration }} days</p>
-          <ion-badge *ngIf="challenge.isPremium" color="warning">Premium</ion-badge>
+          @if (challenge.isPremium) {
+          <ion-badge color="warning">Premium</ion-badge>
+          }
         </div>
       </div>
+      }
     </div>
   </div>
+  }
 
   <!-- Search and Filter Section -->
   <div class="search-filter-section">
     <!-- Search Bar -->
-    <ion-searchbar
-      [(ngModel)]="searchQuery"
-      (ionInput)="onSearchInput($event)"
-      placeholder="Search sequences, goals, or benefits..."
-      show-clear-button="focus"
-      debounce="300">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="onSearchInput($event)"
+      placeholder="Search sequences, goals, or benefits..." show-clear-button="focus" debounce="300">
     </ion-searchbar>
 
     <!-- Category Tabs -->
@@ -91,109 +92,102 @@
 
     <!-- Quick Filters -->
     <div class="quick-filters">
-      <ion-chip 
-        *ngFor="let difficulty of filterOptions.difficulties" 
-        [color]="selectedFilters.difficulty === difficulty ? 'primary' : 'medium'"
+      @for (difficulty of filterOptions.difficulties; track difficulty) {
+      <ion-chip [color]="selectedFilters.difficulty === difficulty ? 'primary' : 'medium'"
         (click)="toggleFilter('difficulty', difficulty)">
         <ion-label>{{ difficulty }}</ion-label>
       </ion-chip>
-      
-      <ion-chip 
-        *ngFor="let duration of filterOptions.durations" 
-        [color]="selectedFilters.duration === duration.value ? 'primary' : 'medium'"
+      }
+
+      @for (duration of filterOptions.durations; track duration.value) {
+      <ion-chip [color]="selectedFilters.duration === duration.value ? 'primary' : 'medium'"
         (click)="toggleFilter('duration', duration.value)">
         <ion-label>{{ duration.label }}</ion-label>
       </ion-chip>
+      }
     </div>
 
     <!-- Advanced Filters -->
-    <div class="advanced-filters" *ngIf="showAdvancedFilters">
+    @if (showAdvancedFilters) {
+    <div class="advanced-filters">
       <ion-item>
         <ion-label>Goal</ion-label>
-        <ion-select 
-          [(ngModel)]="selectedFilters.goal" 
-          (ionChange)="onFilterChange()"
-          placeholder="All Goals">
+        <ion-select [(ngModel)]="selectedFilters.goal" (ionChange)="onFilterChange()" placeholder="All Goals">
           <ion-select-option value="">All Goals</ion-select-option>
-          <ion-select-option *ngFor="let goal of filterOptions.goals" [value]="goal">
+          @for (goal of filterOptions.goals; track goal) {
+          <ion-select-option [value]="goal">
             {{ goal }}
           </ion-select-option>
+          }
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label>Type</ion-label>
-        <ion-select 
-          [(ngModel)]="selectedFilters.type" 
-          (ionChange)="onFilterChange()"
-          placeholder="All Types">
+        <ion-select [(ngModel)]="selectedFilters.type" (ionChange)="onFilterChange()" placeholder="All Types">
           <ion-select-option value="">All Types</ion-select-option>
-          <ion-select-option *ngFor="let type of filterOptions.types" [value]="type.value">
+          @for (type of filterOptions.types; track type.value) {
+          <ion-select-option [value]="type.value">
             {{ type.label }}
           </ion-select-option>
+          }
         </ion-select>
       </ion-item>
     </div>
+    }
 
     <!-- Filter Toggle -->
-    <ion-button 
-      fill="clear" 
-      size="small" 
-      (click)="toggleAdvancedFilters()"
-      class="filter-toggle">
+    <ion-button fill="clear" size="small" (click)="toggleAdvancedFilters()" class="filter-toggle">
       <ion-icon [name]="showAdvancedFilters ? 'chevron-up' : 'chevron-down'"></ion-icon>
       {{ showAdvancedFilters ? 'Hide' : 'More' }} Filters
     </ion-button>
 
     <!-- Active Filters Display -->
-    <div class="active-filters" *ngIf="hasActiveFilters()">
-      <ion-chip 
-        *ngIf="selectedFilters.difficulty" 
-        color="primary"
-        (click)="clearFilter('difficulty')">
+    @if (hasActiveFilters()) {
+    <div class="active-filters">
+      @if (selectedFilters.difficulty) {
+      <ion-chip color="primary" (click)="clearFilter('difficulty')">
         <ion-label>{{ selectedFilters.difficulty }}</ion-label>
         <ion-icon name="close"></ion-icon>
       </ion-chip>
-      <ion-chip 
-        *ngIf="selectedFilters.duration" 
-        color="primary"
-        (click)="clearFilter('duration')">
+      }
+      @if (selectedFilters.duration) {
+      <ion-chip color="primary" (click)="clearFilter('duration')">
         <ion-label>{{ getDurationLabel(selectedFilters.duration) }}</ion-label>
         <ion-icon name="close"></ion-icon>
       </ion-chip>
-      <ion-chip 
-        *ngIf="selectedFilters.goal" 
-        color="primary"
-        (click)="clearFilter('goal')">
+      }
+      @if (selectedFilters.goal) {
+      <ion-chip color="primary" (click)="clearFilter('goal')">
         <ion-label>{{ selectedFilters.goal }}</ion-label>
         <ion-icon name="close"></ion-icon>
       </ion-chip>
-      <ion-chip 
-        *ngIf="selectedFilters.type" 
-        color="primary"
-        (click)="clearFilter('type')">
+      }
+      @if (selectedFilters.type) {
+      <ion-chip color="primary" (click)="clearFilter('type')">
         <ion-label>{{ getTypeLabel(selectedFilters.type) }}</ion-label>
         <ion-icon name="close"></ion-icon>
       </ion-chip>
-      <ion-button 
-        fill="clear" 
-        size="small" 
-        color="medium"
-        (click)="clearAllFilters()">
+      }
+      <ion-button fill="clear" size="small" color="medium" (click)="clearAllFilters()">
         Clear All
       </ion-button>
     </div>
+    }
   </div>
 
   <!-- Results Count -->
   <div class="results-info">
     <p>{{ filteredSequences.length }} sequence{{ filteredSequences.length !== 1 ? 's' : '' }}
-       <span *ngIf="searchQuery || hasActiveFilters()"> found</span>
+      @if (searchQuery || hasActiveFilters()) {
+      <span> found</span>
+      }
     </p>
   </div>
 
   <!-- Create Custom Sequence CTA -->
-  <ion-card class="create-cta" *ngIf="selectedCategory === 'custom' && customSequences.length === 0">
+  @if (selectedCategory === 'custom' && customSequences.length === 0) {
+  <ion-card class="create-cta">
     <ion-card-content>
       <div class="cta-content">
         <ion-icon name="add-circle-outline" color="primary"></ion-icon>
@@ -206,34 +200,30 @@
       </div>
     </ion-card-content>
   </ion-card>
+  }
 
   <!-- Sequences Grid -->
   <div class="sequences-grid">
-    <ion-card 
-      *ngFor="let sequence of filteredSequences" 
-      class="sequence-card"
-      (click)="openSequenceDetail(sequence)">
-      
+    @for (sequence of filteredSequences; track sequence._id) {
+    <ion-card class="sequence-card" (click)="openSequenceDetail(sequence)">
+
       <!-- Sequence Image -->
       <div class="sequence-image-container">
         <img [src]="sequence.imageUrl" [alt]="sequence.name" />
         <div class="sequence-overlay">
-          <ion-button 
-            fill="clear" 
-            size="small"
-            class="favorite-btn"
-            (click)="toggleFavorite(sequence, $event)">
-            <ion-icon 
-              [name]="(isFavorite(sequence._id) | async) ? 'heart' : 'heart-outline'"
+          <ion-button fill="clear" size="small" class="favorite-btn" (click)="toggleFavorite(sequence, $event)">
+            <ion-icon [name]="(isFavorite(sequence._id) | async) ? 'heart' : 'heart-outline'"
               [color]="(isFavorite(sequence._id) | async) ? 'danger' : 'light'">
             </ion-icon>
           </ion-button>
-          
+
           <div class="sequence-badges">
-            <ion-badge *ngIf="sequence.isPremium" color="warning">
+            @if (sequence.isPremium) {
+            <ion-badge color="warning">
               <ion-icon name="diamond-outline"></ion-icon>
               Premium
             </ion-badge>
+            }
             <ion-badge [color]="getDifficultyColor(sequence.difficulty)">
               {{ sequence.difficulty }}
             </ion-badge>
@@ -258,25 +248,28 @@
       <!-- Sequence Content -->
       <ion-card-content>
         <p class="sequence-description">{{ sequence.description }}</p>
-        
+
         <div class="sequence-meta">
           <div class="sequence-tags">
-            <ion-chip 
-              *ngFor="let tag of sequence.tags.slice(0, 2)" 
-              size="small"
-              color="light">
+            @for (tag of sequence.tags.slice(0, 2); track tag) {
+            <ion-chip size="small" color="light">
               <ion-label>{{ tag }}</ion-label>
             </ion-chip>
-            <span *ngIf="sequence.tags.length > 2" class="more-tags">
+            }
+            @if (sequence.tags.length > 2) {
+            <span class="more-tags">
               +{{ sequence.tags.length - 2 }} more
             </span>
+            }
           </div>
-          
+
           <div class="sequence-stats">
-            <div class="stat-item" *ngIf="getCompletedCount(sequence._id) | async as count">
+            @if (getCompletedCount(sequence._id) | async; as count) {
+            <div class="stat-item">
               <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
               <span>{{ count }} completed</span>
             </div>
+            }
             <div class="stat-item">
               <ion-icon name="fitness-outline"></ion-icon>
               <span>{{ sequence.poses.length }} poses</span>
@@ -287,74 +280,72 @@
 
       <!-- Sequence Actions -->
       <div class="sequence-actions">
-        <ion-button 
-          fill="outline" 
-          size="small"
-          (click)="startSequence(sequence, $event)">
+        <ion-button fill="outline" size="small" (click)="startSequence(sequence, $event)">
           <ion-icon name="play" slot="start"></ion-icon>
           Start
         </ion-button>
-        <ion-button 
-          fill="clear" 
-          size="small"
-          (click)="openSequenceDetail(sequence, $event)">
+        <ion-button fill="clear" size="small" (click)="openSequenceDetail(sequence, $event)">
           <ion-icon name="information-circle-outline" slot="start"></ion-icon>
           Details
         </ion-button>
-        <ion-button 
-          *ngIf="sequence.type === 'custom'"
-          fill="clear" 
-          size="small"
-          color="medium"
-          (click)="editSequence(sequence, $event)">
+        @if (sequence.type === 'custom') {
+        <ion-button fill="clear" size="small" color="medium" (click)="editSequence(sequence, $event)">
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
+        }
       </div>
     </ion-card>
+    }
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="filteredSequences.length === 0 && !isLoading">
+  @if (filteredSequences.length === 0 && !isLoading) {
+  <div class="empty-state">
     <ion-icon name="search-outline" color="medium"></ion-icon>
     <h3>No sequences found</h3>
-    <p *ngIf="searchQuery">
+    @if (searchQuery) {
+    <p>
       Try adjusting your search terms or filters
     </p>
-    <p *ngIf="!searchQuery && selectedCategory === 'custom'">
+    }
+    @if (!searchQuery && selectedCategory === 'custom') {
+    <p>
       You haven't created any custom routines yet
     </p>
-    <p *ngIf="!searchQuery && selectedCategory !== 'custom' && hasActiveFilters()">
+    }
+    @if (!searchQuery && selectedCategory !== 'custom' && hasActiveFilters()) {
+    <p>
       Try removing some filters to see more results
     </p>
-    <ion-button 
-      *ngIf="hasActiveFilters() || searchQuery" 
-      fill="outline" 
-      (click)="clearAllFilters(); searchQuery = ''">
+    }
+    @if (hasActiveFilters() || searchQuery) {
+    <ion-button fill="outline" (click)="clearAllFilters(); searchQuery = ''">
       Clear Filters & Search
     </ion-button>
-    <ion-button 
-      *ngIf="selectedCategory === 'custom'" 
-      fill="solid" 
-      (click)="openCreateSequence()">
+    }
+    @if (selectedCategory === 'custom') {
+    <ion-button fill="solid" (click)="openCreateSequence()">
       <ion-icon name="add" slot="start"></ion-icon>
       Create Your First Routine
     </ion-button>
+    }
   </div>
+  }
 
   <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="loading-state">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Loading sequences...</p>
   </div>
+  }
 
   <!-- Floating Action Button for Creating Sequences -->
-  <ion-fab 
-    *ngIf="selectedCategory === 'custom'" 
-    vertical="bottom" 
-    horizontal="end" 
-    slot="fixed">
+  @if (selectedCategory === 'custom') {
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="openCreateSequence()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  }
 </ion-content>

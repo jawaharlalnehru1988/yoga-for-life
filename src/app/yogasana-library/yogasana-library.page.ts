@@ -35,15 +35,13 @@ export class YogasanaLibraryPage implements OnInit {
   isLoading = true;
   searchQuery = '';
   selectedFilters: FilterOptions = {};
-  sortOptions: SortOptions = { sortBy: 'popularity', sortOrder: 'desc' };
-  filterOptions: any = {};
+  sortOptions: SortOptions = { sortBy: 'alphabetical', sortOrder: 'asc' };
+  filterOptions: any = { categories: [] };
 
   constructor(
     private yogaPosesService: YogaPosesService,
     public router: Router,
-  ) {
-    this.filterOptions = this.yogaPosesService.getFilterOptions();
-  }
+  ) { }
 
   ngOnInit() {
     this.loadInitialData();
@@ -53,6 +51,7 @@ export class YogasanaLibraryPage implements OnInit {
     this.isLoading = true;
     this.yogaPosesService.getAllPoses().subscribe(poses => {
       this.allPoses = poses;
+      this.filterOptions = this.yogaPosesService.getFilterOptions(poses);
       this.applyFiltersAndSort();
       this.isLoading = false;
     });
@@ -85,19 +84,17 @@ export class YogasanaLibraryPage implements OnInit {
   }
 
   private applyFiltersAndSort() {
-    this.yogaPosesService.filterPoses(this.selectedFilters).subscribe(filtered => {
-      let result = filtered;
+    let result = this.yogaPosesService.filterPoses(this.selectedFilters, this.allPoses);
 
-      if (this.searchQuery) {
-        const query = this.searchQuery.toLowerCase();
-        result = result.filter(pose =>
-          pose.name.toLowerCase().includes(query) ||
-          pose.sanskritName?.toLowerCase().includes(query)
-        );
-      }
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      result = result.filter(pose =>
+        pose.yogaName.toLowerCase().includes(query) ||
+        pose.category.toLowerCase().includes(query)
+      );
+    }
 
-      this.filteredPoses = this.yogaPosesService.sortPoses(result, this.sortOptions);
-    });
+    this.filteredPoses = this.yogaPosesService.sortPoses(result, this.sortOptions);
   }
 
   openProfile() {
@@ -105,6 +102,6 @@ export class YogasanaLibraryPage implements OnInit {
   }
 
   openPoseDetail(pose: YogaPose) {
-    this.router.navigate(['/pose-detail', pose._id]);
+    this.router.navigate(['/pose-detail', pose.id]);
   }
 }

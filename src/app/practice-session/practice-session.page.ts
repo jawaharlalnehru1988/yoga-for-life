@@ -25,29 +25,31 @@ interface SessionState {
   totalSessionTime: number;
 }
 
+import { MarkdownComponent } from 'ngx-markdown';
+
 @Component({
   selector: 'app-practice-session',
   templateUrl: './practice-session.page.html',
   styleUrls: ['./practice-session.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, MarkdownComponent]
 })
 export class PracticeSessionPage implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private timerSubscription?: Subscription;
   private preparationSubscription?: Subscription;
-  
+
   // Data
   sequence: YogaSequence | null = null;
   poses: YogaPose[] = [];
-  
+
   // Practice settings
   options: PracticeOptions = {
     speed: 'normal',
     instructions: true,
     music: true
   };
-  
+
   // Session state
   state: SessionState = {
     currentPoseIndex: 0,
@@ -58,17 +60,17 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     currentPoseTimeLeft: 0,
     totalSessionTime: 0
   };
-  
+
   // UI state
   isLoading = true;
   isPreparation = false;
   preparationTimeLeft = 10; // 10 seconds preparation
   showControls = true;
-  
+
   // Audio
   private backgroundAudio?: HTMLAudioElement;
   private bellAudio?: HTMLAudioElement;
-  
+
   constructor(
     public router: Router,
     private route: ActivatedRoute,
@@ -77,7 +79,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private modalController: ModalController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadSessionData();
@@ -100,7 +102,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
             instructions: params['instructions'] === 'true',
             music: params['music'] === 'true'
           };
-          
+
           return this.sequencesService.getSequenceById(params['sequenceId']);
         }),
         takeUntil(this.destroy$)
@@ -120,12 +122,12 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
 
   private async loadPoseDetails() {
     if (!this.sequence) return;
-    
+
     try {
-      const posePromises = this.sequence.poses.map(sequencePose => 
+      const posePromises = this.sequence.poses.map(sequencePose =>
         this.yogaPosesService.getPoseById(sequencePose.poseId).toPromise()
       );
-      
+
       const poseResults = await Promise.all(posePromises);
       this.poses = poseResults.filter((pose: any) => pose !== undefined) as YogaPose[];
     } catch (error) {
@@ -136,11 +138,11 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
 
   private calculateSessionTiming() {
     if (!this.sequence) return;
-    
+
     let totalTime = 0;
     this.sequence.poses.forEach(pose => {
       let duration = pose.duration;
-      
+
       // Adjust duration based on speed
       switch (this.options.speed) {
         case 'slow':
@@ -150,10 +152,10 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
           duration = Math.floor(duration * 0.8);
           break;
       }
-      
+
       totalTime += duration;
     });
-    
+
     this.state.totalSessionTime = totalTime;
   }
 
@@ -161,7 +163,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     // Initialize bell sound
     this.bellAudio = new Audio('assets/sounds/bell.mp3');
     this.bellAudio.volume = 0.7;
-    
+
     // Initialize background music if enabled
     if (this.options.music) {
       this.backgroundAudio = new Audio('assets/sounds/yoga-music.mp3');
@@ -173,12 +175,12 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   private startPreparation() {
     this.isPreparation = true;
     this.preparationTimeLeft = 10;
-    
+
     this.preparationSubscription = interval(1000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.preparationTimeLeft--;
-        
+
         if (this.preparationTimeLeft <= 0) {
           this.preparationSubscription?.unsubscribe();
           this.startSession();
@@ -194,7 +196,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     this.state.isActive = true;
     this.state.isPaused = false;
     this.startCurrentPose();
-    
+
     // Start background music
     if (this.backgroundAudio) {
       this.backgroundAudio.play().catch(console.error);
@@ -206,10 +208,10 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
       this.completeSession();
       return;
     }
-    
+
     const currentSequencePose = this.sequence.poses[this.state.currentPoseIndex];
     let duration = currentSequencePose.duration;
-    
+
     // Adjust duration based on speed
     switch (this.options.speed) {
       case 'slow':
@@ -219,12 +221,12 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
         duration = Math.floor(duration * 0.8);
         break;
     }
-    
+
     this.state.currentPoseTimeLeft = duration;
-    
+
     // Play transition bell
     this.playBell();
-    
+
     // Start pose timer
     this.timerSubscription = interval(1000)
       .pipe(takeUntil(this.destroy$))
@@ -232,12 +234,12 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
         if (!this.state.isPaused) {
           this.state.currentPoseTimeLeft--;
           this.state.elapsedTime++;
-          
+
           // Warn when 10 seconds left
           if (this.state.currentPoseTimeLeft === 10) {
             this.showPoseTransitionWarning();
           }
-          
+
           // Move to next pose
           if (this.state.currentPoseTimeLeft <= 0) {
             this.nextPose();
@@ -264,21 +266,21 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     this.state.isActive = false;
     this.state.isCompleted = true;
     this.cleanup();
-    
+
     // Play completion bells
     setTimeout(() => this.playBell(), 0);
     setTimeout(() => this.playBell(), 500);
     setTimeout(() => this.playBell(), 1000);
-    
+
     // Save session completion
     this.saveSessionCompletion();
-    
+
     this.showToast('Session completed! Great work! 🎉', 'success');
   }
 
   private saveSessionCompletion() {
     if (!this.sequence) return;
-    
+
     this.sequencesService.completeSequence(
       this.sequence._id,
       Math.floor(this.state.elapsedTime / 60), // duration in minutes
@@ -289,7 +291,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   // Control Methods
   togglePause() {
     this.state.isPaused = !this.state.isPaused;
-    
+
     if (this.state.isPaused) {
       this.backgroundAudio?.pause();
     } else {
@@ -330,7 +332,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
         }
       ]
     });
-    
+
     await alert.present();
   }
 
@@ -341,7 +343,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   openPoseDetail() {
     const currentPose = this.getCurrentPose();
     if (currentPose) {
-      this.router.navigate(['/pose-detail', currentPose._id]);
+      this.router.navigate(['/pose-detail', currentPose.id]);
     }
   }
 
@@ -350,16 +352,16 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     if (!this.sequence || this.state.currentPoseIndex >= this.sequence.poses.length) {
       return undefined;
     }
-    
+
     const sequencePose = this.sequence.poses[this.state.currentPoseIndex];
-    return this.poses.find(pose => pose._id === sequencePose.poseId);
+    return this.poses.find(pose => pose.id === sequencePose.poseId);
   }
 
   getCurrentSequencePose(): SequencePose | undefined {
     if (!this.sequence || this.state.currentPoseIndex >= this.sequence.poses.length) {
       return undefined;
     }
-    
+
     return this.sequence.poses[this.state.currentPoseIndex];
   }
 
@@ -402,7 +404,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   private cleanup() {
     this.timerSubscription?.unsubscribe();
     this.preparationSubscription?.unsubscribe();
-    
+
     if (this.backgroundAudio) {
       this.backgroundAudio.pause();
       this.backgroundAudio.currentTime = 0;

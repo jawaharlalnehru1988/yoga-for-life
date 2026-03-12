@@ -11,65 +11,56 @@
 
 <ion-content class="ion-padding">
   <form [formGroup]="poseForm" (ngSubmit)="onSubmit()">
-    
+
     <!-- Basic Information -->
     <ion-card>
       <ion-card-content>
         <h3>Basic Information</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Pose Name *</ion-label>
-          <ion-input 
-            formControlName="name" 
-            placeholder="Enter pose name"
-            [class.ion-invalid]="isFieldInvalid('name')">
+          <ion-input formControlName="name" placeholder="Enter pose name" [class.ion-invalid]="isFieldInvalid('name')">
           </ion-input>
           @if (isFieldInvalid('name')) {
-            <ion-note slot="error" >
-              {{ getFieldError('name') }}
-            </ion-note>
+          <ion-note slot="error">
+            {{ getFieldError('name') }}
+          </ion-note>
           }
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Sanskrit Name</ion-label>
-          <ion-input 
-            formControlName="sanskritName" 
-            placeholder="Enter Sanskrit name">
+          <ion-input formControlName="sanskritName" placeholder="Enter Sanskrit name">
           </ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Quick Benefit *</ion-label>
-          <ion-input 
-            formControlName="quickBenefit" 
-            placeholder="Brief description of main benefit"
+          <ion-input formControlName="quickBenefit" placeholder="Brief description of main benefit"
             [class.ion-invalid]="isFieldInvalid('quickBenefit')">
           </ion-input>
-          <ion-note slot="error" *ngIf="isFieldInvalid('quickBenefit')">
+          @if (isFieldInvalid('quickBenefit')) {
+          <ion-note slot="error">
             {{ getFieldError('quickBenefit') }}
           </ion-note>
+          }
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Description *</ion-label>
-          <ion-textarea 
-            formControlName="description" 
-            placeholder="Detailed description of the pose"
-            [autoGrow]="true"
-            rows="3"
-            [class.ion-invalid]="isFieldInvalid('description')">
+          <ion-textarea formControlName="description" placeholder="Detailed description of the pose" [autoGrow]="true"
+            rows="3" [class.ion-invalid]="isFieldInvalid('description')">
           </ion-textarea>
-          <ion-note slot="error" *ngIf="isFieldInvalid('description')">
+          @if (isFieldInvalid('description')) {
+          <ion-note slot="error">
             {{ getFieldError('description') }}
           </ion-note>
+          }
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Image URL</ion-label>
-          <ion-input 
-            formControlName="imageUrl" 
-            placeholder="https://example.com/pose-image.jpg">
+          <ion-input formControlName="imageUrl" placeholder="https://example.com/pose-image.jpg">
           </ion-input>
         </ion-item>
       </ion-card-content>
@@ -79,42 +70,44 @@
     <ion-card>
       <ion-card-content>
         <h3>Classification</h3>
-        
+
         <ion-item>
           <ion-label>Difficulty Level *</ion-label>
           <ion-select formControlName="difficulty" interface="popover">
-            <ion-select-option *ngFor="let difficulty of difficultyOptions" [value]="difficulty">
+            @for (difficulty of difficultyOptions; track difficulty) {
+            <ion-select-option [value]="difficulty">
               {{ difficulty }}
             </ion-select-option>
+            }
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label>Category *</ion-label>
           <ion-select formControlName="category" interface="popover">
-            <ion-select-option *ngFor="let category of categoryOptions" [value]="category">
+            @for (category of categoryOptions; track category) {
+            <ion-select-option [value]="category">
               {{ category }}
             </ion-select-option>
+            }
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Duration *</ion-label>
-          <ion-input 
-            formControlName="duration" 
-            placeholder="e.g., 30 seconds, 1-3 minutes"
+          <ion-input formControlName="duration" placeholder="e.g., 30 seconds, 1-3 minutes"
             [class.ion-invalid]="isFieldInvalid('duration')">
           </ion-input>
-          <ion-note slot="error" *ngIf="isFieldInvalid('duration')">
+          @if (isFieldInvalid('duration')) {
+          <ion-note slot="error">
             {{ getFieldError('duration') }}
           </ion-note>
+          }
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Breathing Technique</ion-label>
-          <ion-input 
-            formControlName="breathingTechnique" 
-            placeholder="e.g., Deep breathing, Natural breath">
+          <ion-input formControlName="breathingTechnique" placeholder="e.g., Deep breathing, Natural breath">
           </ion-input>
         </ion-item>
       </ion-card-content>
@@ -125,15 +118,15 @@
       <ion-card-content>
         <h3>Body Parts Targeted</h3>
         <p class="section-description">Select the body parts this pose targets:</p>
-        
+
         <div class="checkbox-grid">
-          <ion-item *ngFor="let bodyPart of bodyPartOptions" lines="none">
-            <ion-checkbox 
-              [checked]="isBodyPartSelected(bodyPart)"
-              (ionChange)="toggleBodyPart(bodyPart)">
+          @for (bodyPart of bodyPartOptions; track bodyPart) {
+          <ion-item lines="none">
+            <ion-checkbox [checked]="isBodyPartSelected(bodyPart)" (ionChange)="toggleBodyPart(bodyPart)">
             </ion-checkbox>
             <ion-label class="ion-margin-start">{{ bodyPart }}</ion-label>
           </ion-item>
+          }
         </div>
       </ion-card-content>
     </ion-card>
@@ -142,34 +135,28 @@
     <ion-card>
       <ion-card-content>
         <h3>Benefits</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Add Benefit</ion-label>
-          <ion-input 
-            formControlName="newBenefit" 
-            placeholder="Enter a benefit"
+          <ion-input formControlName="newBenefit" placeholder="Enter a benefit"
             (keydown.enter)="addBenefit(); $event.preventDefault()">
           </ion-input>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            size="small"
-            (click)="addBenefit()">
+          <ion-button slot="end" fill="clear" size="small" (click)="addBenefit()">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-item>
 
-        <div class="dynamic-items" *ngIf="benefits.length > 0">
-          <ion-chip 
-            *ngFor="let benefit of benefits; let i = index"
-            color="primary">
+        @if (benefits.length > 0) {
+        <div class="dynamic-items">
+          @for (benefit of benefits; track benefit; let i = $index) {
+          <ion-chip color="primary">
             <ion-label>{{ benefit }}</ion-label>
-            <ion-icon 
-              name="close-outline" 
-              (click)="removeBenefit(i)">
+            <ion-icon name="close-outline" (click)="removeBenefit(i)">
             </ion-icon>
           </ion-chip>
+          }
         </div>
+        }
       </ion-card-content>
     </ion-card>
 
@@ -177,40 +164,32 @@
     <ion-card>
       <ion-card-content>
         <h3>Step-by-Step Instructions</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Add Instruction Step</ion-label>
-          <ion-textarea 
-            formControlName="newInstruction" 
-            placeholder="Enter an instruction step"
-            [autoGrow]="true"
+          <ion-textarea formControlName="newInstruction" placeholder="Enter an instruction step" [autoGrow]="true"
             rows="2">
           </ion-textarea>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            size="small"
-            (click)="addInstruction()">
+          <ion-button slot="end" fill="clear" size="small" (click)="addInstruction()">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-item>
 
-        <div class="instruction-list" *ngIf="instructions.length > 0">
-          <ion-item *ngFor="let instruction of instructions; let i = index">
+        @if (instructions.length > 0) {
+        <div class="instruction-list">
+          @for (instruction of instructions; track instruction; let i = $index) {
+          <ion-item>
             <ion-label>
               <span class="step-number">{{ i + 1 }}.</span>
               {{ instruction }}
             </ion-label>
-            <ion-button 
-              slot="end" 
-              fill="clear" 
-              size="small"
-              color="danger"
-              (click)="removeInstruction(i)">
+            <ion-button slot="end" fill="clear" size="small" color="danger" (click)="removeInstruction(i)">
               <ion-icon name="remove-outline"></ion-icon>
             </ion-button>
           </ion-item>
+          }
         </div>
+        }
       </ion-card-content>
     </ion-card>
 
@@ -218,34 +197,28 @@
     <ion-card>
       <ion-card-content>
         <h3>Tags</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Add Tag</ion-label>
-          <ion-input 
-            formControlName="newTag" 
-            placeholder="Enter a tag"
+          <ion-input formControlName="newTag" placeholder="Enter a tag"
             (keydown.enter)="addTag(); $event.preventDefault()">
           </ion-input>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            size="small"
-            (click)="addTag()">
+          <ion-button slot="end" fill="clear" size="small" (click)="addTag()">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-item>
 
-        <div class="dynamic-items" *ngIf="tags.length > 0">
-          <ion-chip 
-            *ngFor="let tag of tags; let i = index"
-            color="secondary">
+        @if (tags.length > 0) {
+        <div class="dynamic-items">
+          @for (tag of tags; track tag; let i = $index) {
+          <ion-chip color="secondary">
             <ion-label>{{ tag }}</ion-label>
-            <ion-icon 
-              name="close-outline" 
-              (click)="removeTag(i)">
+            <ion-icon name="close-outline" (click)="removeTag(i)">
             </ion-icon>
           </ion-chip>
+          }
         </div>
+        }
       </ion-card-content>
     </ion-card>
 
@@ -253,35 +226,28 @@
     <ion-card>
       <ion-card-content>
         <h3>Precautions & Contraindications</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Add Precaution</ion-label>
-          <ion-textarea 
-            formControlName="newPrecaution" 
-            placeholder="Enter a precaution or contraindication"
-            [autoGrow]="true"
-            rows="2">
+          <ion-textarea formControlName="newPrecaution" placeholder="Enter a precaution or contraindication"
+            [autoGrow]="true" rows="2">
           </ion-textarea>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            size="small"
-            (click)="addPrecaution()">
+          <ion-button slot="end" fill="clear" size="small" (click)="addPrecaution()">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-item>
 
-        <div class="dynamic-items" *ngIf="precautions.length > 0">
-          <ion-chip 
-            *ngFor="let precaution of precautions; let i = index"
-            color="warning">
+        @if (precautions.length > 0) {
+        <div class="dynamic-items">
+          @for (precaution of precautions; track precaution; let i = $index) {
+          <ion-chip color="warning">
             <ion-label>{{ precaution }}</ion-label>
-            <ion-icon 
-              name="close-outline" 
-              (click)="removePrecaution(i)">
+            <ion-icon name="close-outline" (click)="removePrecaution(i)">
             </ion-icon>
           </ion-chip>
+          }
         </div>
+        }
       </ion-card-content>
     </ion-card>
 
@@ -289,35 +255,28 @@
     <ion-card>
       <ion-card-content>
         <h3>Modifications & Variations</h3>
-        
+
         <ion-item>
           <ion-label position="stacked">Add Modification</ion-label>
-          <ion-textarea 
-            formControlName="newModification" 
-            placeholder="Enter a modification or variation"
-            [autoGrow]="true"
-            rows="2">
+          <ion-textarea formControlName="newModification" placeholder="Enter a modification or variation"
+            [autoGrow]="true" rows="2">
           </ion-textarea>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            size="small"
-            (click)="addModification()">
+          <ion-button slot="end" fill="clear" size="small" (click)="addModification()">
             <ion-icon name="add-outline"></ion-icon>
           </ion-button>
         </ion-item>
 
-        <div class="dynamic-items" *ngIf="modifications.length > 0">
-          <ion-chip 
-            *ngFor="let modification of modifications; let i = index"
-            color="tertiary">
+        @if (modifications.length > 0) {
+        <div class="dynamic-items">
+          @for (modification of modifications; track modification; let i = $index) {
+          <ion-chip color="tertiary">
             <ion-label>{{ modification }}</ion-label>
-            <ion-icon 
-              name="close-outline" 
-              (click)="removeModification(i)">
+            <ion-icon name="close-outline" (click)="removeModification(i)">
             </ion-icon>
           </ion-chip>
+          }
         </div>
+        }
       </ion-card-content>
     </ion-card>
 
@@ -326,38 +285,34 @@
       <ion-card-content>
         <h3>Chakras (Optional)</h3>
         <p class="section-description">Select which chakras this pose helps to balance:</p>
-        
+
         <div class="checkbox-grid">
-          <ion-item *ngFor="let chakra of chakraOptions" lines="none">
-            <ion-checkbox 
-              [checked]="isChakraSelected(chakra)"
-              (ionChange)="toggleChakra(chakra)">
+          @for (chakra of chakraOptions; track chakra) {
+          <ion-item lines="none">
+            <ion-checkbox [checked]="isChakraSelected(chakra)" (ionChange)="toggleChakra(chakra)">
             </ion-checkbox>
             <ion-label class="ion-margin-start">{{ chakra }}</ion-label>
           </ion-item>
+          }
         </div>
       </ion-card-content>
     </ion-card>
 
     <!-- Form Actions -->
     <div class="form-actions">
-      <ion-button 
-        type="button" 
-        fill="outline" 
-        color="medium"
-        (click)="onCancel()"
-        [disabled]="isSubmitting">
+      <ion-button type="button" fill="outline" color="medium" (click)="onCancel()" [disabled]="isSubmitting">
         Cancel
       </ion-button>
-      
-      <ion-button 
-        type="submit" 
-        [disabled]="poseForm.invalid || isSubmitting">
-        <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
-        <span *ngIf="!isSubmitting">
+
+      <ion-button type="submit" [disabled]="poseForm.invalid || isSubmitting">
+        @if (isSubmitting) {
+        <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+        <span>
           <ion-icon name="save-outline"></ion-icon>
           {{ isEdit ? 'Update' : 'Save' }} Pose
         </span>
+        }
       </ion-button>
     </div>
   </form>

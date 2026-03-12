@@ -24,19 +24,12 @@
         </ion-card-title>
         <ion-card-subtitle>Choose your preferred color theme</ion-card-subtitle>
       </ion-card-header>
-      
+
       <ion-card-content>
         <div class="theme-grid">
-          <div 
-            *ngFor="let theme of themes" 
-            class="theme-option"
-            (click)="selectTheme(theme.name)"
-          >
-            <div 
-              class="theme-preview"
-              [class.selected]="currentTheme === theme.name"
-              [ngClass]="theme.name"
-            >
+          @for (theme of themes; track theme.name) {
+          <div class="theme-option" (click)="selectTheme(theme.name)">
+            <div class="theme-preview" [class.selected]="currentTheme === theme.name" [ngClass]="theme.name">
               <div class="theme-colors">
                 <div class="color-block primary"></div>
                 <div class="color-block secondary"></div>
@@ -47,11 +40,9 @@
               <h3>{{ theme.displayName }}</h3>
               <p>{{ theme.description }}</p>
             </div>
-            <ion-checkbox 
-              [checked]="currentTheme === theme.name"
-              (ionChange)="selectTheme(theme.name)"
-            ></ion-checkbox>
+            <ion-checkbox [checked]="currentTheme === theme.name" (ionChange)="selectTheme(theme.name)"></ion-checkbox>
           </div>
+          }
         </div>
       </ion-card-content>
     </ion-card>
@@ -64,7 +55,7 @@
           General Settings
         </ion-card-title>
       </ion-card-header>
-      
+
       <ion-card-content>
         <ion-list>
           <ion-item>
@@ -73,11 +64,7 @@
               <h2>Dark Mode</h2>
               <p>Toggle dark mode for better viewing in low light</p>
             </ion-label>
-            <ion-toggle 
-              [checked]="isDarkMode" 
-              (ionChange)="toggleDarkMode()"
-              slot="end"
-            ></ion-toggle>
+            <ion-toggle [checked]="isDarkMode" (ionChange)="toggleDarkMode()" slot="end"></ion-toggle>
           </ion-item>
 
           <ion-item>
@@ -86,11 +73,7 @@
               <h2>Daily Reminders</h2>
               <p>Get reminded to practice yoga daily</p>
             </ion-label>
-            <ion-toggle 
-              [checked]="notificationsEnabled" 
-              (ionChange)="toggleNotifications()"
-              slot="end"
-            ></ion-toggle>
+            <ion-toggle [checked]="notificationsEnabled" (ionChange)="toggleNotifications()" slot="end"></ion-toggle>
           </ion-item>
 
           <ion-item>
@@ -99,11 +82,8 @@
               <h2>Language</h2>
               <p>Choose your preferred language</p>
             </ion-label>
-            <ion-select 
-              [(ngModel)]="selectedLanguage" 
-              placeholder="Select Language"
-              (ionChange)="changeLanguage($event)"
-            >
+            <ion-select [(ngModel)]="selectedLanguage" placeholder="Select Language"
+              (ionChange)="changeLanguage($event)">
               <ion-select-option value="en">English</ion-select-option>
               <ion-select-option value="hi">हिंदी (Hindi)</ion-select-option>
               <ion-select-option value="ta">தமிழ் (Tamil)</ion-select-option>
@@ -121,7 +101,7 @@
           Practice Settings
         </ion-card-title>
       </ion-card-header>
-      
+
       <ion-card-content>
         <ion-list>
           <ion-item>
@@ -130,10 +110,7 @@
               <h2>Default Session Duration</h2>
               <p>Preferred practice session length</p>
             </ion-label>
-            <ion-select 
-              [(ngModel)]="defaultDuration" 
-              placeholder="Select Duration"
-            >
+            <ion-select [(ngModel)]="defaultDuration" placeholder="Select Duration">
               <ion-select-option value="5">5 minutes</ion-select-option>
               <ion-select-option value="15">15 minutes</ion-select-option>
               <ion-select-option value="30">30 minutes</ion-select-option>
@@ -147,10 +124,7 @@
               <h2>Practice Level</h2>
               <p>Your current yoga experience level</p>
             </ion-label>
-            <ion-select 
-              [(ngModel)]="practiceLevel" 
-              placeholder="Select Level"
-            >
+            <ion-select [(ngModel)]="practiceLevel" placeholder="Select Level">
               <ion-select-option value="beginner">Beginner</ion-select-option>
               <ion-select-option value="intermediate">Intermediate</ion-select-option>
               <ion-select-option value="advanced">Advanced</ion-select-option>
@@ -168,7 +142,7 @@
           About
         </ion-card-title>
       </ion-card-header>
-      
+
       <ion-card-content>
         <ion-list>
           <ion-item button>

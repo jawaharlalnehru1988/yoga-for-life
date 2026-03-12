@@ -18,21 +18,21 @@ import { YogaPosesService, YogaPose } from '../services/yoga-poses.service';
 })
 export class SequenceDetailPage implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sequence: YogaSequence | null = null;
   poses: YogaPose[] = [];
   relatedSequences: YogaSequence[] = [];
-  
+
   isLoading = true;
   isFavorite = false;
   completedCount = 0;
   canEdit = false;
-  
+
   // Practice options
   practiceSpeed = 'normal'; // slow, normal, fast
   includeInstructions = true;
   includeMusic = true;
-  
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -42,7 +42,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private modalController: ModalController,
     private alertController: AlertController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadSequenceData();
@@ -63,10 +63,10 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
         if (sequence) {
           this.sequence = sequence;
           this.canEdit = sequence.type === 'custom';
-          
+
           // Load pose details
           await this.loadPoseDetails();
-          
+
           // Load related data
           this.loadFavoriteStatus();
           this.loadCompletedCount();
@@ -80,12 +80,12 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   private async loadPoseDetails() {
     if (!this.sequence) return;
-    
+
     try {
-      const posePromises = this.sequence.poses.map(sequencePose => 
+      const posePromises = this.sequence.poses.map(sequencePose =>
         this.yogaPosesService.getPoseById(sequencePose.poseId).toPromise()
       );
-      
+
       const poseResults = await Promise.all(posePromises);
       this.poses = poseResults.filter((pose: any) => pose !== undefined) as YogaPose[];
     } catch (error) {
@@ -96,7 +96,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   private loadFavoriteStatus() {
     if (!this.sequence) return;
-    
+
     this.sequencesService.isFavorite(this.sequence._id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(isFavorite => {
@@ -106,7 +106,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   private loadCompletedCount() {
     if (!this.sequence) return;
-    
+
     this.sequencesService.getCompletedCount(this.sequence._id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(count => {
@@ -116,16 +116,16 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   private loadRelatedSequences() {
     if (!this.sequence) return;
-    
+
     this.sequencesService.getAllSequences()
       .pipe(takeUntil(this.destroy$))
       .subscribe(sequences => {
         this.relatedSequences = sequences
-          .filter(seq => 
-            seq._id !== this.sequence!._id && 
-            (seq.category === this.sequence!.category || 
-             seq.difficulty === this.sequence!.difficulty ||
-             seq.tags.some(tag => this.sequence!.tags.includes(tag)))
+          .filter(seq =>
+            seq._id !== this.sequence!._id &&
+            (seq.category === this.sequence!.category ||
+              seq.difficulty === this.sequence!.difficulty ||
+              seq.tags.some(tag => this.sequence!.tags.includes(tag)))
           )
           .slice(0, 3);
       });
@@ -134,12 +134,12 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
   // Actions
   async startPractice() {
     if (!this.sequence) return;
-    
+
     if (this.sequence.isPremium && !this.isPremiumUser()) {
       await this.showPremiumRequired();
       return;
     }
-    
+
     // Navigate to practice session with options
     this.router.navigate(['/practice-session'], {
       queryParams: {
@@ -153,7 +153,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   async toggleFavorite() {
     if (!this.sequence) return;
-    
+
     try {
       this.sequencesService.toggleFavorite(this.sequence._id);
       const message = this.isFavorite ? 'Removed from favorites' : 'Added to favorites';
@@ -165,7 +165,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   async shareSequence() {
     if (!this.sequence) return;
-    
+
     const actionSheet = await this.actionSheetController.create({
       header: 'Share Sequence',
       buttons: [
@@ -202,7 +202,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   async editSequence() {
     if (!this.sequence || !this.canEdit) return;
-    
+
     this.router.navigate(['/sequence-builder'], {
       queryParams: { edit: this.sequence._id }
     });
@@ -210,7 +210,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   async deleteSequence() {
     if (!this.sequence || !this.canEdit) return;
-    
+
     const alert = await this.alertController.create({
       header: 'Delete Sequence',
       message: `Are you sure you want to delete "${this.sequence.name}"? This action cannot be undone.`,
@@ -233,7 +233,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
 
   private async performDelete() {
     if (!this.sequence) return;
-    
+
     try {
       await this.sequencesService.deleteCustomSequence(this.sequence._id).toPromise();
       this.showToast('Sequence deleted successfully');
@@ -244,7 +244,7 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
   }
 
   openPoseDetail(pose: YogaPose) {
-    this.router.navigate(['/pose-detail', pose._id]);
+    this.router.navigate(['/pose-detail', pose.id]);
   }
 
   openRelatedSequence(sequence: YogaSequence) {
@@ -269,8 +269,8 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
   }
 
   // Helper methods
-  getPoseByPoseId(poseId: string): YogaPose | undefined {
-    return this.poses.find(pose => pose._id === poseId);
+  getPoseByPoseId(poseId: string | number): YogaPose | undefined {
+    return this.poses.find(pose => pose.id === poseId);
   }
 
   getSequencePoseDetails(sequencePose: SequencePose): { pose: YogaPose | undefined, duration: number } {

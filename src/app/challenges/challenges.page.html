@@ -26,13 +26,13 @@
 
   <div class="challenge-content">
     <!-- Discover Tab -->
-    @if(selectedTab === 'discover') {
-   
+    @if (selectedTab === 'discover') {
     <div class="tab-content">
-      <div class="section featured-challenges" *ngIf="featuredChallenges.length > 0">
+      @if (featuredChallenges.length > 0) {
+      <div class="section featured-challenges">
         <h2>Featured Challenges</h2>
-        <ion-card *ngFor="let challenge of featuredChallenges" class="challenge-card featured" 
-                  (click)="openChallenge(challenge)">
+        @for (challenge of featuredChallenges; track challenge._id) {
+        <ion-card class="challenge-card featured" (click)="openChallenge(challenge)">
           <div class="challenge-image">
             <img [src]="challenge.imageUrl || '/assets/challenges/default.jpg'" [alt]="challenge.title" />
             <div class="challenge-badge">Featured</div>
@@ -45,20 +45,19 @@
               <span class="rating">⭐ {{ challenge.rating }}</span>
               <span class="participants">{{ challenge.participants }} joined</span>
             </div>
-            <ion-button 
-              fill="clear" 
-              size="small" 
-              (click)="joinChallenge(challenge); $event.stopPropagation()">
+            <ion-button fill="clear" size="small" (click)="joinChallenge(challenge); $event.stopPropagation()">
               Join Challenge
             </ion-button>
           </ion-card-content>
         </ion-card>
+        }
       </div>
+      }
 
       <div class="section all-challenges">
         <h2>All Challenges</h2>
-        <ion-card *ngFor="let challenge of getDiscoverChallenges()" class="challenge-card" 
-                  (click)="openChallenge(challenge)">
+        @for (challenge of getDiscoverChallenges(); track challenge._id) {
+        <ion-card class="challenge-card" (click)="openChallenge(challenge)">
           <div class="challenge-image">
             <img [src]="challenge.imageUrl || '/assets/challenges/default.jpg'" [alt]="challenge.title" />
           </div>
@@ -70,75 +69,89 @@
               <span class="difficulty">{{ challenge.difficulty }}</span>
               <span class="rating">⭐ {{ challenge.rating }}</span>
             </div>
-            <ion-button 
-              fill="clear" 
-              size="small" 
-              (click)="joinChallenge(challenge); $event.stopPropagation()">
+            <ion-button fill="clear" size="small" (click)="joinChallenge(challenge); $event.stopPropagation()">
               Join Challenge
             </ion-button>
           </ion-card-content>
         </ion-card>
+        }
       </div>
     </div>
-     }
+    }
 
     <!-- Active Tab -->
-    <div *ngIf="selectedTab === 'active'" class="tab-content">
-      <div *ngIf="getActiveChallenges().length === 0" class="empty-state">
+    @if (selectedTab === 'active') {
+    <div class="tab-content">
+      @if (getActiveChallenges().length === 0) {
+      <div class="empty-state">
         <ion-icon name="rocket-outline" size="large"></ion-icon>
         <h2>No Active Challenges</h2>
         <p>Join a challenge from the Discover tab to get started!</p>
         <ion-button (click)="selectedTab = 'discover'">Discover Challenges</ion-button>
       </div>
+      }
 
-      <ion-card *ngFor="let challenge of getActiveChallenges()" class="challenge-card active" 
-                (click)="openChallenge(challenge)">
+      @for (challenge of getActiveChallenges(); track challenge._id) {
+      <ion-card class="challenge-card active" (click)="openChallenge(challenge)">
         <ion-card-content>
           <h3>{{ challenge.title }}</h3>
           <p>{{ challenge.shortDescription || challenge.description }}</p>
-          
-          <div class="progress-section" *ngIf="getUserProgress(challenge._id) as progress">
+
+          @if (getUserProgress(challenge._id); as progress) {
+          <div class="progress-section">
             <div class="progress-stats">
               <span>Day {{ progress.currentDay }} of {{ challenge.duration }}</span>
               <span>{{ progress.completionPercentage || 0 }}% complete</span>
             </div>
             <ion-progress-bar [value]="(progress.completionPercentage || 0) / 100"></ion-progress-bar>
           </div>
+          }
 
           <ion-button fill="solid" size="small">Continue Challenge</ion-button>
         </ion-card-content>
       </ion-card>
+      }
     </div>
+    }
 
     <!-- Completed Tab -->
-    <div *ngIf="selectedTab === 'completed'" class="tab-content">
-      <div *ngIf="getCompletedChallenges().length === 0" class="empty-state">
+    @if (selectedTab === 'completed') {
+    <div class="tab-content">
+      @if (getCompletedChallenges().length === 0) {
+      <div class="empty-state">
         <ion-icon name="trophy-outline" size="large"></ion-icon>
         <h2>No Completed Challenges</h2>
         <p>Complete your first challenge to see it here!</p>
         <ion-button (click)="selectedTab = 'discover'">Start a Challenge</ion-button>
       </div>
+      }
 
-      <ion-card *ngFor="let challenge of getCompletedChallenges()" class="challenge-card completed" 
-                (click)="openChallenge(challenge)">
+      @for (challenge of getCompletedChallenges(); track challenge._id) {
+      <ion-card class="challenge-card completed" (click)="openChallenge(challenge)">
         <ion-card-content>
           <h3>{{ challenge.title }}</h3>
           <p>{{ challenge.shortDescription || challenge.description }}</p>
-          
-          <div class="completion-info" *ngIf="getUserProgress(challenge._id) as progress">
+
+          @if (getUserProgress(challenge._id); as progress) {
+          <div class="completion-info">
             <div class="completion-badge">
               <ion-icon name="checkmark-circle" color="success"></ion-icon>
               <span>Completed</span>
             </div>
             <div class="completion-stats">
               <span>Duration: {{ challenge.duration }} days</span>
-              <span *ngIf="progress.isCompleted">Completed on {{ progress.lastActivityDate | date:'mediumDate' }}</span>
+              @if (progress.isCompleted) {
+              <span>Completed on {{ progress.lastActivityDate | date:'mediumDate' }}</span>
+              }
             </div>
           </div>
+          }
 
           <ion-button fill="outline" size="small">View Details</ion-button>
         </ion-card-content>
       </ion-card>
+      }
     </div>
+    }
   </div>
 </ion-content>

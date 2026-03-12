@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, delay } from 'rxjs/operators';
 
 export interface SequencePose {
-  poseId: string;
+  poseId: number | string;
   duration: number; // in seconds
   transitionTime?: number; // time to transition to next pose
 }
@@ -391,7 +391,7 @@ export class SequencesService {
     }
 
     if (filters.goal) {
-      filtered = filtered.filter(seq => 
+      filtered = filtered.filter(seq =>
         seq.goal.toLowerCase().includes(filters.goal!.toLowerCase()) ||
         seq.tags.some(tag => tag.toLowerCase().includes(filters.goal!.toLowerCase()))
       );
@@ -420,7 +420,7 @@ export class SequencesService {
   // Get favorite sequences
   getFavoriteSequences(): Observable<YogaSequence[]> {
     return this.favorites$.pipe(
-      map(favoriteIds => 
+      map(favoriteIds =>
         this.mockSequences.filter(seq => favoriteIds.includes(seq._id))
       )
     );
@@ -485,7 +485,7 @@ export class SequencesService {
     };
 
     this.mockSequences.push(newSequence);
-    
+
     // In real app, save to localStorage or backend
     const customSequences = JSON.parse(localStorage.getItem('custom-sequences') || '[]');
     customSequences.push(newSequence);
@@ -505,7 +505,7 @@ export class SequencesService {
     const customSequences = JSON.parse(localStorage.getItem('custom-sequences') || '[]');
     const filteredSequences = customSequences.filter((s: YogaSequence) => s._id !== sequenceId);
     localStorage.setItem('custom-sequences', JSON.stringify(filteredSequences));
-    
+
     // Also remove from main array
     const index = this.mockSequences.findIndex(s => s._id === sequenceId);
     if (index > -1) {
@@ -537,7 +537,7 @@ export class SequencesService {
       ],
       goals: [
         'Weight Loss',
-        'Stress Relief', 
+        'Stress Relief',
         'Flexibility',
         'Core Strength',
         'Energy Boost',

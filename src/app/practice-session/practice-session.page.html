@@ -16,13 +16,16 @@
 
 <ion-content class="practice-content">
   <!-- Loading State -->
-  <div class="loading-container" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Preparing your practice session...</p>
   </div>
+  }
 
   <!-- Preparation Phase -->
-  <div class="preparation-container" *ngIf="isPreparation && !isLoading">
+  @if (isPreparation && !isLoading) {
+  <div class="preparation-container">
     <div class="preparation-content">
       <div class="preparation-icon">
         <ion-icon name="hourglass-outline"></ion-icon>
@@ -37,7 +40,8 @@
         </div>
       </div>
 
-      <div class="sequence-preview" *ngIf="sequence">
+      @if (sequence) {
+      <div class="sequence-preview">
         <h3>{{ sequence.name }}</h3>
         <div class="preview-stats">
           <span>{{ sequence.poses.length }} poses</span>
@@ -47,11 +51,14 @@
           <span>{{ sequence.difficulty }}</span>
         </div>
       </div>
+      }
     </div>
   </div>
+  }
 
   <!-- Active Practice Session -->
-  <div class="practice-container" *ngIf="!isLoading && !isPreparation">
+  @if (!isLoading && !isPreparation) {
+  <div class="practice-container">
     <!-- Progress Header -->
     <div class="progress-header" [class.hidden]="!showControls">
       <div class="progress-info">
@@ -71,8 +78,10 @@
 
     <!-- Main Pose Display -->
     <div class="pose-display" (click)="toggleControls()">
-      <div class="pose-image-container" *ngIf="getCurrentPose() as currentPose">
-        <img [src]="currentPose.imageUrl" [alt]="currentPose.name" />
+      @if (getCurrentPose(); as currentPose) {
+      <div class="pose-image-container">
+        <img [src]="currentPose.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200' "
+          [alt]="currentPose.yogaName" />
 
         <!-- Pose Timer Overlay -->
         <div class="timer-overlay">
@@ -93,31 +102,33 @@
         </div>
 
         <!-- Pause Overlay -->
-        <div class="pause-overlay" *ngIf="state.isPaused">
+        @if (state.isPaused) {
+        <div class="pause-overlay">
           <ion-icon name="pause" color="light"></ion-icon>
           <span>Paused</span>
         </div>
+        }
       </div>
 
       <!-- Pose Information -->
-      <div class="pose-info" [class.hidden]="!showControls" *ngIf="getCurrentPose() as currentPose">
-        <h2>{{ currentPose.name }}</h2>
-        <p class="sanskrit-name" *ngIf="currentPose.sanskritName">
-          {{ currentPose.sanskritName }}
-        </p>
-        <p class="pose-benefit">{{ currentPose.quickBenefit }}</p>
+      <div class="pose-info" [class.hidden]="!showControls">
+        <h2>{{ currentPose.yogaName }}</h2>
+        <p class="pose-category">{{ currentPose.category }}</p>
 
-        <!-- Pose Instructions -->
-        <div class="pose-instructions" *ngIf="options.instructions && currentPose.detailedSteps.length > 0">
-          <h4>How to do this pose:</h4>
-          <ol>
-            <li *ngFor="let step of currentPose.detailedSteps.slice(0, 3)">{{ step.description }}</li>
-          </ol>
+        <!-- Pose Instructions (Markdown) -->
+        @if (options.instructions) {
+        <div class="pose-instructions">
+          <h4>Instructions & Wisdom:</h4>
+          <div class="markdown-scroller">
+            <markdown [data]="currentPose.blogContent"></markdown>
+          </div>
           <ion-button fill="clear" size="small" (click)="openPoseDetail()">
-            View full instructions
+            View in full Detail
           </ion-button>
         </div>
+        }
       </div>
+      }
     </div>
 
     <!-- Control Panel -->
@@ -151,7 +162,8 @@
     </div>
 
     <!-- Session Completion -->
-    <div class="completion-container" *ngIf="state.isCompleted">
+    @if (state.isCompleted) {
+    <div class="completion-container">
       <div class="completion-content">
         <div class="completion-celebration">
           <ion-icon name="trophy" color="warning"></ion-icon>
@@ -188,10 +200,14 @@
         </div>
       </div>
     </div>
+    }
 
     <!-- Tap to hide/show hint -->
-    <div class="control-hint" *ngIf="showControls && state.isActive && !state.isCompleted">
+    @if (showControls && state.isActive && !state.isCompleted) {
+    <div class="control-hint">
       <p>Tap screen to hide controls</p>
     </div>
+    }
   </div>
+  }
 </ion-content>

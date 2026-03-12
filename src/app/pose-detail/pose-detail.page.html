@@ -1,139 +1,110 @@
 <ion-content [fullscreen]="true" class="pose-detail-content">
-  <div class="main-container" *ngIf="pose && !isLoading">
+  @if (pose && !isLoading) {
+  <div class="main-container">
     <!-- Breadcrumbs -->
     <nav class="breadcrumb-nav">
       <a routerLink="/yogasana-library">Library</a>
       <span class="material-symbols-outlined">chevron_right</span>
       <a href="javascript:void(0)">{{ pose.category }}</a>
       <span class="material-symbols-outlined">chevron_right</span>
-      <span class="current">{{ pose.name }}</span>
+      <span class="current">{{ pose.yogaName }}</span>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-info">
         <span class="spotlight-tag">Asana Spotlight</span>
-        <h2>{{ pose.name }}</h2>
-        <h3>{{ pose.englishName }}</h3>
-        <p class="description">{{ pose.description }}</p>
-
+        <h2>{{ pose.yogaName }}</h2>
         <div class="info-pills">
-          <span class="pill" *ngFor="let tag of pose.tags">{{ tag }}</span>
-          <span class="pill">{{ pose.difficulty }}</span>
+          <span class="pill">{{ pose.category }}</span>
         </div>
       </div>
 
       <div class="hero-visual">
         <div class="glow-effect"></div>
         <div class="media-container">
-          <img [src]="pose.imageUrl" [alt]="pose.name" />
-          <div class="context-tag" *ngIf="pose.imageContext">{{ pose.imageContext }}</div>
+          <img [src]="pose.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200' "
+            [alt]="pose.yogaName" />
+          <div class="context-tag">Vedic Wisdom</div>
         </div>
       </div>
     </section>
 
     <!-- Main Content Layout -->
     <div class="grid-layout">
-      <!-- Left Column: Instructions & Mistakes -->
+      <!-- Left Column: Markdown Content -->
       <div class="left-col">
         <section class="instructions-section">
           <div class="section-header">
-            <span class="material-symbols-outlined">format_list_numbered</span>
-            <h4>Step-by-Step Instructions</h4>
+            <span class="material-symbols-outlined">description</span>
+            <h4>Guide & Instructions</h4>
           </div>
 
-          <div class="steps-container">
-            <div *ngFor="let step of pose.detailedSteps; let i = index" class="step-item"
-              [class.active]="currentStep === i">
-              <div class="step-aside">
-                <div class="step-circle">{{ i + 1 }}</div>
-                <div class="step-line"></div>
-              </div>
-              <div class="step-main">
-                <div class="step-title-row">
-                  <h5>{{ step.title }}</h5>
-                  <span *ngIf="step.stage" class="stage-badge" [class.critical-badge]="step.stage === 'Critical Step'">
-                    {{ step.stage }}
-                  </span>
-                </div>
-                <p class="step-desc">{{ step.description }}</p>
-                <div class="breath-cue" *ngIf="step.breath">
-                  <span class="material-symbols-outlined">air</span>
-                  Breath: {{ step.breath }}
-                </div>
-              </div>
-            </div>
+          <div class="markdown-body">
+            <markdown [data]="pose.blogContent"></markdown>
           </div>
         </section>
 
-        <!-- What Not To Do -->
-        <section class="mistakes-box" *ngIf="pose.mistakes.length">
-          <div class="mistakes-header">
-            <span class="material-symbols-outlined">warning</span>
-            <h4>Important: What Not To Do</h4>
+        <!-- Video Section if available -->
+        @if (pose.videoURL) {
+        <section class="video-section">
+          <div class="section-header">
+            <span class="material-symbols-outlined">play_circle</span>
+            <h4>Watch Demonstration</h4>
           </div>
-          <div class="mistakes-list">
-            <div class="mistake-item" *ngFor="let mistake of pose.mistakes">
-              <span class="material-symbols-outlined">cancel</span>
-              <span>{{ mistake }}</span>
-            </div>
+          <div class="video-container">
+            <a [href]="pose.videoURL" target="_blank" class="video-link">
+              <span class="material-symbols-outlined">open_in_new</span>
+              Watch on YouTube
+            </a>
           </div>
         </section>
+        }
       </div>
 
-      <!-- Right Column: Sidebar -->
+      <!-- Right Column: Sidebar (Related Poses) -->
       <aside class="right-col">
-        <!-- Benefits Card -->
         <div class="sidebar-card">
           <h4>
-            <span class="material-symbols-outlined">verified</span>
-            Benefits
+            <span class="material-symbols-outlined">auto_awesome</span>
+            Related Poses
           </h4>
-          <div class="benefit-item" *ngFor="let benefit of pose.benefits">
-            <div class="icon-box">
-              <span class="material-symbols-outlined">{{ benefit.icon }}</span>
+          <div class="related-list">
+            @for (related of relatedPoses; track related.id) {
+            <div class="related-item" (click)="navigateToPose(related.id)">
+              <img [src]="related.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=400' "
+                [alt]="related.yogaName">
+              <div class="related-info">
+                <h6>{{ related.yogaName }}</h6>
+                <p>{{ related.category }}</p>
+              </div>
             </div>
-            <div class="benefit-content">
-              <h6>{{ benefit.title }}</h6>
-              <p>{{ benefit.description }}</p>
-            </div>
+            }
           </div>
-        </div>
-
-        <!-- Contraindications -->
-        <div class="sidebar-card danger-card" *ngIf="pose.contraindications.length">
-          <h4>
-            <span class="material-symbols-outlined">report</span>
-            Who Should Avoid
-          </h4>
-          <ul class="danger-list">
-            <li *ngFor="let item of pose.contraindications">{{ item }}</li>
-          </ul>
-        </div>
-
-        <!-- Spiritual Wisdom -->
-        <div class="quote-block" *ngIf="pose.spiritualQuote">
-          <span class="material-symbols-outlined">format_quote</span>
-          <p>{{ pose.spiritualQuote.text }}</p>
-          <cite>— {{ pose.spiritualQuote.author }}</cite>
         </div>
       </aside>
     </div>
   </div>
+  }
 
   <!-- Loading State -->
-  <div class="loading-container main-container" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="loading-container main-container">
     <p>Seeking Vedic Wisdom...</p>
   </div>
+  }
 
   <!-- Error State -->
-  <div class="error-container main-container" *ngIf="error && !isLoading">
+  @if (error && !isLoading) {
+  <div class="error-container main-container">
     <h4>Asana Not Found</h4>
     <button class="start-btn" routerLink="/yogasana-library">Back to Library</button>
   </div>
+  }
 
   <!-- Bottom Action Bar -->
-  <footer class="bottom-bar" *ngIf="pose && !isLoading">
+  @if (pose && !isLoading) {
+  <footer class="bottom-bar">
     <div class="brand-bottom">
       <div class="icon">
         <span class="material-symbols-outlined">eco</span>
@@ -141,13 +112,10 @@
       <span>Vedic Yoga Wisdom</span>
     </div>
 
-    <div class="footer-links">
-      <a href="javascript:void(0)">Privacy Policy</a>
-      <a href="javascript:void(0)">Terms of Service</a>
-      <a href="javascript:void(0)">Contact Teacher</a>
-    </div>
-
     <div class="footer-actions">
+      <button class="favorite-btn" (click)="toggleFavorite()" [class.active]="isFavorite | async">
+        <span class="material-symbols-outlined">{{ (isFavorite | async) ? 'favorite' : 'favorite_border' }}</span>
+      </button>
       <button class="share-btn" (click)="shareService.sharePose(pose)">
         <span class="material-symbols-outlined">share</span>
       </button>
@@ -156,4 +124,5 @@
       </button>
     </div>
   </footer>
+  }
 </ion-content>

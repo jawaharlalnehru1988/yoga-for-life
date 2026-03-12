@@ -20,13 +20,17 @@
   </ion-refresher>
 
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-container">
+  @if (isLoading) {
+  <div class="loading-container">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
+  }
 
-  <div class="breathing-container" *ngIf="!isLoading">
+  @if (!isLoading) {
+  <div class="breathing-container">
     <!-- Quick Start Widget -->
-    <div class="quick-start-section" *ngIf="quickStartTechnique">
+    @if (quickStartTechnique) {
+    <div class="quick-start-section">
       <ion-card class="quick-start-card" (click)="startQuickSession()">
         <ion-card-header>
           <ion-card-subtitle>Need a quick reset?</ion-card-subtitle>
@@ -46,9 +50,11 @@
         </ion-card-content>
       </ion-card>
     </div>
+    }
 
     <!-- Stats Overview -->
-    <div class="stats-section" *ngIf="stats && stats.totalSessions > 0">
+    @if (stats && stats.totalSessions > 0) {
+    <div class="stats-section">
       <ion-card class="stats-card">
         <ion-card-content>
           <ion-grid>
@@ -59,12 +65,10 @@
                   <div class="stat-label">Day Streak</div>
                 </div>
               </ion-col>
-              <ion-col size="4">
-                <div class="stat-item">
-                  <div class="stat-value">{{ stats.totalSessions }}</div>
-                  <div class="stat-label">Sessions</div>
-                </div>
-              </ion-col>
+              <div class="stat-item">
+                <div class="stat-value">{{ stats.totalSessions }}</div>
+                <div class="stat-label">Sessions</div>
+              </div>
               <ion-col size="4">
                 <div class="stat-item">
                   <div class="stat-value">{{ stats.totalMinutes }}</div>
@@ -80,45 +84,40 @@
         </ion-card-content>
       </ion-card>
     </div>
+    }
 
     <!-- Search -->
     <div class="search-section">
-      <ion-searchbar 
-        placeholder="Search breathing techniques..."
-        (ionInput)="onSearchChange($event)"
+      <ion-searchbar placeholder="Search breathing techniques..." (ionInput)="onSearchChange($event)"
         [value]="searchQuery">
       </ion-searchbar>
     </div>
 
     <!-- Category Filter -->
     <div class="filter-section">
-      <ion-segment 
-        [value]="selectedCategory"
-        (ionChange)="onCategoryChange($event)"
-        scrollable="true">
-        <ion-segment-button 
-          *ngFor="let category of categories" 
-          [value]="category.value">
+      <ion-segment [value]="selectedCategory" (ionChange)="onCategoryChange($event)" scrollable="true">
+        @for (category of categories; track category.value) {
+        <ion-segment-button [value]="category.value">
           <ion-label>
             <span class="category-emoji">{{ category.emoji }}</span>
             {{ category.label }}
           </ion-label>
         </ion-segment-button>
+        }
       </ion-segment>
     </div>
 
     <!-- Featured Techniques -->
-    <div class="featured-section" *ngIf="selectedCategory === 'all' && !searchQuery">
+    @if (selectedCategory === 'all' && !searchQuery) {
+    <div class="featured-section">
       <div class="section-header">
         <h2>Featured Techniques</h2>
         <ion-icon name="sparkles-outline" color="warning"></ion-icon>
       </div>
-      
+
       <div class="featured-grid">
-        <ion-card 
-          *ngFor="let technique of featuredTechniques" 
-          class="featured-card"
-          (click)="navigateToDetail(technique)">
+        @for (technique of featuredTechniques; track technique._id) {
+        <ion-card class="featured-card" (click)="navigateToDetail(technique)">
           <div class="card-image" [style.background-color]="technique.backgroundColor">
             <ion-icon [name]="technique.iconName || 'leaf-outline'" size="large"></ion-icon>
           </div>
@@ -138,20 +137,18 @@
                 <ion-icon name="star-outline" color="warning"></ion-icon>
                 <span>{{ formatRating(technique.rating) }} ({{ technique.totalRatings }})</span>
               </div>
-              <ion-button 
-                fill="clear" 
-                size="small"
-                (click)="toggleFavorite(technique, $event)">
-                <ion-icon 
-                  [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
+              <ion-button fill="clear" size="small" (click)="toggleFavorite(technique, $event)">
+                <ion-icon [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
                   [color]="isFavorite(technique._id) ? 'danger' : 'medium'">
                 </ion-icon>
               </ion-button>
             </div>
           </ion-card-content>
         </ion-card>
+        }
       </div>
     </div>
+    }
 
     <!-- All Techniques Grid/List View -->
     <div class="techniques-section">
@@ -163,11 +160,10 @@
       </div>
 
       <!-- Grid View -->
-      <div *ngIf="viewMode === 'grid'" class="techniques-grid">
-        <ion-card 
-          *ngFor="let technique of filteredTechniques" 
-          class="technique-card"
-          (click)="navigateToDetail(technique)">
+      @if (viewMode === 'grid') {
+      <div class="techniques-grid">
+        @for (technique of filteredTechniques; track technique._id) {
+        <ion-card class="technique-card" (click)="navigateToDetail(technique)">
           <div class="card-image-small" [style.background-color]="technique.backgroundColor">
             <ion-icon [name]="technique.iconName || getCategoryIcon(technique.category)"></ion-icon>
           </div>
@@ -175,7 +171,8 @@
             <ion-card-subtitle>
               <span class="duration-info">
                 <ion-icon name="time-outline"></ion-icon>
-                {{ technique.durationOptions[0] }}-{{ technique.durationOptions[technique.durationOptions.length - 1] }} min
+                {{ technique.durationOptions[0] }}-{{ technique.durationOptions[technique.durationOptions.length - 1] }}
+                min
               </span>
               <ion-chip color="{{ getDifficultyColor(technique.difficulty) }}" size="small">
                 {{ technique.difficulty }}
@@ -186,42 +183,34 @@
           <ion-card-content>
             <p>{{ technique.shortDescription }}</p>
             <div class="benefits-preview">
-              <ion-chip 
-                *ngFor="let benefit of technique.benefits.slice(0, 2)" 
-                size="small" 
-                color="success" 
-                outline="true">
+              @for (benefit of technique.benefits.slice(0, 2); track benefit) {
+              <ion-chip size="small" color="success" outline="true">
                 {{ benefit }}
               </ion-chip>
+              }
             </div>
             <div class="card-actions">
-              <ion-button 
-                expand="block" 
-                size="small"
-                (click)="startTechnique(technique, $event)">
+              <ion-button expand="block" size="small" (click)="startTechnique(technique, $event)">
                 <ion-icon name="play-outline" slot="start"></ion-icon>
                 Start
               </ion-button>
-              <ion-button 
-                fill="clear" 
-                size="small"
-                (click)="toggleFavorite(technique, $event)">
-                <ion-icon 
-                  [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
+              <ion-button fill="clear" size="small" (click)="toggleFavorite(technique, $event)">
+                <ion-icon [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
                   [color]="isFavorite(technique._id) ? 'danger' : 'medium'">
                 </ion-icon>
               </ion-button>
             </div>
           </ion-card-content>
         </ion-card>
+        }
       </div>
+      }
 
       <!-- List View -->
-      <ion-list *ngIf="viewMode === 'list'" class="techniques-list">
-        <ion-item 
-          *ngFor="let technique of filteredTechniques" 
-          button
-          (click)="navigateToDetail(technique)">
+      @if (viewMode === 'list') {
+      <ion-list class="techniques-list">
+        @for (technique of filteredTechniques; track technique._id) {
+        <ion-item button (click)="navigateToDetail(technique)">
           <ion-avatar slot="start">
             <div class="avatar-background" [style.background-color]="technique.backgroundColor">
               <ion-icon [name]="technique.iconName || getCategoryIcon(technique.category)"></ion-icon>
@@ -236,7 +225,8 @@
               </ion-chip>
               <span class="duration">
                 <ion-icon name="time-outline"></ion-icon>
-                {{ technique.durationOptions[0] }}-{{ technique.durationOptions[technique.durationOptions.length - 1] }} min
+                {{ technique.durationOptions[0] }}-{{ technique.durationOptions[technique.durationOptions.length - 1] }}
+                min
               </span>
               <span class="rating">
                 <ion-icon name="star-outline" color="warning"></ion-icon>
@@ -244,26 +234,27 @@
               </span>
             </div>
           </ion-label>
-          <ion-button 
-            slot="end" 
-            fill="clear" 
-            (click)="toggleFavorite(technique, $event)">
-            <ion-icon 
-              [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
+          <ion-button slot="end" fill="clear" (click)="toggleFavorite(technique, $event)">
+            <ion-icon [name]="isFavorite(technique._id) ? 'heart' : 'heart-outline'"
               [color]="isFavorite(technique._id) ? 'danger' : 'medium'">
             </ion-icon>
           </ion-button>
         </ion-item>
+        }
       </ion-list>
+      }
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="filteredTechniques.length === 0 && !isLoading" class="empty-state">
+    @if (filteredTechniques.length === 0 && !isLoading) {
+    <div class="empty-state">
       <ion-icon name="search-outline" size="large" color="medium"></ion-icon>
       <h3>No techniques found</h3>
       <p>Try adjusting your search or filter criteria</p>
     </div>
+    }
   </div>
+  }
 
   <!-- Quick Access FAB -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
