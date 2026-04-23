@@ -7,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { YogaPosesService, YogaPose } from '../services/yoga-poses.service';
 import { MarkdownComponent } from 'ngx-markdown';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-pose-detail',
@@ -23,10 +24,11 @@ import { MarkdownComponent } from 'ngx-markdown';
 })
 export class PoseDetailPage implements OnInit, OnDestroy {
   pose: YogaPose | null = null;
-  relatedPoses: YogaPose[] = [];
   isLoading = true;
   error = false;
   isFavorite!: Observable<boolean>;
+  isImageOverlayOpen = false;
+  safeVideoUrl: SafeResourceUrl | null = null;
 
   private subscriptions: Subscription[] = [];
   private poseId: string = '';
@@ -49,7 +51,8 @@ export class PoseDetailPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private yogaPosesService: YogaPosesService
+    private yogaPosesService: YogaPosesService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -77,7 +80,18 @@ export class PoseDetailPage implements OnInit, OnDestroy {
         if (pose) {
           this.pose = pose;
           this.isFavorite = this.yogaPosesService.isFavorite(pose.id);
-          this.loadRelatedPoses();
+
+          if (pose.videoURL) {
+            const videoIdMatch = pose.videoURL.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            const videoId = videoIdMatch ? videoIdMatch[1] : null;
+            if (videoId) {
+              this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${videoId}`);
+            } else {
+              this.safeVideoUrl = null;
+            }
+          } else {
+            this.safeVideoUrl = null;
+          }
         } else {
           this.error = true;
         }
@@ -93,23 +107,16 @@ export class PoseDetailPage implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private loadRelatedPoses() {
-    if (!this.pose) return;
-
-    const sub = this.yogaPosesService.getAllPoses().subscribe(allPoses => {
-      this.relatedPoses = allPoses
-        .filter(p =>
-          p.id !== this.pose!.id &&
-          (p.category === this.pose!.category)
-        )
-        .slice(0, 4);
-    });
-
-    this.subscriptions.push(sub);
-  }
-
   navigateToPose(poseId: number) {
     this.router.navigate(['/pose-detail', poseId]);
+  }
+
+  openImageOverlay() {
+    this.isImageOverlayOpen = true;
+  }
+
+  closeImageOverlay() {
+    this.isImageOverlayOpen = false;
   }
 
   toggleFavorite() {

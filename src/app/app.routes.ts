@@ -67,7 +67,7 @@ export const routes: Routes = [
     loadComponent: () => import('./active-timer/active-timer.page').then( m => m.ActiveTimerPage)
   },
   {
-    path: 'sequence-detail',
+    path: 'sequence-detail/:id',
     loadComponent: () => import('./sequence-detail/sequence-detail.page').then( m => m.SequenceDetailPage)
   },
   {

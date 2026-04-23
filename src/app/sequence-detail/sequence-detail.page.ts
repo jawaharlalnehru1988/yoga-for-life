@@ -6,38 +6,44 @@ import { IonicModule, ActionSheetController, ToastController, ModalController, A
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, switchMap } from 'rxjs/operators';
 
-import { SequencesService, YogaSequence, SequencePose } from '../services/sequences.service';
-import { YogaPosesService, YogaPose } from '../services/yoga-poses.service';
+import { SequencesService, YogaSequence } from '../services/sequences.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/angular/standalone';
+import { MarkdownComponent } from 'ngx-markdown';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sequence-detail',
   templateUrl: './sequence-detail.page.html',
   styleUrls: ['./sequence-detail.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [
+    IonContent, 
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonButtons, 
+    IonBackButton, 
+    CommonModule, 
+    FormsModule,
+    MarkdownComponent,
+    RouterLink
+  ]
 })
 export class SequenceDetailPage implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   sequence: YogaSequence | null = null;
-  poses: YogaPose[] = [];
-  relatedSequences: YogaSequence[] = [];
-
   isLoading = true;
   isFavorite = false;
-  completedCount = 0;
-  canEdit = false;
-
-  // Practice options
-  practiceSpeed = 'normal'; // slow, normal, fast
-  includeInstructions = true;
-  includeMusic = true;
+  safeVideoUrl: SafeResourceUrl | null = null;
+  isImageOverlayOpen = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private sequencesService: SequencesService,
-    private yogaPosesService: YogaPosesService,
+    private sanitizer: DomSanitizer,
     private actionSheetController: ActionSheetController,
     private toastController: ToastController,
     private modalController: ModalController,
@@ -59,103 +65,53 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
         switchMap(params => this.sequencesService.getSequenceById(params['id'])),
         takeUntil(this.destroy$)
       )
-      .subscribe(async (sequence) => {
-        if (sequence) {
-          this.sequence = sequence;
-          this.canEdit = sequence.type === 'custom';
-
-          // Load pose details
-          await this.loadPoseDetails();
-
-          // Load related data
-          this.loadFavoriteStatus();
-          this.loadCompletedCount();
-          this.loadRelatedSequences();
-        } else {
-          this.router.navigate(['/sequences-routines']);
+      .subscribe({
+        next: (sequence) => {
+          if (sequence) {
+            this.sequence = sequence;
+            this.loadFavoriteStatus();
+            
+            if (sequence.videoURL) {
+              const videoIdMatch = sequence.videoURL.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+              if (videoIdMatch && videoIdMatch[1]) {
+                const videoId = videoIdMatch[1];
+                this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${videoId}`);
+              }
+            }
+          } else {
+            this.router.navigate(['/sequences-routines']);
+          }
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading sequence:', err);
+          this.isLoading = false;
         }
-        this.isLoading = false;
       });
-  }
-
-  private async loadPoseDetails() {
-    if (!this.sequence) return;
-
-    try {
-      const posePromises = this.sequence.poses.map(sequencePose =>
-        this.yogaPosesService.getPoseById(sequencePose.poseId).toPromise()
-      );
-
-      const poseResults = await Promise.all(posePromises);
-      this.poses = poseResults.filter((pose: any) => pose !== undefined) as YogaPose[];
-    } catch (error) {
-      console.error('Error loading pose details:', error);
-      this.showToast('Failed to load pose details', 'warning');
-    }
   }
 
   private loadFavoriteStatus() {
     if (!this.sequence) return;
 
-    this.sequencesService.isFavorite(this.sequence._id)
+    this.sequencesService.isFavorite(this.sequence.id.toString())
       .pipe(takeUntil(this.destroy$))
       .subscribe(isFavorite => {
         this.isFavorite = isFavorite;
       });
   }
 
-  private loadCompletedCount() {
-    if (!this.sequence) return;
-
-    this.sequencesService.getCompletedCount(this.sequence._id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(count => {
-        this.completedCount = count;
-      });
-  }
-
-  private loadRelatedSequences() {
-    if (!this.sequence) return;
-
-    this.sequencesService.getAllSequences()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(sequences => {
-        this.relatedSequences = sequences
-          .filter(seq =>
-            seq._id !== this.sequence!._id &&
-            (seq.category === this.sequence!.category ||
-              seq.difficulty === this.sequence!.difficulty ||
-              seq.tags.some(tag => this.sequence!.tags.includes(tag)))
-          )
-          .slice(0, 3);
-      });
-  }
-
   // Actions
   async startPractice() {
     if (!this.sequence) return;
-
-    if (this.sequence.isPremium && !this.isPremiumUser()) {
-      await this.showPremiumRequired();
-      return;
-    }
-
-    // Navigate to practice session with options
-    this.router.navigate(['/practice-session'], {
-      queryParams: {
-        sequenceId: this.sequence._id,
-        speed: this.practiceSpeed,
-        instructions: this.includeInstructions,
-        music: this.includeMusic
-      }
-    });
+    console.log('Practice session feature disabled as per request. Enjoy the guide!');
+    this.showToast('Enjoy the guide and instructions below!');
   }
 
   async toggleFavorite() {
     if (!this.sequence) return;
 
     try {
-      this.sequencesService.toggleFavorite(this.sequence._id);
+      this.sequencesService.toggleFavorite(this.sequence.id.toString());
       const message = this.isFavorite ? 'Removed from favorites' : 'Added to favorites';
       this.showToast(message);
     } catch (error) {
@@ -200,118 +156,19 @@ export class SequenceDetailPage implements OnInit, OnDestroy {
     await actionSheet.present();
   }
 
-  async editSequence() {
-    if (!this.sequence || !this.canEdit) return;
-
-    this.router.navigate(['/sequence-builder'], {
-      queryParams: { edit: this.sequence._id }
-    });
+  openImageOverlay() {
+    this.isImageOverlayOpen = true;
   }
 
-  async deleteSequence() {
-    if (!this.sequence || !this.canEdit) return;
-
-    const alert = await this.alertController.create({
-      header: 'Delete Sequence',
-      message: `Are you sure you want to delete "${this.sequence.name}"? This action cannot be undone.`,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          role: 'destructive',
-          handler: () => {
-            this.performDelete();
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  private async performDelete() {
-    if (!this.sequence) return;
-
-    try {
-      await this.sequencesService.deleteCustomSequence(this.sequence._id).toPromise();
-      this.showToast('Sequence deleted successfully');
-      this.router.navigate(['/sequences-routines']);
-    } catch (error) {
-      this.showToast('Failed to delete sequence', 'danger');
-    }
-  }
-
-  openPoseDetail(pose: YogaPose) {
-    this.router.navigate(['/pose-detail', pose.id]);
-  }
-
-  openRelatedSequence(sequence: YogaSequence) {
-    this.router.navigate(['/sequence-detail', sequence._id]);
+  closeImageOverlay() {
+    this.isImageOverlayOpen = false;
   }
 
   goBack() {
     this.router.navigate(['/sequences-routines']);
   }
 
-  // Practice options
-  onSpeedChange(event: any) {
-    this.practiceSpeed = event.detail.value;
-  }
 
-  toggleInstructions() {
-    this.includeInstructions = !this.includeInstructions;
-  }
-
-  toggleMusic() {
-    this.includeMusic = !this.includeMusic;
-  }
-
-  // Helper methods
-  getPoseByPoseId(poseId: string | number): YogaPose | undefined {
-    return this.poses.find(pose => pose.id === poseId);
-  }
-
-  getSequencePoseDetails(sequencePose: SequencePose): { pose: YogaPose | undefined, duration: number } {
-    return {
-      pose: this.getPoseByPoseId(sequencePose.poseId),
-      duration: sequencePose.duration
-    };
-  }
-
-  formatDuration(seconds: number): string {
-    if (seconds < 60) {
-      return `${seconds}s`;
-    } else {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
-    }
-  }
-
-  getDifficultyColor(difficulty: string): string {
-    switch (difficulty.toLowerCase()) {
-      case 'beginner': return 'success';
-      case 'intermediate': return 'warning';
-      case 'advanced': return 'danger';
-      default: return 'medium';
-    }
-  }
-
-  getSpeedLabel(speed: string): string {
-    switch (speed) {
-      case 'slow': return 'Slow & Mindful';
-      case 'normal': return 'Normal Pace';
-      case 'fast': return 'Quick Flow';
-      default: return 'Normal Pace';
-    }
-  }
-
-  private isPremiumUser(): boolean {
-    // TODO: Implement premium user check
-    return false;
-  }
 
   private async showPremiumRequired() {
     const alert = await this.alertController.create({

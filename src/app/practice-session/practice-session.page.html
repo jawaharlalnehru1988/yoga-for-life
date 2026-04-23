@@ -44,11 +44,11 @@
       <div class="sequence-preview">
         <h3>{{ sequence.name }}</h3>
         <div class="preview-stats">
-          <span>{{ sequence.poses.length }} poses</span>
+          <span>{{ sequence.poses?.length || 0 }} poses</span>
           <span>•</span>
-          <span>{{ sequence.totalTime }} minutes</span>
+          <span>{{ sequence.totalTime || 0 }} minutes</span>
           <span>•</span>
-          <span>{{ sequence.difficulty }}</span>
+          <span>{{ sequence.difficulty || 'Beginner' }}</span>
         </div>
       </div>
       }

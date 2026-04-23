@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, delay } from 'rxjs/operators';
+import { map, delay, tap } from 'rxjs/operators';
 
 export interface SequencePose {
   poseId: number | string;
@@ -9,23 +10,26 @@ export interface SequencePose {
 }
 
 export interface YogaSequence {
-  _id: string;
-  name: string;
-  description: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  totalTime: number; // in minutes
-  poses: SequencePose[];
-  goal: string;
-  type: 'predefined' | 'custom' | 'challenge';
-  category: 'goal-based' | 'time-based' | 'occasion-based' | 'challenge';
-  createdBy: string; // 'system' or userId
-  imageUrl: string;
+  id: number;
+  sequenceName: string;
+  category: string;
+  blogContent: string;
+  videoURL: string;
+  audioURL: string | null;
+  imageURL: string | null;
+  
+  // Fields for backward compatibility or UI state
+  _id?: string;
+  name?: string;
+  description?: string;
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+  totalTime?: number;
+  goal?: string;
+  type?: 'predefined' | 'custom' | 'challenge';
+  tags?: string[];
   isPremium?: boolean;
-  isCompleted?: boolean;
-  completedCount?: number;
-  tags: string[];
-  benefits: string[];
-  instructions?: string;
+  createdBy?: string;
+  poses?: SequencePose[];
 }
 
 export interface Challenge {
@@ -60,275 +64,18 @@ export interface SequenceFilters {
   providedIn: 'root'
 })
 export class SequencesService {
+  private apiUrl = 'https://api.asknehru.com/api/yoga/sequences';
+
   private favoritesSubject = new BehaviorSubject<string[]>([]);
   public favorites$ = this.favoritesSubject.asObservable();
 
   private progressSubject = new BehaviorSubject<UserProgress[]>([]);
   public progress$ = this.progressSubject.asObservable();
 
-  // Mock predefined sequences
-  private mockSequences: YogaSequence[] = [
-    // Goal-based sequences
-    {
-      _id: 'seq001',
-      name: 'Weight Loss Power Flow',
-      description: 'Dynamic sequence designed to boost metabolism and burn calories through flowing movements.',
-      difficulty: 'Intermediate',
-      totalTime: 25,
-      poses: [
-        { poseId: 'pose002', duration: 30 }, // Mountain Pose
-        { poseId: 'pose004', duration: 60 }, // Warrior I
-        { poseId: 'pose001', duration: 45 }, // Downward Dog
-        { poseId: 'pose006', duration: 30 }, // Cobra
-        { poseId: 'pose003', duration: 60 }, // Child's Pose
-        { poseId: 'pose005', duration: 45 }, // Tree Pose
-        { poseId: 'pose001', duration: 45 }, // Downward Dog
-        { poseId: 'pose008', duration: 90 }, // Seated Forward Fold
-      ],
-      goal: 'Weight loss and metabolism boost',
-      type: 'predefined',
-      category: 'goal-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754964414/weightLossPower_iwsccr.png',
-      isPremium: false,
-      tags: ['weight loss', 'cardio', 'strength', 'flow'],
-      benefits: [
-        'Burns calories effectively',
-        'Builds lean muscle',
-        'Improves cardiovascular health',
-        'Boosts metabolism'
-      ],
-      instructions: 'Flow smoothly between poses, maintaining steady breath. Hold each pose for the specified duration.'
-    },
-    {
-      _id: 'seq002',
-      name: 'Stress Relief Evening Routine',
-      description: 'Gentle, calming sequence perfect for unwinding after a stressful day.',
-      difficulty: 'Beginner',
-      totalTime: 15,
-      poses: [
-        { poseId: 'pose003', duration: 90 }, // Child's Pose
-        { poseId: 'pose008', duration: 120 }, // Seated Forward Fold
-        { poseId: 'pose001', duration: 60 }, // Downward Dog
-        { poseId: 'pose007', duration: 180 }, // Pigeon Pose
-        { poseId: 'pose003', duration: 120 }, // Child's Pose
-      ],
-      goal: 'Stress relief and relaxation',
-      type: 'predefined',
-      category: 'goal-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754964551/stressReliefEveningRoutine_qc3h23.png',
-      isPremium: false,
-      tags: ['stress relief', 'relaxation', 'evening', 'gentle'],
-      benefits: [
-        'Reduces cortisol levels',
-        'Calms nervous system',
-        'Improves sleep quality',
-        'Releases muscle tension'
-      ],
-      instructions: 'Move slowly and breathe deeply. Focus on releasing tension with each exhale.'
-    },
-    {
-      _id: 'seq003',
-      name: 'Flexibility Booster',
-      description: 'Deep stretching sequence to improve overall flexibility and range of motion.',
-      difficulty: 'Intermediate',
-      totalTime: 30,
-      poses: [
-        { poseId: 'pose002', duration: 45 }, // Mountain Pose
-        { poseId: 'pose008', duration: 120 }, // Seated Forward Fold
-        { poseId: 'pose007', duration: 180 }, // Pigeon Pose (each side)
-        { poseId: 'pose001', duration: 90 }, // Downward Dog
-        { poseId: 'pose006', duration: 60 }, // Cobra
-        { poseId: 'pose003', duration: 90 }, // Child's Pose
-      ],
-      goal: 'Improve flexibility and mobility',
-      type: 'predefined',
-      category: 'goal-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754964873/flexibility_booster_ot23db.png',
-      isPremium: false,
-      tags: ['flexibility', 'stretching', 'mobility', 'deep stretch'],
-      benefits: [
-        'Increases range of motion',
-        'Improves joint mobility',
-        'Reduces muscle stiffness',
-        'Prevents injury'
-      ]
-    },
-    {
-      _id: 'seq004',
-      name: 'Core Strength Builder',
-      description: 'Challenging sequence focused on building core strength and stability.',
-      difficulty: 'Advanced',
-      totalTime: 20,
-      poses: [
-        { poseId: 'pose002', duration: 30 }, // Mountain Pose
-        { poseId: 'pose004', duration: 60 }, // Warrior I
-        { poseId: 'pose005', duration: 45 }, // Tree Pose
-        { poseId: 'pose001', duration: 60 }, // Downward Dog
-        { poseId: 'pose006', duration: 45 }, // Cobra
-        { poseId: 'pose003', duration: 60 }, // Child's Pose
-      ],
-      goal: 'Build core strength and stability',
-      type: 'predefined',
-      category: 'goal-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754965322/coreStrength_builder_iwc7uk.png',
-      isPremium: true,
-      tags: ['core strength', 'stability', 'challenging', 'advanced'],
-      benefits: [
-        'Strengthens core muscles',
-        'Improves posture',
-        'Enhances balance',
-        'Supports spine health'
-      ]
-    },
+  private mockChallenges: Challenge[] = []; // Placeholder for now
+  private mockSequences: YogaSequence[] = []; // Placeholder for now
 
-    // Time-based sequences
-    {
-      _id: 'seq005',
-      name: '5-Minute Quick Energy',
-      description: 'Quick energizing sequence perfect for busy mornings or midday breaks.',
-      difficulty: 'Beginner',
-      totalTime: 5,
-      poses: [
-        { poseId: 'pose002', duration: 30 }, // Mountain Pose
-        { poseId: 'pose001', duration: 60 }, // Downward Dog
-        { poseId: 'pose004', duration: 45 }, // Warrior I
-        { poseId: 'pose003', duration: 45 }, // Child's Pose
-      ],
-      goal: 'Quick energy boost',
-      type: 'predefined',
-      category: 'time-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754965596/fiveminutequickyoga_b1ldcf.png',
-      isPremium: false,
-      tags: ['quick', 'energy', 'morning', 'short'],
-      benefits: [
-        'Increases alertness',
-        'Boosts circulation',
-        'Energizes body and mind',
-        'Perfect for busy schedules'
-      ]
-    },
-    {
-      _id: 'seq006',
-      name: '15-Minute Daily Stretch',
-      description: 'Perfect daily routine to maintain flexibility and prevent stiffness.',
-      difficulty: 'Beginner',
-      totalTime: 15,
-      poses: [
-        { poseId: 'pose002', duration: 30 }, // Mountain Pose
-        { poseId: 'pose008', duration: 90 }, // Seated Forward Fold
-        { poseId: 'pose001', duration: 60 }, // Downward Dog
-        { poseId: 'pose006', duration: 45 }, // Cobra
-        { poseId: 'pose005', duration: 60 }, // Tree Pose
-        { poseId: 'pose003', duration: 75 }, // Child's Pose
-      ],
-      goal: 'Daily maintenance and flexibility',
-      type: 'predefined',
-      category: 'time-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754969166/15MinutesDailyYoga_n0lbhi.png',
-      isPremium: false,
-      tags: ['daily', 'stretch', 'maintenance', 'routine'],
-      benefits: [
-        'Maintains flexibility',
-        'Prevents stiffness',
-        'Improves posture',
-        'Easy to follow'
-      ]
-    },
-
-    // Occasion-based sequences
-    {
-      _id: 'seq007',
-      name: 'Morning Wake-up Flow',
-      description: 'Energizing morning sequence to start your day with vitality and focus.',
-      difficulty: 'Beginner',
-      totalTime: 12,
-      poses: [
-        { poseId: 'pose002', duration: 45 }, // Mountain Pose
-        { poseId: 'pose001', duration: 60 }, // Downward Dog
-        { poseId: 'pose004', duration: 45 }, // Warrior I
-        { poseId: 'pose006', duration: 30 }, // Cobra
-        { poseId: 'pose003', duration: 60 }, // Child's Pose
-      ],
-      goal: 'Morning energy and focus',
-      type: 'predefined',
-      category: 'occasion-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754969392/morningWakeUpflow_isk2ip.png',
-      isPremium: false,
-      tags: ['morning', 'energy', 'wake-up', 'focus'],
-      benefits: [
-        'Awakens the body',
-        'Improves mental clarity',
-        'Sets positive tone for day',
-        'Increases energy levels'
-      ]
-    },
-    {
-      _id: 'seq008',
-      name: 'Bedtime Relaxation',
-      description: 'Gentle, calming sequence to prepare your body and mind for restful sleep.',
-      difficulty: 'Beginner',
-      totalTime: 10,
-      poses: [
-        { poseId: 'pose003', duration: 90 }, // Child's Pose
-        { poseId: 'pose008', duration: 120 }, // Seated Forward Fold
-        { poseId: 'pose007', duration: 90 }, // Pigeon Pose
-        { poseId: 'pose003', duration: 120 }, // Child's Pose
-      ],
-      goal: 'Better sleep and relaxation',
-      type: 'predefined',
-      category: 'occasion-based',
-      createdBy: 'system',
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1754969613/bedTimeRelaxation_cy9yxo.png',
-      isPremium: false,
-      tags: ['bedtime', 'sleep', 'relaxation', 'evening'],
-      benefits: [
-        'Promotes better sleep',
-        'Calms the mind',
-        'Releases daily tension',
-        'Prepares for rest'
-      ]
-    }
-  ];
-
-  // Mock challenges
-  private mockChallenges: Challenge[] = [
-    {
-      _id: 'challenge001',
-      name: '21-Day Beginner Journey',
-      description: 'Perfect introduction to yoga with progressive daily sequences building strength, flexibility, and confidence.',
-      duration: 21,
-      sequences: ['seq005', 'seq006', 'seq007', 'seq002'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012611/Perfect_introduction_wjql6h.png',
-      isPremium: false
-    },
-    {
-      _id: 'challenge002',
-      name: '7-Day Stress Relief',
-      description: 'Week-long journey to reduce stress and find inner peace through gentle yoga practices.',
-      duration: 7,
-      sequences: ['seq002', 'seq008', 'seq006'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012826/7-Day_Stress_Relief__t6ek7p.png',
-      isPremium: false
-    },
-    {
-      _id: 'challenge003',
-      name: '14-Day Flexibility Journey',
-      description: 'Transform your flexibility with targeted stretching sequences designed to increase range of motion.',
-      duration: 14,
-      sequences: ['seq003', 'seq006', 'seq007'],
-      imageUrl: 'https://res.cloudinary.com/dbmkctsda/image/upload/v1755012958/14-Day_Flexibility_J_twnllw.png',
-      isPremium: true
-    }
-  ];
-
-  constructor() {
+  constructor(private http: HttpClient) {
     // Load favorites and progress from localStorage
     const savedFavorites = localStorage.getItem('sequence-favorites');
     if (savedFavorites) {
@@ -343,13 +90,31 @@ export class SequencesService {
 
   // Get all sequences
   getAllSequences(): Observable<YogaSequence[]> {
-    return of(this.mockSequences).pipe(delay(300));
+    return this.http.get<YogaSequence[]>(this.apiUrl).pipe(
+      map(sequences => sequences.map(s => this.mapSequence(s)))
+    );
   }
 
   // Get sequence by ID
-  getSequenceById(id: string): Observable<YogaSequence | undefined> {
-    const sequence = this.mockSequences.find(s => s._id === id);
-    return of(sequence).pipe(delay(200));
+  getSequenceById(id: string | number): Observable<YogaSequence> {
+    return this.http.get<YogaSequence>(`${this.apiUrl}/${id}`).pipe(
+      map(s => this.mapSequence(s))
+    );
+  }
+
+  private mapSequence(s: YogaSequence): YogaSequence {
+    return {
+      ...s,
+      _id: s.id.toString(),
+      name: s.sequenceName,
+      description: s.blogContent.substring(0, 150) + '...',
+      difficulty: 'Beginner', // Default
+      totalTime: 15, // Default
+      goal: s.category,
+      type: 'predefined',
+      tags: s.category.split(',').map(t => t.trim()),
+      isPremium: false
+    };
   }
 
   // Get challenges
@@ -381,19 +146,21 @@ export class SequencesService {
 
     if (filters.duration) {
       filtered = filtered.filter(seq => {
+        const totalTime = seq.totalTime || 0;
         switch (filters.duration) {
-          case 'short': return seq.totalTime <= 10;
-          case 'medium': return seq.totalTime > 10 && seq.totalTime <= 25;
-          case 'long': return seq.totalTime > 25;
+          case 'short': return totalTime <= 10;
+          case 'medium': return totalTime > 10 && totalTime <= 25;
+          case 'long': return totalTime > 25;
           default: return true;
         }
       });
     }
 
     if (filters.goal) {
+      const goalLower = filters.goal.toLowerCase();
       filtered = filtered.filter(seq =>
-        seq.goal.toLowerCase().includes(filters.goal!.toLowerCase()) ||
-        seq.tags.some(tag => tag.toLowerCase().includes(filters.goal!.toLowerCase()))
+        (seq.goal?.toLowerCase().includes(goalLower) || false) ||
+        (seq.tags?.some(tag => tag.toLowerCase().includes(goalLower)) || false)
       );
     }
 
@@ -402,11 +169,12 @@ export class SequencesService {
 
   // Search sequences
   searchSequences(query: string): Observable<YogaSequence[]> {
+    const q = query.toLowerCase();
     const filtered = this.mockSequences.filter(seq =>
-      seq.name.toLowerCase().includes(query.toLowerCase()) ||
-      seq.description.toLowerCase().includes(query.toLowerCase()) ||
-      seq.goal.toLowerCase().includes(query.toLowerCase()) ||
-      seq.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      (seq.name?.toLowerCase().includes(q) || false) ||
+      (seq.description?.toLowerCase().includes(q) || false) ||
+      (seq.goal?.toLowerCase().includes(q) || false) ||
+      (seq.tags?.some(tag => tag.toLowerCase().includes(q)) || false)
     );
     return of(filtered).pipe(delay(200));
   }
@@ -421,7 +189,7 @@ export class SequencesService {
   getFavoriteSequences(): Observable<YogaSequence[]> {
     return this.favorites$.pipe(
       map(favoriteIds =>
-        this.mockSequences.filter(seq => favoriteIds.includes(seq._id))
+        this.mockSequences.filter(seq => seq._id && favoriteIds.includes(seq._id))
       )
     );
   }

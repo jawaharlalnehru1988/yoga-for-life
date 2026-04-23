@@ -264,15 +264,15 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
       case 'time-based':
         sequences = this.allSequences.filter(s => 
           s.category === 'time-based' || 
-          s.name.toLowerCase().includes('quick') ||
-          s.name.toLowerCase().includes('minute')
+          (s.name?.toLowerCase().includes('quick') || false) ||
+          (s.name?.toLowerCase().includes('minute') || false)
         );
         break;
       case 'occasion-based':
         sequences = this.allSequences.filter(s => 
           s.category === 'occasion-based' ||
-          s.name.toLowerCase().includes('morning') ||
-          s.name.toLowerCase().includes('evening')
+          (s.name?.toLowerCase().includes('morning') || false) ||
+          (s.name?.toLowerCase().includes('evening') || false)
         );
         break;
       default:
@@ -283,10 +283,10 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase().trim();
       sequences = sequences.filter(sequence => 
-        sequence.name.toLowerCase().includes(query) ||
-        sequence.description.toLowerCase().includes(query) ||
-        sequence.goal.toLowerCase().includes(query) ||
-        sequence.tags.some(tag => tag.toLowerCase().includes(query))
+        (sequence.name?.toLowerCase().includes(query) || false) ||
+        (sequence.description?.toLowerCase().includes(query) || false) ||
+        (sequence.goal?.toLowerCase().includes(query) || false) ||
+        (sequence.tags?.some(tag => tag.toLowerCase().includes(query)) || false)
       );
     }
     
@@ -300,7 +300,7 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
     // Apply duration filter
     if (this.selectedFilters.duration) {
       sequences = sequences.filter(s => 
-        s.totalTime <= this.selectedFilters.duration!
+        (s.totalTime || 0) <= this.selectedFilters.duration!
       );
     }
     
@@ -330,7 +330,7 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
-    this.router.navigate(['/sequences-routines', sequence._id]);
+    this.router.navigate(['/sequence-detail', sequence.id]);
   }
 
   openChallenge(challenge: Challenge) {
@@ -342,20 +342,14 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
-    
-    if (sequence.isPremium && !this.isPremiumUser()) {
-      await this.showPremiumRequiredAction(sequence);
-      return;
-    }
-    
-    this.router.navigate(['/sequences-routines', sequence._id, 'practice']);
+    this.router.navigate(['/sequence-detail', sequence.id]);
   }
 
   async editSequence(sequence: YogaSequence, event?: Event) {
     if (event) {
       event.stopPropagation();
     }
-    this.router.navigate(['/sequences-routines', sequence._id, 'edit']);
+    this.router.navigate(['/sequence-builder'], { queryParams: { id: sequence.id } });
   }
 
   async toggleFavorite(sequence: YogaSequence, event?: Event) {
@@ -364,8 +358,12 @@ export class SequencesRoutinesPage implements OnInit, OnDestroy {
     }
     
     try {
-      await this.sequencesService.toggleFavorite(sequence._id);
-      const action = await this.isFavorite(sequence._id).pipe(map(isFav => isFav ? 'added to' : 'removed from')).toPromise();
+      const sequenceId = sequence._id || '';
+      if (!sequenceId) return;
+
+      this.sequencesService.toggleFavorite(sequenceId);
+      const isFavorite = await this.isFavorite(sequenceId).pipe(takeUntil(this.destroy$)).toPromise();
+      const action = isFavorite ? 'added to' : 'removed from';
       this.showToast(`Sequence ${action} favorites`);
     } catch (error) {
       this.showErrorToast('Failed to update favorites');

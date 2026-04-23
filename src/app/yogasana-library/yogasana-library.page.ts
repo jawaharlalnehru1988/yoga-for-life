@@ -51,6 +51,7 @@ export class YogasanaLibraryPage implements OnInit {
     this.isLoading = true;
     this.yogaPosesService.getAllPoses().subscribe(poses => {
       this.allPoses = poses;
+      // Extract unique categories dynamically from the API response (no hardcoded categories)
       this.filterOptions = this.yogaPosesService.getFilterOptions(poses);
       this.applyFiltersAndSort();
       this.isLoading = false;

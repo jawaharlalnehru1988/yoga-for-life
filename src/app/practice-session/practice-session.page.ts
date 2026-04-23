@@ -124,7 +124,8 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     if (!this.sequence) return;
 
     try {
-      const posePromises = this.sequence.poses.map(sequencePose =>
+      const posesList = this.sequence.poses || [];
+      const posePromises = posesList.map(sequencePose =>
         this.yogaPosesService.getPoseById(sequencePose.poseId).toPromise()
       );
 
@@ -140,7 +141,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
     if (!this.sequence) return;
 
     let totalTime = 0;
-    this.sequence.poses.forEach(pose => {
+    (this.sequence.poses || []).forEach(pose => {
       let duration = pose.duration;
 
       // Adjust duration based on speed
@@ -204,12 +205,17 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   }
 
   private startCurrentPose() {
-    if (!this.sequence || this.state.currentPoseIndex >= this.sequence.poses.length) {
+    if (!this.sequence || this.state.currentPoseIndex >= (this.sequence.poses?.length || 0)) {
       this.completeSession();
       return;
     }
 
-    const currentSequencePose = this.sequence.poses[this.state.currentPoseIndex];
+    const poses = this.sequence.poses || [];
+    const currentSequencePose = poses[this.state.currentPoseIndex];
+    if (!currentSequencePose) {
+      this.completeSession();
+      return;
+    }
     let duration = currentSequencePose.duration;
 
     // Adjust duration based on speed
@@ -279,7 +285,7 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   }
 
   private saveSessionCompletion() {
-    if (!this.sequence) return;
+    if (!this.sequence || !this.sequence._id) return;
 
     this.sequencesService.completeSequence(
       this.sequence._id,
@@ -300,7 +306,8 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
   }
 
   skipPose() {
-    if (this.state.currentPoseIndex < this.sequence!.poses.length - 1) {
+    const poses = this.sequence?.poses || [];
+    if (this.state.currentPoseIndex < poses.length - 1) {
       this.nextPose();
     }
   }
@@ -349,24 +356,26 @@ export class PracticeSessionPage implements OnInit, OnDestroy {
 
   // Helper Methods
   getCurrentPose(): YogaPose | undefined {
-    if (!this.sequence || this.state.currentPoseIndex >= this.sequence.poses.length) {
+    const poses = this.sequence?.poses || [];
+    if (!this.sequence || this.state.currentPoseIndex >= poses.length) {
       return undefined;
     }
 
-    const sequencePose = this.sequence.poses[this.state.currentPoseIndex];
+    const sequencePose = poses[this.state.currentPoseIndex];
     return this.poses.find(pose => pose.id === sequencePose.poseId);
   }
 
   getCurrentSequencePose(): SequencePose | undefined {
-    if (!this.sequence || this.state.currentPoseIndex >= this.sequence.poses.length) {
+    const poses = this.sequence?.poses || [];
+    if (!this.sequence || this.state.currentPoseIndex >= poses.length) {
       return undefined;
     }
 
-    return this.sequence.poses[this.state.currentPoseIndex];
+    return poses[this.state.currentPoseIndex];
   }
 
   getProgress(): number {
-    if (!this.sequence) return 0;
+    if (!this.sequence || !this.sequence.poses) return 0;
     return Math.round((this.state.currentPoseIndex / this.sequence.poses.length) * 100);
   }
 

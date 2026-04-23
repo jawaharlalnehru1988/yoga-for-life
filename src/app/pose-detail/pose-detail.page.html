@@ -22,67 +22,51 @@
 
       <div class="hero-visual">
         <div class="glow-effect"></div>
-        <div class="media-container">
+        <div class="media-container" (click)="openImageOverlay()">
           <img [src]="pose.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200' "
             [alt]="pose.yogaName" />
           <div class="context-tag">Vedic Wisdom</div>
+          <div class="zoom-hint">
+            <span class="material-symbols-outlined">zoom_in</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Main Content Layout -->
-    <div class="grid-layout">
-      <!-- Left Column: Markdown Content -->
-      <div class="left-col">
-        <section class="instructions-section">
-          <div class="section-header">
-            <span class="material-symbols-outlined">description</span>
-            <h4>Guide & Instructions</h4>
-          </div>
-
-          <div class="markdown-body">
-            <markdown [data]="pose.blogContent"></markdown>
-          </div>
-        </section>
-
-        <!-- Video Section if available -->
-        @if (pose.videoURL) {
-        <section class="video-section">
-          <div class="section-header">
-            <span class="material-symbols-outlined">play_circle</span>
-            <h4>Watch Demonstration</h4>
-          </div>
-          <div class="video-container">
-            <a [href]="pose.videoURL" target="_blank" class="video-link">
-              <span class="material-symbols-outlined">open_in_new</span>
-              Watch on YouTube
-            </a>
-          </div>
-        </section>
-        }
-      </div>
-
-      <!-- Right Column: Sidebar (Related Poses) -->
-      <aside class="right-col">
-        <div class="sidebar-card">
-          <h4>
-            <span class="material-symbols-outlined">auto_awesome</span>
-            Related Poses
-          </h4>
-          <div class="related-list">
-            @for (related of relatedPoses; track related.id) {
-            <div class="related-item" (click)="navigateToPose(related.id)">
-              <img [src]="related.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=400' "
-                [alt]="related.yogaName">
-              <div class="related-info">
-                <h6>{{ related.yogaName }}</h6>
-                <p>{{ related.category }}</p>
-              </div>
-            </div>
-            }
-          </div>
+    <!-- Main Content -->
+    <div class="content-layout">
+      <!-- Video Section if available -->
+      @if (pose.videoURL) {
+      <section class="video-section">
+        <div class="section-header">
+          <span class="material-symbols-outlined">play_circle</span>
+          <h4>Watch Demonstration</h4>
         </div>
-      </aside>
+        <div class="video-container">
+          @if (safeVideoUrl) {
+          <iframe [src]="safeVideoUrl" width="100%" height="100%" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+          } @else {
+          <a [href]="pose.videoURL" target="_blank" class="video-link">
+            <span class="material-symbols-outlined">open_in_new</span>
+            Watch on YouTube
+          </a>
+          }
+        </div>
+      </section>
+      }
+
+      <section class="instructions-section">
+        <div class="section-header">
+          <span class="material-symbols-outlined">description</span>
+          <h4>Guide & Instructions</h4>
+        </div>
+
+        <div class="markdown-body">
+          <markdown [data]="pose.blogContent"></markdown>
+        </div>
+      </section>
     </div>
   </div>
   }
@@ -124,5 +108,16 @@
       </button>
     </div>
   </footer>
+  }
+
+  <!-- Image Overlay -->
+  @if (isImageOverlayOpen) {
+  <div class="image-overlay" (click)="closeImageOverlay()">
+    <button class="close-overlay-btn" (click)="closeImageOverlay()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <img [src]="pose?.imageURL || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200' "
+      [alt]="pose?.yogaName" (click)="$event.stopPropagation()" />
+  </div>
   }
 </ion-content>

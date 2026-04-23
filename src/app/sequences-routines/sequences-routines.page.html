@@ -209,11 +209,11 @@
 
       <!-- Sequence Image -->
       <div class="sequence-image-container">
-        <img [src]="sequence.imageUrl" [alt]="sequence.name" />
+        <img [src]="sequence.imageURL" [alt]="sequence.name" />
         <div class="sequence-overlay">
           <ion-button fill="clear" size="small" class="favorite-btn" (click)="toggleFavorite(sequence, $event)">
-            <ion-icon [name]="(isFavorite(sequence._id) | async) ? 'heart' : 'heart-outline'"
-              [color]="(isFavorite(sequence._id) | async) ? 'danger' : 'light'">
+            <ion-icon [name]="(sequence._id ? (isFavorite(sequence._id) | async) : false) ? 'heart' : 'heart-outline'"
+              [color]="(sequence._id ? (isFavorite(sequence._id) | async) : false) ? 'danger' : 'light'">
             </ion-icon>
           </ion-button>
 
@@ -224,7 +224,7 @@
               Premium
             </ion-badge>
             }
-            <ion-badge [color]="getDifficultyColor(sequence.difficulty)">
+            <ion-badge [color]="getDifficultyColor(sequence.difficulty || 'Beginner')">
               {{ sequence.difficulty }}
             </ion-badge>
           </div>
@@ -240,7 +240,7 @@
           </div>
           <div class="sequence-time">
             <ion-icon name="time-outline"></ion-icon>
-            <span>{{ sequence.totalTime }}min</span>
+            <span>{{ sequence.totalTime || 0 }}min</span>
           </div>
         </div>
       </ion-card-header>
@@ -251,28 +251,30 @@
 
         <div class="sequence-meta">
           <div class="sequence-tags">
-            @for (tag of sequence.tags.slice(0, 2); track tag) {
+            @for (tag of (sequence.tags || []).slice(0, 2); track tag) {
             <ion-chip size="small" color="light">
               <ion-label>{{ tag }}</ion-label>
             </ion-chip>
             }
-            @if (sequence.tags.length > 2) {
+            @if ((sequence.tags?.length || 0) > 2) {
             <span class="more-tags">
-              +{{ sequence.tags.length - 2 }} more
+              +{{ (sequence.tags?.length || 0) - 2 }} more
             </span>
             }
           </div>
 
           <div class="sequence-stats">
-            @if (getCompletedCount(sequence._id) | async; as count) {
-            <div class="stat-item">
-              <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
-              <span>{{ count }} completed</span>
-            </div>
+            @if (sequence._id) {
+              @if (getCompletedCount(sequence._id) | async; as count) {
+              <div class="stat-item">
+                <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                <span>{{ count }} completed</span>
+              </div>
+              }
             }
             <div class="stat-item">
               <ion-icon name="fitness-outline"></ion-icon>
-              <span>{{ sequence.poses.length }} poses</span>
+              <span>{{ sequence.poses?.length || 0 }} poses</span>
             </div>
           </div>
         </div>
