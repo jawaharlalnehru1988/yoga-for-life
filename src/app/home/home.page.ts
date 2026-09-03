@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
 
+declare const google: any;
+
 interface LearningPathCard {
   icon: string;
   title: string;
@@ -33,7 +35,10 @@ interface HeroSlide {
 export class HomePage implements OnInit {
 
   userName = 'Yogi';
+  userPicture: string | null = null;
+  isLoggedIn = false;
   activeSlideIndex = 0;
+  googleClientId = '977135259177-1tpp90bmrnr7dokqjuu1bh08h7p84neh.apps.googleusercontent.com';
 
   heroSlides: HeroSlide[] = [
     {
@@ -99,6 +104,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.loadUserData();
+    this.initGoogleAuth();
     this.themeService.setTheme('yogasanam-dark');
     this.startSlideTimer();
   }
@@ -111,8 +117,72 @@ export class HomePage implements OnInit {
 
   private loadUserData() {
     const savedUserName = localStorage.getItem('yoga-user-name');
+    const savedPicture = localStorage.getItem('yoga-user-picture');
     if (savedUserName) {
       this.userName = savedUserName;
+      this.isLoggedIn = true;
+    }
+    if (savedPicture) {
+      this.userPicture = savedPicture;
+    }
+  }
+
+  initGoogleAuth() {
+    if (typeof window === 'undefined') return;
+
+    const checkGsi = () => {
+      if (typeof google !== 'undefined' && google.accounts?.id) {
+        try {
+          google.accounts.id.initialize({
+            client_id: this.googleClientId,
+            callback: (res: any) => this.handleGoogleResponse(res),
+            auto_select: false,
+            cancel_on_tap_outside: true
+          });
+        } catch (e) {
+          console.warn('Google Identity initialization error', e);
+        }
+      } else {
+        setTimeout(checkGsi, 300);
+      }
+    };
+    checkGsi();
+  }
+
+  handleGoogleResponse(response: any) {
+    if (!response?.credential) return;
+    try {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      this.userName = payload.name || payload.email.split('@')[0];
+      this.userPicture = payload.picture || null;
+      this.isLoggedIn = true;
+      localStorage.setItem('yoga-user-name', this.userName);
+      if (this.userPicture) {
+        localStorage.setItem('yoga-user-picture', this.userPicture);
+      }
+      localStorage.setItem('yoga-user-token', response.credential);
+    } catch (e) {
+      console.error('Error handling Google response', e);
+    }
+  }
+
+  signInWithGoogle() {
+    if (typeof google !== 'undefined' && google.accounts?.id) {
+      google.accounts.id.prompt();
+    }
+  }
+
+  logout() {
+    this.userName = 'Yogi';
+    this.userPicture = null;
+    this.isLoggedIn = false;
+    localStorage.removeItem('yoga-user-name');
+    localStorage.removeItem('yoga-user-picture');
+    localStorage.removeItem('yoga-user-token');
+    if (typeof google !== 'undefined' && google.accounts?.id) {
+      try {
+        google.accounts.id.disableAutoSelect();
+      } catch (e) {}
     }
   }
 
